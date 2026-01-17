@@ -1,0 +1,45 @@
+<div class="auth">
+  <mat-vertical-stepper [linear]="true" #stepper animationDuration="500">
+    <mat-step editable="false" completed="false">
+      <ng-template matStepLabel>
+        <div class="step-label">
+          @if (loading()) {
+            <mat-spinner [diameter]="24" [strokeWidth]="3"></mat-spinner>
+          }
+          Register
+        </div>
+      </ng-template>
+
+      <div class="register">
+        <mat-form-field>
+          <mat-label>Enter your email</mat-label>
+          <mat-icon matPrefix aria-label="persona" fontIcon="persona"></mat-icon>
+          <input
+            [disabled]="loading()"
+            matInput
+            placeholder="pat@example.com"
+            type="email"
+            (input)="email($event)"
+          />
+          <mat-error>{{ errors.email }}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter your password</mat-label>
+          <mat-icon matPrefix aria-label="lock" fontIcon="lock"></mat-icon>
+          <input [disabled]="loading()" matInput type="password" (input)="password($event)" />
+          <mat-error>{{ errors.password }}</mat-error>
+        </mat-form-field>
+        <button matButton="tonal" (click)="register()">register</button>
+      </div>
+    </mat-step>
+
+    <mat-step editable="false" completed="false">
+      <ng-template matStepLabel>Verification</ng-template>
+    </mat-step>
+
+    <mat-step editable="false" completed="false">
+      <ng-template matStepLabel>Profile</ng-template>
+      You are now done.
+    </mat-step>
+  </mat-vertical-stepper>
+</div>

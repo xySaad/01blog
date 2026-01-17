@@ -1,0 +1,16 @@
+.auth {
+  max-width: 600px;
+  margin: auto;
+}
+
+.register {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
