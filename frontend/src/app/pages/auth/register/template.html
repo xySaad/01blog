@@ -1,0 +1,75 @@
+<mat-toolbar>
+  <span>Create a new account</span>
+</mat-toolbar>
+<mat-vertical-stepper [linear]="true" #stepper animationDuration="500">
+  <mat-step #step editable="false" [completed]="step.completed">
+    <ng-template matStepLabel>
+      <div class="step-label">
+        @if (loading()) {
+          <mat-spinner [diameter]="24" [strokeWidth]="3"></mat-spinner>
+        }
+        Register
+      </div>
+    </ng-template>
+
+    <div class="flex">
+      <mat-form-field>
+        <mat-label>Enter your email</mat-label>
+        <mat-icon matPrefix aria-label="persona" fontIcon="persona"></mat-icon>
+        <input
+          [disabled]="loading()"
+          matInput
+          placeholder="pat@example.com"
+          type="email"
+          (input)="email($event)"
+        />
+        <mat-error>{{ errors.email }}</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Enter your password</mat-label>
+        <mat-icon matPrefix aria-label="lock" fontIcon="lock"></mat-icon>
+        <input [disabled]="loading()" matInput type="password" (input)="password($event)" />
+        <mat-error>{{ errors.password }}</mat-error>
+      </mat-form-field>
+      <button matButton="tonal" [disabled]="loading()" (click)="register(stepper, step)">
+        register
+      </button>
+    </div>
+    <p>
+      Already have an account?
+      <button matButton="" (click)="router.navigate(['auth', 'login'])">login</button>
+    </p>
+  </mat-step>
+
+  <mat-step #step editable="false" [completed]="step.completed">
+    <div class="flex">
+      <mat-form-field>
+        <mat-label>enter code</mat-label>
+        <input [disabled]="loading()" matInput name="verification" (input)="code($event)" />
+      </mat-form-field>
+      <ng-template matStepLabel>Verification</ng-template>
+      <button matButton="tonal" (click)="verify(stepper, step)" [disabled]="loading()">
+        verify
+      </button>
+    </div>
+  </mat-step>
+
+  <mat-step #step editable="false" [completed]="step.completed">
+    <ng-template matStepLabel>Profile</ng-template>
+    <div class="flex">
+      <mat-form-field>
+        <mat-label>login</mat-label>
+        <input [disabled]="loading()" matInput type="text" (input)="login($event)" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>first name</mat-label>
+        <input [disabled]="loading()" matInput type="text" (input)="firstName($event)" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>last name</mat-label>
+        <input [disabled]="loading()" matInput type="text" (input)="lastName($event)" />
+      </mat-form-field>
+      <button matButton="tonal" (click)="createUser()" [disabled]="loading()">complete</button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

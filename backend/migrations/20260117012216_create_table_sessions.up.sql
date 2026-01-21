@@ -1,4 +1,5 @@
 CREATE TABLE sessions (
     account_id bigint PRIMARY KEY REFERENCES accounts, -- accounts.id
-    jwt text NOT NULL
+    jwt text NOT NULL,
+    created_at timestamp NOT NULL
 );

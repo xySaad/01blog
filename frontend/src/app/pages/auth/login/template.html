@@ -1,0 +1,35 @@
+<mat-toolbar>
+  @if (loading()) {
+    <mat-spinner [diameter]="24" [strokeWidth]="3"></mat-spinner>
+  }
+  <span
+    >Welcome back{{ name.length > 0 ? ',' : '' }}
+    <span class="mat-headline-small name-highlight">{{ name }} </span>!</span
+  >
+</mat-toolbar>
+
+<div class="flex">
+  <mat-form-field>
+    <mat-label>Enter your email</mat-label>
+    <mat-icon matPrefix aria-label="persona" fontIcon="persona"></mat-icon>
+    <input
+      [disabled]="loading()"
+      matInput
+      placeholder="pat@example.com"
+      type="email"
+      (input)="email($event)"
+    />
+    <!-- <mat-error>{{ errors.email }}</mat-error> -->
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Enter your password</mat-label>
+    <mat-icon matPrefix aria-label="lock" fontIcon="lock"></mat-icon>
+    <input [disabled]="loading()" matInput type="password" (input)="password($event)" />
+    <!-- <mat-error>{{ errors.password }}</mat-error> -->
+  </mat-form-field>
+  <button matButton="tonal" [disabled]="loading()" (click)="login()">login</button>
+  <p class="mat-body-large">
+    New here?
+    <button matButton="" (click)="router.navigate(['auth', 'register'])">register</button>
+  </p>
+</div>

@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import com.z01.blog.model.Account;
+import com.z01.blog.model.AuthRequest;
 import com.z01.blog.model.Session;
 import com.z01.blog.services.EmailService;
 import cn.hutool.core.util.IdUtil;
@@ -23,17 +21,6 @@ import io.jsonwebtoken.Jwts;
 
 @RestController
 public class Register {
-
-    private static class Req {
-        @Email
-        @NotBlank
-        public String email;
-
-        @Size(min = 8, max = 32)
-        @NotBlank
-        public String password;
-    }
-
     @Autowired
     private Account.repo accRepo;
     @Autowired
@@ -44,7 +31,7 @@ public class Register {
     private SecretKey jwtKey;
 
     @PostMapping("/api/v1/register")
-    public ResponseEntity<String> register(@Valid @RequestBody Req body) {
+    public ResponseEntity<String> register(@Valid @RequestBody AuthRequest body) {
         if (accRepo.existsByEmail(body.email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
         }
@@ -57,6 +44,7 @@ public class Register {
         account.verificationCode = new Random().nextInt(999999);
         accRepo.save(account);
 
+        // TODO: implement refresh and access token
         String jwt = Jwts.builder()
                 .setSubject(String.valueOf(account.id))
                 .signWith(jwtKey)
@@ -65,7 +53,7 @@ public class Register {
         Session session = new Session();
         session.accountId = account.id;
         session.jwt = jwt;
-
+        session.createdAt = account.codeCreatedAt; // why not?
         sessionRepo.save(session);
 
         try {

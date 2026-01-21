@@ -1,6 +1,8 @@
 package com.z01.blog.model;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,5 +18,7 @@ public class Account {
 
     public interface repo extends JpaRepository<Account, Long> {
         boolean existsByEmail(String email);
+
+        Optional<Account> findByEmail(String email);
     }
 }

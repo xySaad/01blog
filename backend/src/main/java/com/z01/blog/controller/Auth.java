@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class Auth {
@@ -30,6 +32,9 @@ public abstract class Auth {
 
             Optional<Session> session = sessionRepo.findById(accountId);
             if (session.isEmpty() || !session.get().jwt.equals(jwt)) {
+                throw new RuntimeException();
+            }
+            if (session.get().createdAt.plusDays(3).isBefore(LocalDateTime.now())) {
                 throw new RuntimeException();
             }
 
