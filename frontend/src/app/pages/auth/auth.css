@@ -3,7 +3,7 @@
   margin: auto;
 }
 
-.register {
+.flex {
   display: flex;
   flex-direction: column;
 }

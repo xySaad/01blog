@@ -1,3 +1,20 @@
+jwt:
+  secret: ${JWT_SECRET}
 spring:
   application:
     name: blog
+  datasource:
+    url: jdbc:postgresql://localhost:5432/01blog
+    username: srm
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
