@@ -49,7 +49,8 @@ export class Login {
     try {
       const resp = await global.api.post('/login', JSON.stringify(this.data));
       if (resp.ok) {
-        this.router.navigate(['/home']);
+        localStorage.setItem('lastLogin', Date.now().toString());
+        this.router.navigate(['/']);
       }
     } catch (error) {
       //TODO: show error modal

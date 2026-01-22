@@ -127,7 +127,8 @@ export class Register {
       const body = JSON.stringify(this.data);
       const res = await global.api.post('/user', body);
       if (res.ok) {
-        this.router.navigate(['/home']);
+        localStorage.setItem('lastLogin', Date.now().toString());
+        this.router.navigate(['/']);
       }
     } catch (error) {
       //TODO: show error modal
