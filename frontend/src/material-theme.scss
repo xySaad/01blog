@@ -9,4 +9,7 @@ html {
       density: 0,
     )
   );
+
+  $theme: mat.define-theme();
+  @include mat.typography-hierarchy($theme);
 }
