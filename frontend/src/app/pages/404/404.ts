@@ -3,7 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'notfound',
-  templateUrl: 'template.html',
+  templateUrl: '404.html',
   imports: [MatFormFieldModule],
   styles: [
     `

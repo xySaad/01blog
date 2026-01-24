@@ -21,7 +21,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     `,
   ],
   selector: 'register',
-  templateUrl: 'template.html',
+  templateUrl: 'register.html',
   imports: [
     MatFormFieldModule,
     MatInputModule,

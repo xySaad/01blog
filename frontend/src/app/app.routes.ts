@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { Auth } from './pages/auth/auth';
-import { Register } from './pages/auth/register/component';
-import { Login } from './pages/auth/login/component';
-import { NotFound } from './pages/404/component';
+import { Register } from './pages/auth/register/register';
+import { Login } from './pages/auth/login/login';
+import { NotFound } from './pages/404/404';
 import { authGuard } from './guards/auth.guard';
 import { NewPost } from './pages/posts/edit/posts-edit';
 import { Posts } from './pages/posts/posts';
-import { Home } from './pages/home/component';
+import { Home } from './pages/home/home';
 
 export const routes: Routes = [
   {

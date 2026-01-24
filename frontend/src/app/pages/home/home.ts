@@ -4,7 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 @Component({
-  templateUrl: 'template.html',
+  templateUrl: 'home.html',
   imports: [MatButtonModule, MatIcon],
 })
 export class Home {

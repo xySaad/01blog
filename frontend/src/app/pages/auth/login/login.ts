@@ -20,7 +20,7 @@ import { global } from '../../../lib/global';
     `,
   ],
   selector: 'login',
-  templateUrl: 'template.html',
+  templateUrl: 'login.html',
   imports: [MatFormFieldModule, MatInput, MatAnchor, MatIcon, MatToolbar, MatProgressSpinner],
 })
 export class Login {
