@@ -1,0 +1,26 @@
+.progress {
+  position: sticky;
+  top: 0;
+}
+.header {
+  width: fit-content;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  .mat-toolbar {
+    background: none;
+  }
+}
+
+.new-post {
+  padding: 0 10vw;
+  padding-bottom: 30vh;
+
+  textarea {
+    resize: none;
+    margin-bottom: 50px;
+  }
+}

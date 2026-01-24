@@ -1,0 +1,55 @@
+<div class="new-post mat-typography">
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" class="progress"></mat-progress-bar>
+  }
+  <div class="header">
+    <button matButton="tonal" (click)="preview = !preview; updateLocalDraft()" matTooltip="preview">
+      <mat-icon>
+        @if (preview) {
+          visibility
+        } @else {
+          visibility_off
+        }
+      </mat-icon>
+    </button>
+    <mat-toolbar class="save">
+      <button matButton="filled" (click)="save()" [disabled]="isSaved()">
+        <mat-icon>save</mat-icon>
+        save
+      </button>
+    </mat-toolbar>
+    <button matIconButton [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>send</mat-icon>
+        <span>Publish</span>
+      </button>
+      <button mat-menu-item (click)="delete()">
+        <mat-icon color="red">delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  @if (preview) {
+    <mat-form-field class="title full-width" appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput type="text" [value]="title" (input)="titleInput($event.target)" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="outline">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        (input)="textInput($event.target)"
+        [value]="text"
+        placeholder="Start typing your story..."
+        name="blog content"
+      ></textarea>
+    </mat-form-field>
+  } @else {
+    <h1>{{ title }}</h1>
+    <markdown class="markdown" clipboard [data]="safe" [disableSanitizer]="true"></markdown>
+  }
+</div>

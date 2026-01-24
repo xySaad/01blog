@@ -1,3 +1,12 @@
+@import 'https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-ghcolors.min.css';
+
+@import 'https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-one-dark.min.css'
+  (prefers-color-scheme: dark);
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
@@ -6,4 +15,28 @@ body {
 .flex {
   display: flex;
   flex-direction: column;
+}
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100% !important;
+}
+
+.markdown {
+  word-break: break-word;
+  img {
+    max-width: 100%;
+  }
+
+  pre[class*='language-']::before {
+    display: block;
+    content: attr(class);
+    font-size: 0.7rem;
+    position: relative;
+    bottom: 10px;
+    right: 5px;
+    width: 100%;
+  }
 }

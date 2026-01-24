@@ -1,3 +1,4 @@
 .main {
   padding: 5vw;
+  height: calc(100vh - 5vw);
 }

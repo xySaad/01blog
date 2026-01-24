@@ -1,0 +1,21 @@
+<div class="posts">
+  @for (draft of drafts; track $index) {
+    <mat-card class="post">
+      <mat-card-header>
+        <mat-card-title>{{ draft.title }}</mat-card-title>
+        <mat-card-subtitle>Draft</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <markdown
+          class="markdown"
+          [data]="draft.text.split('\n').slice(0, 5).join('\n')"
+        ></markdown>
+      </mat-card-content>
+      <div class="footer">
+        <mat-card-actions>
+          <button matButton (click)="router.navigateByUrl(`/posts/edit/${draft.id}`)">Edit</button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  }
+</div>

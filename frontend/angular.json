@@ -22,9 +22,19 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/prismjs/components",
+                "output": "assets/prism/components"
               }
             ],
-            "styles": ["src/material-theme.scss", "src/styles.css"]
+            "styles": ["src/material-theme.scss", "src/styles.css"],
+            "scripts": [
+              "node_modules/clipboard/dist/clipboard.min.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/plugins/autoloader/prism-autoloader.min.js"
+            ]
           },
           "configurations": {
             "production": {
