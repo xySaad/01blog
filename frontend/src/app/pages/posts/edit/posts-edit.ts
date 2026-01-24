@@ -58,7 +58,7 @@ export class NewPost {
   safe = '';
   savedPost = {
     title: '',
-    text: '',
+    content: '',
   };
   isSaved = signal(false);
 
@@ -101,7 +101,7 @@ export class NewPost {
 
   lastTime = Date.now();
   async updateLocalDraft(force = false) {
-    if (this.savedPost.title === this.title && this.savedPost.text === this.text) {
+    if (this.savedPost.title === this.title && this.savedPost.content === this.text) {
       this.isSaved.set(true);
     } else {
       this.isSaved.set(false);
@@ -129,7 +129,7 @@ export class NewPost {
 
   async save() {
     this.loading.set(true);
-    const data = { title: this.title, text: this.text };
+    const data = { title: this.title, content: this.text };
     const resp = await global.api.post('/posts/', JSON.stringify(data));
     if (!resp.ok) {
       //TODO: show an error modal
@@ -137,8 +137,6 @@ export class NewPost {
     this.savedPost = data;
     this.updateLocalDraft(true);
 
-    setTimeout(() => {
-      this.loading.set(false);
-    }, 3000);
+    this.loading.set(false);
   }
 }
