@@ -1,13 +1,11 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { DB_NAME, Storage } from '../../services/storage.service';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MarkdownComponent } from 'ngx-markdown';
 import { Router } from '@angular/router';
-
+import { global } from '../../lib/global';
+import { Post } from '../../components/post/post.component';
 @Component({
   templateUrl: 'posts.html',
-  imports: [MatCardModule, MatButtonModule, MarkdownComponent],
+  imports: [Post],
   providers: [
     Storage,
     {
@@ -18,17 +16,14 @@ import { Router } from '@angular/router';
   styles: [
     `
       .posts {
+        width: 100%;
+        height: 100%;
         display: flex;
+        flex-wrap: wrap;
         gap: 20px;
 
         .post {
-          overflow: hidden;
-          justify-content: flex-start;
           flex: 1;
-
-          .footer {
-            margin-top: auto;
-          }
         }
       }
     `,
@@ -40,11 +35,16 @@ export class Posts {
   private db = inject(Storage);
 
   drafts: any[] = [];
+  savedPosts: any[] = [];
   constructor() {
     this.init();
   }
 
   async init() {
+    const resp = await global.api.get('/posts');
+    const posts = await resp.json();
+    this.savedPosts = posts;
+
     const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
     const req = postDrafts.getAll();
     req.onsuccess = () => {

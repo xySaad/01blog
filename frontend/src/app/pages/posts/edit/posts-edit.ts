@@ -53,6 +53,7 @@ export class NewPost {
   loading = signal(false);
 
   private id;
+  type;
   title = 'Untitled';
   text = '';
   safe = '';
@@ -60,9 +61,10 @@ export class NewPost {
     title: '',
     content: '',
   };
-  isSaved = signal(false);
+  isSaved = signal(true);
 
   constructor() {
+    this.type = this.route.snapshot.queryParamMap.get('type');
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) throw new Error('should provide id param');
     this.id = id;
@@ -70,14 +72,30 @@ export class NewPost {
   }
 
   async init() {
+    if (this.type !== 'draft') {
+      const resp = await global.api.get('/posts/' + this.id);
+      const json = await resp.json();
+      this.title = json.title;
+      this.preview = json.preview;
+      this.text = json.content;
+      this.safe = DOMPurify.sanitize(this.text);
+      const data = { title: this.title, content: this.text };
+      this.savedPost = data;
+      this.cdr.markForCheck();
+      return;
+    }
+
     const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
     const req = postDrafts.get(this.id);
+
     req.onsuccess = () => {
       if (!req.result) return;
       this.title = req.result.title;
       this.preview = req.result.preview;
       this.text = req.result.text;
       this.safe = DOMPurify.sanitize(this.text);
+      const data = { title: this.title, content: this.text };
+      this.savedPost = data;
       this.cdr.markForCheck();
     };
   }
@@ -107,7 +125,7 @@ export class NewPost {
       this.isSaved.set(false);
     }
 
-    if (Date.now() - this.lastTime < 5000) return;
+    if (!force && Date.now() - this.lastTime < 5000) return;
     console.log('save');
 
     this.lastTime = Date.now();
@@ -130,13 +148,18 @@ export class NewPost {
   async save() {
     this.loading.set(true);
     const data = { title: this.title, content: this.text };
-    const resp = await global.api.post('/posts/', JSON.stringify(data));
+    const path = `/posts/${this.type !== 'draft' ? this.id : ''}`;
+    const resp = await global.api.post(path, JSON.stringify(data));
     if (!resp.ok) {
       //TODO: show an error modal
     }
+    const json = await resp.json();
     this.savedPost = data;
-    this.updateLocalDraft(true);
-
+    const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+    postDrafts.delete(this.id);
+    this.id = json.id;
+    // this.updateLocalDraft(true);
+    history.replaceState(null, '', '/posts/edit/' + this.id);
     this.loading.set(false);
   }
 }

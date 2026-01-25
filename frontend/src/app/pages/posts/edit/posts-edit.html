@@ -15,7 +15,11 @@
     <mat-toolbar class="save">
       <button matButton="filled" (click)="save()" [disabled]="isSaved()">
         <mat-icon>save</mat-icon>
-        save
+        @if (type === 'draft') {
+          save
+        } @else {
+          update
+        }
       </button>
     </mat-toolbar>
     <button matIconButton [matMenuTriggerFor]="menu">
