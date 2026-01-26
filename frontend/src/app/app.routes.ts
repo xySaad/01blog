@@ -39,7 +39,7 @@ export const routes: Routes = [
     path: 'posts/edit',
     redirectTo: () => {
       const id = crypto.randomUUID();
-      return `/posts/edit/${id}?new=true`;
+      return `/posts/edit/${id}?new=true&draft=true`;
     },
   },
   {
