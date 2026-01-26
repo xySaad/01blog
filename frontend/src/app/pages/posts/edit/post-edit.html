@@ -1,25 +1,21 @@
 <div class="new-post mat-typography">
-  @if (loading()) {
+  @if (states.isLoading()) {
     <mat-progress-bar mode="indeterminate" class="progress"></mat-progress-bar>
   }
   <div class="header">
-    <button matButton="tonal" (click)="preview = !preview; updateLocalDraft()" matTooltip="preview">
+    <button
+      matButton="tonal"
+      (click)="states.isOnPreview = !states.isOnPreview"
+      matTooltip="{{ states.isOnPreview ? 'edit' : 'preview' }}"
+    >
       <mat-icon>
-        @if (preview) {
-          visibility
-        } @else {
-          visibility_off
-        }
+        {{ states.isOnPreview ? 'edit' : 'visibility' }}
       </mat-icon>
     </button>
     <mat-toolbar class="save">
-      <button matButton="filled" (click)="save()" [disabled]="isSaved()">
+      <button matButton="filled" (click)="save()" [disabled]="states.isDraftSaved()">
         <mat-icon>save</mat-icon>
-        @if (type === 'draft') {
-          save
-        } @else {
-          update
-        }
+        {{ params.isNew ? 'save' : 'update' }}
       </button>
     </mat-toolbar>
     <button matIconButton [matMenuTriggerFor]="menu">
@@ -37,23 +33,28 @@
     </mat-menu>
   </div>
 
-  @if (preview) {
+  @if (states.isOnPreview) {
+    <h1>{{ postData().title }}</h1>
+    <markdown
+      class="markdown"
+      clipboard
+      [data]="sanitizedPostContent()"
+      [disableSanitizer]="true"
+    ></markdown>
+  } @else {
     <mat-form-field class="title full-width" appearance="outline">
       <mat-label>Title</mat-label>
-      <input matInput type="text" [value]="title" (input)="titleInput($event.target)" />
+      <input matInput type="text" [value]="postData().title" (input)="titleInput($event.target)" />
     </mat-form-field>
     <mat-form-field class="full-width" appearance="outline">
       <textarea
         matInput
         cdkTextareaAutosize
         (input)="textInput($event.target)"
-        [value]="text"
+        [value]="postData().content"
         placeholder="Start typing your story..."
         name="blog content"
       ></textarea>
     </mat-form-field>
-  } @else {
-    <h1>{{ title }}</h1>
-    <markdown class="markdown" clipboard [data]="safe" [disableSanitizer]="true"></markdown>
   }
 </div>

@@ -1,0 +1,11 @@
+<div class="posts">
+  @for (post of localUnsavedDrafts; track $index) {
+    <post [isNew]="true" type="draft" [data]="post" class="post" />
+  }
+  @for (draft of localDrafts; track $index) {
+    <post type="draft" [data]="draft" class="post" />
+  }
+  @for (post of savedPosts; track $index) {
+    <post type="{{ post.isPublic ? 'public' : 'private' }}" [data]="post" class="post" />
+  }
+</div>

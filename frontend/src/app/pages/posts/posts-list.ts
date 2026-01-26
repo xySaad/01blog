@@ -3,8 +3,10 @@ import { DB_NAME, Storage } from '../../services/storage.service';
 import { Router } from '@angular/router';
 import { global } from '../../lib/global';
 import { Post } from '../../components/post/post.component';
+import { Types } from '../../../types/';
+import { Collection } from '../../../types/collection';
 @Component({
-  templateUrl: 'posts.html',
+  templateUrl: 'posts-list.html',
   imports: [Post],
   providers: [
     Storage,
@@ -29,26 +31,35 @@ import { Post } from '../../components/post/post.component';
     `,
   ],
 })
-export class Posts {
+export class PostsList {
   router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private db = inject(Storage);
 
-  drafts: any[] = [];
-  savedPosts: any[] = [];
+  localDrafts: Types.Post[] = [];
+  savedPosts: Types.Post[] = [];
+  localUnsavedDrafts: Types.Post[] = [];
   constructor() {
     this.init();
   }
 
   async init() {
-    const resp = await global.api.get('/posts');
-    const posts = await resp.json();
+    const posts = await global.api.getJson(Collection(Types.Post), '/posts');
     this.savedPosts = posts;
 
     const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
-    const req = postDrafts.getAll();
+    const req: IDBRequest<Types.Post[]> = postDrafts.getAll();
     req.onsuccess = () => {
-      this.drafts = req.result;
+      req.result.forEach((draft) => {
+        const savedPost = this.savedPosts.find((savedPost) => savedPost.id === draft.id);
+        if (savedPost) {
+          if (savedPost.updatedAt.getTime() < draft.updatedAt.getTime()) {
+            this.localDrafts.push(draft);
+          }
+        } else {
+          this.localUnsavedDrafts.push(draft);
+        }
+      });
       this.cdr.markForCheck();
     };
   }

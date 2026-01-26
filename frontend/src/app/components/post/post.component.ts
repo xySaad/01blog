@@ -44,10 +44,12 @@ import { MarkdownComponent } from 'ngx-markdown';
 })
 export class Post {
   router = inject(Router);
-  type = input.required();
+  isNew = input(false);
   data = input.required<any>();
+  type = input.required<string>();
 
   edit() {
-    this.router.navigateByUrl(`/posts/edit/${this.data().id}?type=${this.type()}`);
+    const queryParams = `new=${this.isNew()}&draft=${this.type() === 'draft'}`;
+    this.router.navigateByUrl(`/posts/edit/${this.data().id}?${queryParams}`);
   }
 }

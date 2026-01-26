@@ -4,8 +4,8 @@ import { Register } from './pages/auth/register/register';
 import { Login } from './pages/auth/login/login';
 import { NotFound } from './pages/404/404';
 import { authGuard } from './guards/auth.guard';
-import { NewPost } from './pages/posts/edit/posts-edit';
-import { Posts } from './pages/posts/posts';
+import { PostEdit } from './pages/posts/edit/post-edit';
+import { PostsList } from './pages/posts/posts-list';
 import { Home } from './pages/home/home';
 
 export const routes: Routes = [
@@ -34,17 +34,17 @@ export const routes: Routes = [
     component: Home,
   },
 
-  { path: 'posts/edit/:id', component: NewPost, canActivate: [authGuard] },
+  { path: 'posts/edit/:id', component: PostEdit, canActivate: [authGuard] },
   {
     path: 'posts/edit',
     redirectTo: () => {
       const id = crypto.randomUUID();
-      return `/posts/edit/${id}`;
+      return `/posts/edit/${id}?new=true`;
     },
   },
   {
     path: 'posts',
-    component: Posts,
+    component: PostsList,
   },
   { path: '**', component: NotFound },
 ];

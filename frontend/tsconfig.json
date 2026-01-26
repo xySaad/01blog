@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
     "lib": ["es2024", "DOM"],
     "strict": true,
     "noImplicitOverride": true,

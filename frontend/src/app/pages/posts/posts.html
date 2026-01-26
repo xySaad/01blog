@@ -1,8 +1,0 @@
-<div class="posts">
-  @for (draft of drafts; track $index) {
-    <post type="draft" [data]="draft" class="post" />
-  }
-  @for (post of savedPosts; track $index) {
-    <post type="{{ post.is_public ? 'public' : 'private' }}" [data]="post" class="post" />
-  }
-</div>
