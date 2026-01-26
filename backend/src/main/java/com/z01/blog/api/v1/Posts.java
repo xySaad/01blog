@@ -1,5 +1,6 @@
 package com.z01.blog.api.v1;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,19 +25,28 @@ public class Posts extends Auth {
     @Autowired
     Post.repo postRepo;
 
-    record CreatePostResponse(String id, boolean is_public) {
+    record Request(String title, String content, boolean isPublic) {
+    }
+
+    record Response(String id, boolean is_public, LocalDateTime updatedAt) {
     };
 
     @PostMapping("/api/v1/posts/")
-    CreatePostResponse create(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt) {
+    Response create(@RequestBody @Valid Request req, @CookieValue("jwt") String jwt) {
+        Post post = new Post();
         post.id = IdUtil.getSnowflake().nextId();
         post.account = this.getAuthId(jwt);
+        post.title = req.title;
+        post.content = req.content;
+        post.isPublic = req.isPublic;
+        post.createdAt = LocalDateTime.now();
+        post.updatedAt = post.createdAt; // never?
         postRepo.save(post);
-        return new CreatePostResponse(String.valueOf(post.id), false);
+        return new Response(String.valueOf(post.id), false, post.updatedAt);
     }
 
     @PostMapping("/api/v1/posts/{id}")
-    CreatePostResponse update(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt, @PathVariable long id) {
+    Response update(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt, @PathVariable long id) {
         Optional<Post> oldPostOpt = postRepo.findById(id);
         if (oldPostOpt.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -46,10 +56,10 @@ public class Posts extends Auth {
 
         oldPost.title = post.title;
         oldPost.content = post.content;
-        oldPost.is_public = post.is_public;
-
+        oldPost.isPublic = post.isPublic;
+        oldPost.updatedAt = LocalDateTime.now();
         Post newPost = postRepo.save(oldPost);
-        return new CreatePostResponse(String.valueOf(newPost.id), newPost.is_public);
+        return new Response(String.valueOf(newPost.id), newPost.isPublic, newPost.updatedAt);
     }
 
     @GetMapping("/api/v1/posts")
