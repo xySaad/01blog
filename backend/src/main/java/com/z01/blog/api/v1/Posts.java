@@ -28,7 +28,7 @@ public class Posts extends Auth {
     record Request(String title, String content, boolean isPublic) {
     }
 
-    record Response(String id, boolean is_public, LocalDateTime updatedAt) {
+    record Response(String id, boolean isPublic, LocalDateTime updatedAt) {
     };
 
     @PostMapping("/api/v1/posts/")
