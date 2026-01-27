@@ -29,11 +29,11 @@ public class Posts extends Auth {
     record Request(String title, String content, boolean isPublic) {
     }
 
-    record Response(String id, boolean isPublic, LocalDateTime updatedAt) {
+    record UpdateResponse(String id, boolean isPublic, LocalDateTime updatedAt) {
     };
 
     @PostMapping("/api/v1/posts/")
-    Response create(@RequestBody @Valid Request req, @CookieValue("jwt") String jwt) {
+    UpdateResponse create(@RequestBody @Valid Request req, @CookieValue("jwt") String jwt) {
         Post post = new Post();
         post.id = IdUtil.getSnowflake().nextId();
         post.account = this.getAuthId(jwt);
@@ -43,11 +43,11 @@ public class Posts extends Auth {
         post.createdAt = LocalDateTime.now();
         post.updatedAt = post.createdAt; // never?
         postRepo.save(post);
-        return new Response(String.valueOf(post.id), false, post.updatedAt);
+        return new UpdateResponse(String.valueOf(post.id), false, post.updatedAt);
     }
 
     @PostMapping("/api/v1/posts/{id}")
-    Response update(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt, @PathVariable long id) {
+    UpdateResponse update(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt, @PathVariable long id) {
         Optional<Post> oldPostOpt = postRepo.findByIdAndDeletedFalse(id);
         if (oldPostOpt.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -60,12 +60,13 @@ public class Posts extends Auth {
         oldPost.isPublic = post.isPublic;
         oldPost.updatedAt = LocalDateTime.now();
         Post newPost = postRepo.save(oldPost);
-        return new Response(String.valueOf(newPost.id), newPost.isPublic, newPost.updatedAt);
+        return new UpdateResponse(String.valueOf(newPost.id), newPost.isPublic, newPost.updatedAt);
     }
 
+    // feed
     @GetMapping("/api/v1/posts")
-    List<Post> getAll(@CookieValue("jwt") String jwt) {
-        return postRepo.findAllByDeletedFalse();
+    List<Post.WithAccountName> getAll(@CookieValue("jwt") String jwt) {
+        return postRepo.findAllPublicWithUsername(this.getAuthId(jwt));
     }
 
     @GetMapping("/api/v1/posts/{id}")

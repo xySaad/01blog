@@ -1,0 +1,9 @@
+<div class="mat-typography">
+  <h1>{{ postData().title }}</h1>
+  <markdown
+    class="markdown"
+    clipboard
+    [data]="sanitizedPostContent()"
+    [disableSanitizer]="true"
+  ></markdown>
+</div>

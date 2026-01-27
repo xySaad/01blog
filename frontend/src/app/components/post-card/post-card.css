@@ -1,0 +1,23 @@
+.card {
+  width: 100%;
+}
+.content {
+  max-height: 40vh;
+  overflow: hidden;
+  min-width: 30vw;
+}
+.footer {
+  margin-top: auto;
+}
+.icon > * {
+  width: 40px;
+  height: auto;
+  font-size: 40px;
+}
+.updatedAt {
+  display: flex;
+  gap: 2px;
+}
+.header {
+  margin-bottom: 20px;
+}

@@ -43,13 +43,7 @@
   </div>
 
   @if (states.isOnPreview) {
-    <h1>{{ postData().title }}</h1>
-    <markdown
-      class="markdown"
-      clipboard
-      [data]="sanitizedPostContent()"
-      [disableSanitizer]="true"
-    ></markdown>
+    <post-view [postData]="postData()" />
   } @else {
     <mat-form-field class="title full-width" appearance="outline">
       <mat-label>Title</mat-label>

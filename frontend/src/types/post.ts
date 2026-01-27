@@ -3,6 +3,7 @@ import { Convert } from '../app/lib/decorators/type';
 export class Post {
   id = '';
   account = '';
+  accountName = '';
   title = 'Untitled';
   content = '';
 

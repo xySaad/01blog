@@ -1,0 +1,30 @@
+<mat-card class="card mat-typography">
+  <mat-card-header class="header">
+    <div mat-card-avatar class="icon">
+      <mat-icon>person</mat-icon>
+    </div>
+    <mat-card-title>{{ data().title }}</mat-card-title>
+    <mat-card-subtitle>
+      @if (type() != 'feed') {
+        <div class="updatedAt">
+          <div>last update:</div>
+          <div>{{ data().createdAt.toDateString() }}</div>
+        </div>
+      } @else {
+        {{ data().accountName }} - {{ data().createdAt.toDateString() }}
+      }
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="content">
+    <markdown class="markdown" [data]="previewContent()"></markdown>
+  </mat-card-content>
+  <div class="footer">
+    <mat-card-actions>
+      @if (type() != 'feed') {
+        <button matButton (click)="edit()">Edit</button>
+      } @else {
+        <button matButton (click)="readMore()">read more</button>
+      }
+    </mat-card-actions>
+  </div>
+</mat-card>

@@ -1,7 +1,11 @@
 package com.z01.blog.api.v1;
 
 import com.z01.blog.controller.Auth;
+import com.z01.blog.model.Post;
 import com.z01.blog.model.UserModel;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class User extends Auth {
     @Autowired
     private UserModel.repo userRepo;
+    @Autowired
+    private Post.repo postRepo;
 
     @GetMapping
     public ResponseEntity<UserModel> get(@CookieValue("jwt") String jwt) {
@@ -37,5 +43,13 @@ public class User extends Auth {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+    }
+
+    @GetMapping("{id}/posts")
+    List<Post> getUserPosts(@CookieValue("jwt") String jwt, @PathVariable long id) {
+        if (id == this.getAuthId(jwt))
+            return postRepo.findAllByAccountAndDeletedFalse(this.getAuthId(jwt));
+
+        return postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(this.getAuthId(jwt));
     }
 }

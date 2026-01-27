@@ -40,3 +40,21 @@ body {
     width: 100%;
   }
 }
+
+.posts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  post-card {
+    flex: 1;
+
+    mat-card {
+      height: 100%;
+
+      mat-card-subtitle {
+        white-space: nowrap;
+      }
+    }
+  }
+}

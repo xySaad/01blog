@@ -11,10 +11,12 @@ import {
 } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
+import { Types } from '../../../types';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'post',
-  templateUrl: 'post.html',
+  selector: 'post-card',
+  templateUrl: 'post-card.html',
   imports: [
     MatCard,
     MatCardHeader,
@@ -25,31 +27,30 @@ import { MarkdownComponent } from 'ngx-markdown';
     MarkdownComponent,
     MatCardModule,
     MatButtonModule,
+    MatIcon,
   ],
-  styles: [
-    `
-      .card {
-        width: 100%;
-      }
-      .content {
-        max-height: 40vh;
-        overflow: hidden;
-        min-width: 30vw;
-      }
-      .footer {
-        margin-top: auto;
-      }
-    `,
-  ],
+  styleUrl: 'post-card.css',
 })
-export class Post {
+export class PostCard {
   router = inject(Router);
   isNew = input(false);
-  data = input.required<any>();
+  data = input.required<Types.Post>();
   type = input.required<string>();
 
   edit() {
     const queryParams = `new=${this.isNew()}&draft=${this.type() === 'draft'}`;
     this.router.navigateByUrl(`/posts/edit/${this.data().id}?${queryParams}`);
+  }
+
+  readMore() {
+    this.router.navigateByUrl(`/posts/${this.data().id}`);
+  }
+
+  previewContent() {
+    return this.data()
+      .content.split('\n\n')
+      .filter((block) => !/!\[.*?\]\(.*?\)/.test(block))
+      .slice(0, 5)
+      .join('\n\n');
   }
 }

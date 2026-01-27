@@ -4,7 +4,6 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MarkdownComponent } from 'ngx-markdown';
 import { FormsModule } from '@angular/forms';
 import DOMPurify from 'dompurify';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -20,6 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Post } from '../../../../types/post';
 import { WhileState } from '../../../lib/decorators/loading';
 import { Types } from '../../../../types';
+import { PostView } from '../../../components/post-view/post-view';
 
 @Component({
   selector: 'new-post',
@@ -32,7 +32,6 @@ import { Types } from '../../../../types';
     MatInputModule,
     MatFormFieldModule,
     MatIcon,
-    MarkdownComponent,
     FormsModule,
     MatToolbar,
     MatProgressBarModule,
@@ -40,6 +39,7 @@ import { Types } from '../../../../types';
     MatMenuModule,
     MatIconModule,
     MatTooltipModule,
+    PostView,
   ],
 })
 export class PostEdit {
@@ -51,7 +51,6 @@ export class PostEdit {
   };
 
   postData = signal(new Types.Post());
-  sanitizedPostContent = computed(() => DOMPurify.sanitize(this.postData().content));
   savedData = { title: '', content: '' };
   states = {
     isOnPreview: true,

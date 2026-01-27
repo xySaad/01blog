@@ -1,4 +1,19 @@
-<button matFab extended (click)="router.navigateByUrl('/posts/edit')">
-  <mat-icon>edit</mat-icon>
-  new post
-</button>
+<div class="home">
+  <div class="header">
+    <button matFab extended (click)="router.navigateByUrl('/posts/edit')">
+      <mat-icon>edit</mat-icon>
+      New post
+    </button>
+
+    <button matFab extended (click)="router.navigateByUrl('/posts')">
+      <mat-icon>collections_bookmark</mat-icon>
+      My posts
+    </button>
+  </div>
+
+  <div class="posts">
+    @for (post of posts(); track $index) {
+      <post-card type="feed" [data]="post"></post-card>
+    }
+  </div>
+</div>

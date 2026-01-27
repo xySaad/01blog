@@ -4,9 +4,10 @@ import { Register } from './pages/auth/register/register';
 import { Login } from './pages/auth/login/login';
 import { NotFound } from './pages/404/404';
 import { authGuard } from './guards/auth.guard';
-import { PostEdit } from './pages/posts/edit/post-edit';
-import { PostsList } from './pages/posts/posts-list';
+import { PostEdit } from './pages/user-posts/edit/post-edit';
+import { PostsList } from './pages/user-posts/user-posts';
 import { Home } from './pages/home/home';
+import { PostPage } from './pages/post/post.page';
 
 export const routes: Routes = [
   {
@@ -33,7 +34,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     component: Home,
   },
-
   { path: 'posts/edit/:id', component: PostEdit, canActivate: [authGuard] },
   {
     path: 'posts/edit',
@@ -42,9 +42,11 @@ export const routes: Routes = [
       return `/posts/edit/${id}?new=true&draft=true`;
     },
   },
+  { path: 'posts/:id', component: PostPage, canActivate: [authGuard] },
   {
     path: 'posts',
     component: PostsList,
+    canActivate: [authGuard],
   },
   { path: '**', component: NotFound },
 ];
