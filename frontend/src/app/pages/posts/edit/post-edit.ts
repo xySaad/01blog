@@ -122,7 +122,7 @@ export class PostEdit {
     this.dialog.open(DeleteDialog, {
       enterAnimationDuration: '100ms',
       exitAnimationDuration: '100ms',
-      data: { id: this.postData().id },
+      data: { id: this.postData().id, isDraft: this.params.isDraft },
     });
   }
 

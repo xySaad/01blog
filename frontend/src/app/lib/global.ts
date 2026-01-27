@@ -14,6 +14,8 @@ export const global = {
     endpoint: 'http://localhost:8080/api/v1',
 
     get: (path: string) => fetch(global.api.endpoint + path, { credentials: 'include' }),
+    delete: (path: string) =>
+      fetch(global.api.endpoint + path, { method: 'DELETE', credentials: 'include' }),
 
     post: (path: string, body: BodyInit) =>
       fetch(global.api.endpoint + path, {

@@ -41,7 +41,8 @@ public class Main {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/api/**").allowedOrigins("http://localhost:4200").allowCredentials(true);
+				registry.addMapping("/api/**").allowedOrigins("http://localhost:4200").allowCredentials(true)
+						.allowedMethods("GET", "POST", "DELETE");
 			}
 		};
 	}

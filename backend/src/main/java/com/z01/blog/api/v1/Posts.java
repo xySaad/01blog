@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,7 +48,7 @@ public class Posts extends Auth {
 
     @PostMapping("/api/v1/posts/{id}")
     Response update(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt, @PathVariable long id) {
-        Optional<Post> oldPostOpt = postRepo.findById(id);
+        Optional<Post> oldPostOpt = postRepo.findByIdAndDeletedFalse(id);
         if (oldPostOpt.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         Post oldPost = oldPostOpt.get();
@@ -64,11 +65,27 @@ public class Posts extends Auth {
 
     @GetMapping("/api/v1/posts")
     List<Post> getAll(@CookieValue("jwt") String jwt) {
-        return postRepo.findAll();
+        return postRepo.findAllByDeletedFalse();
     }
 
     @GetMapping("/api/v1/posts/{id}")
     Optional<Post> getById(@CookieValue("jwt") String jwt, @PathVariable long id) {
-        return postRepo.findById(id);
+        return postRepo.findByIdAndDeletedFalse(id);
     }
+
+    @DeleteMapping("/api/v1/posts/{id}")
+    void deleteById(@CookieValue("jwt") String jwt, @PathVariable long id) {
+        long account = this.getAuthId(jwt);
+
+        Optional<Post> postOpt = postRepo.findByIdAndDeletedFalse(id);
+        if (postOpt.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        Post post = postOpt.get();
+        if (post.account != account)
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        post.deleted = true;
+        postRepo.save(post);
+    }
+
 }

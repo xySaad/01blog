@@ -6,6 +6,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ser.std.ToStringSerializer;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,5 +33,9 @@ public class Post {
 
     public interface repo extends JpaRepository<Post, Long> {
         Optional<Post> findById(long id);
+
+        Optional<Post> findByIdAndDeletedFalse(long id);
+
+        List<Post> findAllByDeletedFalse();
     }
 }
