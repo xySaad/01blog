@@ -1,8 +1,8 @@
 <mat-toolbar>
   <span>Create a new account</span>
 </mat-toolbar>
-<mat-vertical-stepper [linear]="true" #stepper animationDuration="500">
-  <mat-step #step editable="false" [completed]="step.completed">
+<mat-vertical-stepper [selectedIndex]="selectedIndex()" animationDuration="500">
+  <mat-step editable="false" [completed]="selectedIndex() > 0">
     <ng-template matStepLabel>
       <div class="step-label">
         @if (loading()) {
@@ -31,9 +31,7 @@
         <input [disabled]="loading()" matInput type="password" (input)="password($event)" />
         <mat-error>{{ errors.password }}</mat-error>
       </mat-form-field>
-      <button matButton="tonal" [disabled]="loading()" (click)="register(stepper, step)">
-        register
-      </button>
+      <button matButton="tonal" [disabled]="loading()" (click)="register()">register</button>
     </div>
     <p>
       Already have an account?
@@ -41,20 +39,18 @@
     </p>
   </mat-step>
 
-  <mat-step #step editable="false" [completed]="step.completed">
+  <mat-step editable="false" [completed]="selectedIndex() > 1">
     <div class="flex">
       <mat-form-field>
         <mat-label>enter code</mat-label>
         <input [disabled]="loading()" matInput name="verification" (input)="code($event)" />
       </mat-form-field>
       <ng-template matStepLabel>Verification</ng-template>
-      <button matButton="tonal" (click)="verify(stepper, step)" [disabled]="loading()">
-        verify
-      </button>
+      <button matButton="tonal" (click)="verify()" [disabled]="loading()">verify</button>
     </div>
   </mat-step>
 
-  <mat-step #step editable="false" [completed]="step.completed">
+  <mat-step editable="false" [completed]="selectedIndex() > 2">
     <ng-template matStepLabel>Profile</ng-template>
     <div class="flex">
       <mat-form-field>

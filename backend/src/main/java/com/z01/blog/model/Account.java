@@ -20,5 +20,7 @@ public class Account {
         boolean existsByEmail(String email);
 
         Optional<Account> findByEmail(String email);
+
+        Optional<Account> findById(long id);
     }
 }

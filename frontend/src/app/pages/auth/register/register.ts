@@ -3,10 +3,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatStep, MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { global } from '../../../lib/global';
 import { MatToolbarModule } from '@angular/material/toolbar';
 @Component({
@@ -53,6 +53,13 @@ export class Register {
     firstName: '',
     lastName: '',
   };
+  activatedRoute = inject(ActivatedRoute);
+  selectedIndex = signal(0);
+  constructor() {
+    const step = this.activatedRoute.snapshot.queryParamMap.get('step');
+    if (step === 'verify') this.selectedIndex.set(1);
+    if (step === 'profile') this.selectedIndex.set(2);
+  }
 
   email(e: any) {
     //TODO: verify format
@@ -89,15 +96,14 @@ export class Register {
     this.data.lastName = value;
   }
 
-  async register(stepper: MatStepper, step: MatStep) {
+  async register() {
     this.loading.set(true);
 
     const body = JSON.stringify(this.data);
     try {
       const res = await global.api.post('/register', body);
       if (res.ok) {
-        step.completed = true;
-        stepper.next();
+        this.selectedIndex.set(1);
       }
     } catch (error) {
       //TODO: show error modal
@@ -106,13 +112,12 @@ export class Register {
     this.loading.set(false);
   }
 
-  async verify(stepper: MatStepper, step: MatStep) {
+  async verify() {
     this.loading.set(true);
     try {
       const res = await global.api.post('/verify', this.data.code.toString());
       if (res.ok) {
-        step.completed = true;
-        stepper.next();
+        this.selectedIndex.set(2);
       }
     } catch (error) {
       //TODO: show error modal
@@ -127,6 +132,7 @@ export class Register {
       const body = JSON.stringify(this.data);
       const res = await global.api.post('/user', body);
       if (res.ok) {
+        this.selectedIndex.set(3); // necessary?
         localStorage.setItem('lastLogin', Date.now().toString());
         this.router.navigate(['/']);
       }

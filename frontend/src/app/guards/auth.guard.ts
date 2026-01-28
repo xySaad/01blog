@@ -9,12 +9,20 @@ export const authGuard = async () => {
     return true;
   }
 
-  const resp = await global.api.get('/user');
+  const resp = await global.api.get('/me');
   if (resp.ok) {
     global.user = await resp.json();
     return true;
   }
 
+  if (resp.status !== 401) {
+    let step;
+    if (resp.status === 403) step = 'verify';
+    if (resp.status === 404) step = 'profile';
+    return router.parseUrl(`/auth/register?step=${step}`);
+  }
+
   const path = localStorage.getItem('lastLogin') === null ? 'register' : 'login';
+
   return router.parseUrl(`/auth/${path}`);
 };
