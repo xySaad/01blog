@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.z01.blog.controller.Auth;
+
+import com.z01.blog.guards.AuthGuard;
 import com.z01.blog.model.Account;
 import com.z01.blog.model.Session;
 
 @RestController
-public class Verify extends Auth {
+public class Verify extends AuthGuard {
     @Autowired
     Session.repo session;
     @Autowired

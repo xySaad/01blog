@@ -1,6 +1,8 @@
-package com.z01.blog.controller;
+package com.z01.blog.guards;
 
 import com.z01.blog.model.Session;
+import com.z01.blog.model.UserModel;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +14,15 @@ import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public abstract class Auth {
+public abstract class AuthGuard {
 
     @Autowired
     private SecretKey jwtKey;
 
     @Autowired
     private Session.repo sessionRepo;
+    @Autowired
+    private UserModel.repo userRepo;
 
     protected Long getAuthId(String jwt) {
         try {
@@ -42,5 +46,14 @@ public abstract class Auth {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    protected Long getUserId(String jwt) {
+        long accountId = getAuthId(jwt);
+        Optional<UserModel> user = userRepo.findById(accountId);
+        if (user.isEmpty())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        return user.get().accountId;
     }
 }

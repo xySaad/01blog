@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.z01.blog.controller.Auth;
+import com.z01.blog.guards.AuthGuard;
 import com.z01.blog.model.Account;
 import com.z01.blog.model.UserModel;
 
 @RestController
-public class Me extends Auth {
+public class Me extends AuthGuard {
     @Autowired
     UserModel.repo userRepo;
 
@@ -22,7 +22,7 @@ public class Me extends Auth {
     Account.repo accountRepo;
 
     @GetMapping("/api/v1/me")
-    Optional<UserModel> getUserOwnInfo(@CookieValue(name = "jwt") String jwt) {
+    UserModel getUserOwnInfo(@CookieValue(name = "jwt") String jwt) {
         long id = this.getAuthId(jwt);
         // if getAuthId didn't throw 401 exception means account is surely exists
         Account account = accountRepo.findById(id).get();
@@ -30,6 +30,10 @@ public class Me extends Auth {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
         // verified but may not have created a user yet
-        return userRepo.findByAccountId(id);
+        Optional<UserModel> user = userRepo.findByAccountId(id);
+        if (user.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return user.get();
     }
 }

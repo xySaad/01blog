@@ -1,6 +1,6 @@
 package com.z01.blog.api.v1;
 
-import com.z01.blog.controller.Auth;
+import com.z01.blog.guards.AuthGuard;
 import com.z01.blog.model.Post;
 import com.z01.blog.model.UserModel;
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
-public class User extends Auth {
+public class User extends AuthGuard {
     @Autowired
     private UserModel.repo userRepo;
     @Autowired
@@ -47,9 +47,11 @@ public class User extends Auth {
 
     @GetMapping("{id}/posts")
     List<Post> getUserPosts(@CookieValue("jwt") String jwt, @PathVariable long id) {
-        if (id == this.getAuthId(jwt))
-            return postRepo.findAllByAccountAndDeletedFalse(this.getAuthId(jwt));
+        long accountId = this.getUserId(jwt);
 
-        return postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(this.getAuthId(jwt));
+        if (id == accountId)
+            return postRepo.findAllByAccountAndDeletedFalse(accountId);
+
+        return postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(accountId);
     }
 }
