@@ -1,18 +1,14 @@
 import 'reflect-metadata';
 import { COLLECTION_TYPE } from '../../types/collection';
-
-type User = {
-  accountId: Number;
-  firstName: String;
-  lastName: String;
-  login: String;
-} | null;
+import { Types } from '../../types';
 
 export const global = {
-  user: null as User,
+  user: null as unknown as Types.User,
   api: {
     endpoint: 'http://localhost:8080/api/v1',
 
+    put: (path: string, body?: BodyInit) =>
+      fetch(global.api.endpoint + path, { method: 'PUT', credentials: 'include', body: body }),
     get: (path: string) => fetch(global.api.endpoint + path, { credentials: 'include' }),
     delete: (path: string) =>
       fetch(global.api.endpoint + path, { method: 'DELETE', credentials: 'include' }),
