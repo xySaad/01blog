@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Attachments</h2>
+<mat-dialog-content>
+  <mat-card class="upload">
+    <mat-card-content matRipple>
+      <label for="file-upload" class="custom-file-upload">
+        <mat-icon>upload</mat-icon>
+      </label>
+      <input type="file" id="file-upload" (change)="handleFileUpload($event.target)" />
+    </mat-card-content>
+  </mat-card>
+
+  @for (file of previewFiles(); track $index) {
+    <mat-card>
+      @if (!file.loading()) {
+        <mat-card-header>
+          <button mat-icon-button (click)="copyMarkdown(file)" title="Copy Markdown">
+            <mat-icon>file_copy</mat-icon>
+          </button>
+        </mat-card-header>
+      }
+      <mat-card-content>
+        @if (file.loading()) {
+          <mat-spinner></mat-spinner>
+        }
+        <img src="{{ file.url }}" />
+      </mat-card-content>
+      <mat-card-footer>
+        {{ file.name }}
+      </mat-card-footer>
+    </mat-card>
+  }
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton matDialogClose>Close</button>
+</mat-dialog-actions>

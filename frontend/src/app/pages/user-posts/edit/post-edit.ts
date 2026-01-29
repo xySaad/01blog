@@ -20,6 +20,7 @@ import { Post } from '../../../../types/post';
 import { WhileState } from '../../../lib/decorators/loading';
 import { Types } from '../../../../types';
 import { PostView } from '../../../components/post-view/post-view';
+import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
 
 @Component({
   selector: 'new-post',
@@ -122,6 +123,13 @@ export class PostEdit {
       enterAnimationDuration: '100ms',
       exitAnimationDuration: '100ms',
       data: { id: this.postData().id, isDraft: this.params.isDraft },
+    });
+  }
+  attachments() {
+    this.dialog.open(AttachmentsDialog, {
+      enterAnimationDuration: '100ms',
+      exitAnimationDuration: '100ms',
+      data: { id: this.postData().id },
     });
   }
 

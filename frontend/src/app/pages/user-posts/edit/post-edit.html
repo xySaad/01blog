@@ -22,6 +22,10 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="attachments()">
+        <mat-icon color="red">attach_file_add</mat-icon>
+        <span>Attachments</span>
+      </button>
       <button mat-menu-item (click)="postData().isPublic = !postData().isPublic; save()">
         @if (postData().isPublic) {
           <ng-container>

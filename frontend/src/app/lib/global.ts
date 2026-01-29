@@ -13,12 +13,12 @@ export const global = {
     delete: (path: string) =>
       fetch(global.api.endpoint + path, { method: 'DELETE', credentials: 'include' }),
 
-    post: (path: string, body: BodyInit) =>
+    post: (path: string, body: BodyInit, headers?: HeadersInit) =>
       fetch(global.api.endpoint + path, {
         body,
         method: 'POST',
         credentials: 'include',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json', ...headers },
       }),
 
     async getJson<T>(classRef: new () => T, path: string): Promise<T> {
