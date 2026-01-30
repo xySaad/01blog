@@ -1,29 +1,27 @@
 package com.z01.blog.model;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
+import com.z01.blog.guards.RestrictedEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
 @Table(name = "comments")
-public class CommentModel {
-    @Id
-    @JsonSerialize(using = ToStringSerializer.class)
-    public long id;
-    @JsonSerialize(using = ToStringSerializer.class)
-    public long account;
+public class CommentModel extends RestrictedEntity {
     @JsonSerialize(using = ToStringSerializer.class)
     public long post;
     public String content;
-    public boolean deleted;
+
+    @Override
+    public CommentModel ensureAccess(long userId, boolean readOnly) {
+        RepoRegistry.postRepo.findByIdAndDeletedFalse(this.post).ensureAccess(userId, true);
+        super.ensureAccess(userId, readOnly);
+        return this;
+    }
 
     public static interface WithUser {
         CommentModel getComment();
@@ -38,6 +36,6 @@ public class CommentModel {
                 WHERE c.post = :postId AND c.deleted = false""")
         List<WithUser> findAllByPostAndDeletedFalse(long postId);
 
-        Optional<CommentModel> findByIdAndAccountAndDeletedFalse(long postId, long accountId);
+        CommentModel findByIdAndDeletedFalse(long commentId);
     }
 }

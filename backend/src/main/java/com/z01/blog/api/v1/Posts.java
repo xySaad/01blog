@@ -2,10 +2,7 @@ package com.z01.blog.api.v1;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.z01.blog.guards.AuthGuard;
 import com.z01.blog.model.Post;
@@ -48,15 +44,9 @@ public class Posts extends AuthGuard {
 
     @PostMapping("/api/v1/posts/{id}")
     UpdateResponse update(@RequestBody @Valid Post post, @CookieValue("jwt") String jwt, @PathVariable long id) {
-        long accountId = this.getUserId(jwt);
+        long userId = this.getUserId(jwt);
 
-        Optional<Post> oldPostOpt = postRepo.findByIdAndDeletedFalse(id);
-        if (oldPostOpt.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        Post oldPost = oldPostOpt.get();
-        if (oldPost.account != accountId)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-
+        Post oldPost = postRepo.findByIdAndDeletedFalse(id).ensureAccess(userId, false);
         oldPost.title = post.title;
         oldPost.content = post.content;
         oldPost.isPublic = post.isPublic;
@@ -71,22 +61,16 @@ public class Posts extends AuthGuard {
         return postRepo.findAllPublicWithUsername(this.getUserId(jwt));
     }
 
-    @GetMapping("/api/v1/posts/{id}")
-    Optional<Post> getById(@CookieValue("jwt") String jwt, @PathVariable long id) {
-        return postRepo.findByIdAndDeletedFalse(id);
+    @GetMapping("/api/v1/posts/{postId}")
+    Post getById(@CookieValue("jwt") String jwt, @PathVariable long postId) {
+        long userId = this.getUserId(jwt);
+        return postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
     }
 
     @DeleteMapping("/api/v1/posts/{id}")
     void deleteById(@CookieValue("jwt") String jwt, @PathVariable long id) {
-        long account = this.getUserId(jwt);
-
-        Optional<Post> postOpt = postRepo.findByIdAndDeletedFalse(id);
-        if (postOpt.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        Post post = postOpt.get();
-        if (post.account != account)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-
+        long userId = this.getUserId(jwt);
+        Post post = postRepo.findByIdAndDeletedFalse(id).ensureAccess(userId, false);
         post.deleted = true;
         postRepo.save(post);
     }

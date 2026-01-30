@@ -4,32 +4,36 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ser.std.ToStringSerializer;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
+import com.z01.blog.guards.RestrictedEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Entity
 @Table(name = "posts")
-public class Post {
-    @Id
-    @JsonSerialize(using = ToStringSerializer.class)
-    public long id;
-    @JsonSerialize(using = ToStringSerializer.class)
-    public long account;
+public class Post extends RestrictedEntity {
+    public static Post.repo postRepo;
+
+    public static void setPostRepo(Post.repo repo) {
+        postRepo = repo;
+    }
+
     @NotNull
     public String title;
     @NotNull
     public String content;
-
     public LocalDateTime createdAt;
     public LocalDateTime updatedAt;
-
     @Column(name = "public")
     public boolean isPublic;
-    public boolean deleted;
+
+    @Override
+    public Post ensureAccess(long userId, boolean readOnly) {
+        super.ensureAccess(userId, isPublic && readOnly);
+        return this;
+    }
 
     public interface WithAccountName {
         @JsonSerialize(using = ToStringSerializer.class)
@@ -54,7 +58,7 @@ public class Post {
     public interface repo extends JpaRepository<Post, Long> {
         Optional<Post> findById(long id);
 
-        Optional<Post> findByIdAndDeletedFalse(long id);
+        Post findByIdAndDeletedFalse(long id);
 
         List<Post> findAllByAccountAndDeletedFalse(long id);
 

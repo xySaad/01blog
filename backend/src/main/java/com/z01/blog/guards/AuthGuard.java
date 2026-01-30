@@ -48,7 +48,7 @@ public abstract class AuthGuard {
         }
     }
 
-    protected Long getUserId(String jwt) {
+    protected long getUserId(String jwt) {
         long accountId = getAuthId(jwt);
         Optional<UserModel> user = userRepo.findById(accountId);
         if (user.isEmpty())
