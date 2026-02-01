@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.z01.blog.guards.AuthGuard;
-import com.z01.blog.model.Post;
+import com.z01.blog.model.Post.PostRepo;
 import com.z01.blog.services.CloudinaryService;
 
 @RestController
@@ -27,7 +27,7 @@ public class MediaController extends AuthGuard {
     @Autowired
     private CloudinaryService cloudinaryService;
     @Autowired
-    private Post.repo postsRepo;
+    private PostRepo postsRepo;
 
     @PostMapping
     public String uploadFile(

@@ -1,0 +1,15 @@
+.sideBar {
+  position: fixed;
+  padding: 10px;
+  left: 0;
+  top: 0;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep post-view {
+  display: block;
+  margin-left: 20px;
+}

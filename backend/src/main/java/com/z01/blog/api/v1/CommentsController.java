@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.guards.AuthGuard;
 import com.z01.blog.model.CommentModel;
-import com.z01.blog.model.Post;
+import com.z01.blog.model.Post.PostRepo;
 
 import cn.hutool.core.util.IdUtil;
 
@@ -22,7 +22,7 @@ public class CommentsController extends AuthGuard {
     @Autowired
     CommentModel.repo commentRepo;
     @Autowired
-    private Post.repo postRepo;
+    private PostRepo postRepo;
 
     @GetMapping("/api/v1/posts/{postId}/comments")
     List<CommentModel.WithUser> getPostComments(@CookieValue("jwt") String jwt, @PathVariable long postId) {

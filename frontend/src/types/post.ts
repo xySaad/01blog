@@ -6,7 +6,7 @@ export class Post {
   accountName = '';
   title = 'Untitled';
   content = '';
-
+  likesCount = 0;
   @Convert createdAt: Date = new Date(0);
   @Convert updatedAt: Date = new Date(0);
 

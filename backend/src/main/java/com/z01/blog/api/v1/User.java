@@ -1,8 +1,9 @@
 package com.z01.blog.api.v1;
 
 import com.z01.blog.guards.AuthGuard;
-import com.z01.blog.model.Post;
 import com.z01.blog.model.UserModel;
+import com.z01.blog.model.Post.PostExtra;
+import com.z01.blog.model.Post.PostRepo;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class User extends AuthGuard {
     @Autowired
     private UserModel.repo userRepo;
     @Autowired
-    private Post.repo postRepo;
+    private PostRepo postRepo;
 
     @GetMapping
     public ResponseEntity<UserModel> get(@CookieValue("jwt") String jwt) {
@@ -46,7 +47,7 @@ public class User extends AuthGuard {
     }
 
     @GetMapping("{id}/posts")
-    List<Post> getUserPosts(@CookieValue("jwt") String jwt, @PathVariable long id) {
+    List<PostExtra> getUserPosts(@CookieValue("jwt") String jwt, @PathVariable long id) {
         long accountId = this.getUserId(jwt);
 
         if (id == accountId)

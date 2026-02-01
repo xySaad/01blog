@@ -18,13 +18,15 @@
   <mat-card-content class="content">
     <markdown class="markdown" [data]="previewContent()"></markdown>
   </mat-card-content>
-  <div class="footer">
-    <mat-card-actions>
-      @if (type() != 'feed') {
-        <button matButton (click)="edit()">Edit</button>
-      } @else {
-        <button matButton (click)="readMore()">read more</button>
-      }
-    </mat-card-actions>
-  </div>
+  <mat-card-actions>
+    <div class="likes">
+      <mat-icon>handshake</mat-icon>
+      {{ data().likesCount }}
+    </div>
+    @if (type() != 'feed') {
+      <button matButton (click)="edit()">Edit</button>
+    } @else {
+      <button matButton (click)="readMore()">read more</button>
+    }
+  </mat-card-actions>
 </mat-card>

@@ -9,7 +9,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ser.std.ToStringSerializer;
 
 @MappedSuperclass
-public abstract class RestrictedEntity {
+public abstract class RestrictedEntity<Self extends RestrictedEntity<Self>> {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     public long id;
@@ -17,16 +17,16 @@ public abstract class RestrictedEntity {
     public long account;
     public boolean deleted;
 
-    public RestrictedEntity ensureAccess(long userId, boolean publicAccess) {
+    public Self ensureAccess(long userId, boolean publicAccess) {
         if (deleted)
             throw new ResponseStatusException(HttpStatus.GONE);
 
         if (publicAccess)
-            return this;
+            return (Self) this;
 
         // userId > 0 in case both userId and account are default values somehow.
         if (userId > 0 && userId == account)
-            return this;
+            return (Self) this;
 
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }

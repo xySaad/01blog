@@ -11,7 +11,7 @@ import tools.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
 @Table(name = "comments")
-public class CommentModel extends RestrictedEntity {
+public class CommentModel extends RestrictedEntity<CommentModel> {
     @JsonSerialize(using = ToStringSerializer.class)
     public long post;
     public String content;
