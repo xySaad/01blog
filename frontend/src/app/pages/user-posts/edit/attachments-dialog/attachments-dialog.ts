@@ -21,6 +21,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatRipple } from '@angular/material/core';
 import { global } from '../../../../lib/global';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Collection } from '../../../../../types/collection';
 
 type FilePreview = { url: string; name: string; loading: WritableSignal<boolean> };
 
@@ -51,10 +52,22 @@ export class AttachmentsDialog {
   postFiles = null;
   previewFiles: WritableSignal<FilePreview[]> = signal([]);
 
-  // constructor() {
-  //TODO: fetch post files
-  // }
-
+  constructor() {
+    this.init();
+    //TODO: fetch post files
+  }
+  async init() {
+    const urls = await global.api.getJson(Collection<string>(), `/posts/${this.data.id}/media`);
+    const files = urls.map((url) => {
+      const idx = url.indexOf(this.data.id) + this.data.id.length + 1;
+      return {
+        name: decodeURIComponent(url.substring(idx)),
+        url,
+        loading: signal(false),
+      };
+    });
+    this.previewFiles.update((prev) => [...prev, ...files]);
+  }
   async handleFileUpload(target: HTMLInputElement) {
     if (!target.files) return;
     const targetFiles: File[] = target.files as any;
@@ -70,7 +83,7 @@ export class AttachmentsDialog {
   async uploadFile(file: FilePreview, blob: Blob) {
     const fNameNoExtension = file.name.substring(0, file.name.lastIndexOf('.'));
 
-    const resp = await global.api.post(`/media/upload/${this.data.id}`, blob, {
+    const resp = await global.api.post(`/posts/${this.data.id}/media`, blob, {
       'X-File-Name': encodeURIComponent(fNameNoExtension),
     });
     if (resp.ok) {

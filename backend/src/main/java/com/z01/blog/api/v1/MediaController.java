@@ -2,10 +2,12 @@ package com.z01.blog.api.v1;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +21,7 @@ import com.z01.blog.model.Post;
 import com.z01.blog.services.CloudinaryService;
 
 @RestController
-@RequestMapping("/api/v1/media")
+@RequestMapping("/api/v1/posts/{postId}/media")
 public class MediaController extends AuthGuard {
 
     @Autowired
@@ -27,7 +29,7 @@ public class MediaController extends AuthGuard {
     @Autowired
     private Post.repo postsRepo;
 
-    @PostMapping("/upload/{postId}")
+    @PostMapping
     public String uploadFile(
             @CookieValue String jwt,
             @RequestBody byte[] file,
@@ -43,5 +45,12 @@ public class MediaController extends AuthGuard {
             System.err.println("error upload file" + e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping
+    public List<String> getPostMedia(@CookieValue String jwt, @PathVariable long postId) {
+        long userId = this.getUserId(jwt);
+        postsRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, false);
+        return cloudinaryService.fetchPostMedia(postId);
     }
 }
