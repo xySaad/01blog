@@ -22,6 +22,8 @@
     <div class="likes">
       <mat-icon>handshake</mat-icon>
       {{ data().likesCount }}
+      <mat-icon>mode_comment</mat-icon>
+      {{ data().commentsCount }}
     </div>
     @if (type() != 'feed') {
       <button matButton (click)="edit()">Edit</button>

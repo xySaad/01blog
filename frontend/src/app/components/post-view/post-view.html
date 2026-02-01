@@ -6,10 +6,14 @@
   {{ postData().createdAt.toDateString() }}
 </header>
 
-<div class="sideBar">
+<div class="sideBar flex">
   <button matButton (click)="like()">
     <mat-icon>handshake</mat-icon>
     {{ postData().likesCount }}
+  </button>
+  <button matButton onclick="location.hash = '#comments'">
+    <mat-icon>mode_comment</mat-icon>
+    {{ postData().commentsCount }}
   </button>
 </div>
 

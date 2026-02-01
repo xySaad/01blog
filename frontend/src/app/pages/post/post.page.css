@@ -7,7 +7,7 @@ textarea {
   background: none;
 }
 
-.comments {
+#comments {
   display: flex;
   flex-direction: column;
   gap: 10px;

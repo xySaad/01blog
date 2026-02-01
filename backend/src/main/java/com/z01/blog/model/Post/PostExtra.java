@@ -13,4 +13,7 @@ public class PostExtra extends PostModel<PostExtra> {
 
     @Formula("(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = id)")
     public long likesCount;
+
+    @Formula("(SELECT COUNT(*) FROM comments c WHERE c.post = id AND c.deleted = false)")
+    public long commentsCount;
 }
