@@ -15,12 +15,10 @@ export const authGuard = async () => {
     return true;
   }
 
-  if (resp.status !== 401) {
-    let step;
-    if (resp.status === 403) step = 'verify';
-    if (resp.status === 404) step = 'profile';
-    return router.parseUrl(`/auth/register?step=${step}`);
-  }
+  let step;
+  if (resp.status === 403) step = 'verify';
+  if (resp.status === 404) step = 'profile';
+  if (step) return router.parseUrl(`/auth/register?step=${step}`);
 
   const path = localStorage.getItem('lastLogin') === null ? 'register' : 'login';
 
