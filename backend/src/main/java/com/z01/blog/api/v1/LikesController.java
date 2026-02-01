@@ -26,7 +26,7 @@ public class LikesController {
         @GetMapping
         long getLike(@CookieValue String jwt, @PathVariable long postId) {
             long userId = this.getUserId(jwt);
-            postRepo.findByIdAndDeletedFalse(userId).ensureAccess(userId, true);
+            postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
             var postLikeId = new PostLike.Id(userId, postId);
             return postLikesRepo.countById(postLikeId);
         }
@@ -34,7 +34,7 @@ public class LikesController {
         @PostMapping
         void addOrUpdateLike(@CookieValue String jwt, @PathVariable long postId) {
             long userId = this.getUserId(jwt);
-            postRepo.findByIdAndDeletedFalse(userId).ensureAccess(userId, true);
+            postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
 
             var postLikeId = new PostLike.Id(userId, postId);
             PostLike postLike = new PostLike();
@@ -45,7 +45,7 @@ public class LikesController {
         @DeleteMapping
         void deleteLike(@CookieValue String jwt, @PathVariable long postId) {
             long userId = this.getUserId(jwt);
-            postRepo.findByIdAndDeletedFalse(userId).ensureAccess(userId, true);
+            postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
 
             var postLikeId = new PostLike.Id(userId, postId);
             var postLike = postLikesRepo.findById(postLikeId);
