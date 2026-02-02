@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,14 +14,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.z01.blog.guards.AuthGuard;
+import com.z01.blog.annotation.Auth;
 import com.z01.blog.model.Post.PostRepo;
 import com.z01.blog.services.CloudinaryService;
 
 @RestController
 @RequestMapping("/api/v1/posts/{postId}/media")
-public class MediaController extends AuthGuard {
+public class MediaController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
@@ -31,12 +29,11 @@ public class MediaController extends AuthGuard {
 
     @PostMapping
     public String uploadFile(
-            @CookieValue String jwt,
+            @Auth.User long userId,
             @RequestBody byte[] file,
             @PathVariable long postId,
             @RequestHeader("X-File-Name") String fileName) {
         try {
-            long userId = this.getUserId(jwt);
             postsRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, false);
 
             String decodedName = java.net.URLDecoder.decode(fileName, StandardCharsets.UTF_8);
@@ -48,8 +45,7 @@ public class MediaController extends AuthGuard {
     }
 
     @GetMapping
-    public List<String> getPostMedia(@CookieValue String jwt, @PathVariable long postId) {
-        long userId = this.getUserId(jwt);
+    public List<String> getPostMedia(@Auth.User long userId, @PathVariable long postId) {
         postsRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, false);
         return cloudinaryService.fetchPostMedia(postId);
     }

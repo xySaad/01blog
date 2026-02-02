@@ -1,6 +1,6 @@
 package com.z01.blog.api.v1;
 
-import com.z01.blog.guards.AuthGuard;
+import com.z01.blog.annotation.Auth;
 import com.z01.blog.model.UserModel;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostRepo;
@@ -14,29 +14,28 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
-public class User extends AuthGuard {
+public class User {
     @Autowired
     private UserModel.repo userRepo;
     @Autowired
     private PostRepo postRepo;
 
     @GetMapping
-    public ResponseEntity<UserModel> get(@CookieValue("jwt") String jwt) {
-        System.out.println(getAuthId(jwt));
-        return userRepo.findById(getAuthId(jwt))
+    public ResponseEntity<UserModel> get(@Auth.Account long accountId) {
+        return userRepo.findById(accountId)
                 .map((u) -> ResponseEntity.ok(u))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping
-    public void delete(@CookieValue("jwt") String jwt) {
-        userRepo.deleteById(getAuthId(jwt));
+    public void delete(@Auth.Account long accountId) {
+        userRepo.deleteById(accountId);
     }
 
     @PostMapping
-    public ResponseEntity<?> saveOrUpdate(@CookieValue("jwt") String jwt, @RequestBody UserModel data) {
+    public ResponseEntity<?> saveOrUpdate(@Auth.Account long accountId, @RequestBody UserModel data) {
         // TODO: verify name length
-        data.accountId = getAuthId(jwt);
+        data.accountId = accountId;
 
         try {
             userRepo.save(data);
@@ -47,12 +46,10 @@ public class User extends AuthGuard {
     }
 
     @GetMapping("{id}/posts")
-    List<PostExtra> getUserPosts(@CookieValue("jwt") String jwt, @PathVariable long id) {
-        long accountId = this.getUserId(jwt);
+    List<PostExtra> getUserPosts(@Auth.User long userId, @PathVariable long id) {
+        if (id == userId)
+            return postRepo.findAllByAccountAndDeletedFalse(userId);
 
-        if (id == accountId)
-            return postRepo.findAllByAccountAndDeletedFalse(accountId);
-
-        return postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(accountId);
+        return postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(userId);
     }
 }

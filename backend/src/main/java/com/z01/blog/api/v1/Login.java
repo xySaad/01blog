@@ -48,7 +48,6 @@ public class Login {
         session.jwt = jwt;
         session.createdAt = LocalDateTime.now();
         sessionRepo.save(session);
-
         ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
                 .httpOnly(true)
                 .path("/")

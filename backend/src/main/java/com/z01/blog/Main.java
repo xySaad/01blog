@@ -1,6 +1,8 @@
 package com.z01.blog;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -8,9 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+import com.z01.blog.resolver.AuthResolver;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.security.Keys;
 
@@ -33,6 +36,21 @@ public class Main {
 		@Bean
 		public SecretKey jwtKey() {
 			return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+		}
+	}
+
+	@Configuration
+	public class WebConfig implements WebMvcConfigurer {
+
+		private final AuthResolver authResolver;
+
+		public WebConfig(AuthResolver authUserResolver) {
+			this.authResolver = authUserResolver;
+		}
+
+		@Override
+		public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+			resolvers.add(authResolver);
 		}
 	}
 
