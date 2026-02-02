@@ -49,11 +49,12 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
         for (Cookie cookie : cookies)
             if ("jwt".equals(cookie.getName())) {
-                if (parameter.hasParameterAnnotation(Auth.User.class)) {
+                if (parameter.hasParameterAnnotation(Auth.User.class))
                     return getAccountId(cookie.getValue());
-                } else if (parameter.hasParameterAnnotation(Auth.Account.class)) {
+                else if (parameter.hasParameterAnnotation(Auth.Account.class))
                     return getUserId(cookie.getValue());
-                }
+                else
+                    throw new RuntimeException("Invalid Auth annotation");
             }
 
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
