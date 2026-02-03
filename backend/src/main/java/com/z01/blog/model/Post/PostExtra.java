@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "posts")
-public class PostExtra extends PostModel<PostExtra> {
+public class PostExtra extends PostModel {
     @Formula("(SELECT u.login FROM users u WHERE u.account_id = account)")
     public String accountName;
 

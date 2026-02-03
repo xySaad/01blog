@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepo extends JpaRepository<PostModel<?>, Long> {
+import com.z01.blog.annotation.AccessMethod;
+
+public interface PostRepo extends JpaRepository<PostModel, Long> {
+    @AccessMethod
     PostExtra findByIdAndDeletedFalse(long id);
 
     List<PostExtra> findAllByAccountAndDeletedFalse(long id);

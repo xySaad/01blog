@@ -1,10 +1,5 @@
 package com.z01.blog.resolver;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import javax.crypto.SecretKey;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -14,18 +9,17 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.WebUtils;
 
 import com.z01.blog.annotation.Auth;
-import com.z01.blog.model.Session;
-import com.z01.blog.model.UserModel;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.z01.blog.services.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class AuthResolver implements HandlerMethodArgumentResolver {
+    @Autowired
+    AuthService authService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -41,63 +35,17 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request == null)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        Cookie cookie = WebUtils.getCookie(request, "jwt");
+        if (cookie == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-
-        for (Cookie cookie : cookies)
-            if ("jwt".equals(cookie.getName())) {
-                if (parameter.hasParameterAnnotation(Auth.User.class))
-                    return getAccountId(cookie.getValue());
-                else if (parameter.hasParameterAnnotation(Auth.Account.class))
-                    return getUserId(cookie.getValue());
-                else
-                    throw new RuntimeException("Invalid Auth annotation");
-            }
-
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        if (parameter.hasParameterAnnotation(Auth.User.class))
+            return this.authService.getUserId(cookie.getValue());
+        else if (parameter.hasParameterAnnotation(Auth.Account.class))
+            return this.authService.getAccountId(cookie.getValue());
+        else
+            throw new RuntimeException("Invalid Auth annotation");
     }
 
-    @Autowired
-    private SecretKey jwtKey;
-
-    @Autowired
-    private Session.repo sessionRepo;
-    @Autowired
-    private UserModel.repo userRepo;
-
-    protected long getAccountId(String jwt) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(jwtKey)
-                    .build()
-                    .parseClaimsJws(jwt)
-                    .getBody();
-
-            long accountId = Long.valueOf(claims.getSubject());
-
-            Optional<Session> session = sessionRepo.findById(accountId);
-            if (session.isEmpty() || !session.get().jwt.equals(jwt)) {
-                throw new RuntimeException();
-            }
-            if (session.get().createdAt.plusDays(3).isBefore(LocalDateTime.now())) {
-                throw new RuntimeException();
-            }
-
-            return accountId;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-    protected long getUserId(String jwt) {
-        long accountId = getAccountId(jwt);
-        Optional<UserModel> user = userRepo.findById(accountId);
-        if (user.isEmpty())
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-
-        return user.get().accountId;
-    }
 }

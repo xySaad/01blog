@@ -1,7 +1,10 @@
-package com.z01.blog.guards;
+package com.z01.blog.model;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.infrastructure.RestrictedEntity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -9,7 +12,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ser.std.ToStringSerializer;
 
 @MappedSuperclass
-public abstract class RestrictedEntity<Self extends RestrictedEntity<Self>> {
+public class BaseEntity implements RestrictedEntity<Long> {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     public long id;
@@ -17,16 +20,16 @@ public abstract class RestrictedEntity<Self extends RestrictedEntity<Self>> {
     public long account;
     public boolean deleted;
 
-    public Self ensureAccess(long userId, boolean publicAccess) {
+    @Override
+    public void ensureAccess(Long userId, EntityAccess.Mode accessMode) {
         if (deleted)
             throw new ResponseStatusException(HttpStatus.GONE);
 
-        if (publicAccess)
-            return (Self) this;
+        if (accessMode == EntityAccess.Mode.Read)
+            return;
 
-        // userId > 0 in case both userId and account are default values somehow.
-        if (userId > 0 && userId == account)
-            return (Self) this;
+        if (userId != null && userId == account)
+            return;
 
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }

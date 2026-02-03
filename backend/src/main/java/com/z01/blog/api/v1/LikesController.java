@@ -3,17 +3,19 @@ package com.z01.blog.api.v1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.annotation.Auth;
+import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.annotation.EntityAccess.Mode;
 import com.z01.blog.model.PostLike;
+import com.z01.blog.model.Post.PostModel;
 import com.z01.blog.model.Post.PostRepo;
 
 public class LikesController {
     @RestController
-    @RequestMapping("/api/v1/posts/{postId}/likes")
+    @RequestMapping("/api/v1/posts/{post}/likes")
 
     static public class PostLikes {
         @Autowired
@@ -22,27 +24,22 @@ public class LikesController {
         PostRepo postRepo;
 
         @GetMapping
-        long getLike(@Auth.User long userId, @PathVariable long postId) {
-            postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
-            var postLikeId = new PostLike.Id(userId, postId);
+        long getLike(@Auth.User long userId, @EntityAccess(mode = Mode.Read) PostModel post) {
+            var postLikeId = new PostLike.Id(userId, post.id);
             return postLikesRepo.countById(postLikeId);
         }
 
         @PostMapping
-        void addOrUpdateLike(@Auth.User long userId, @PathVariable long postId) {
-            postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
-
-            var postLikeId = new PostLike.Id(userId, postId);
+        void addOrUpdateLike(@Auth.User long userId, @EntityAccess(mode = Mode.Read) PostModel post) {
+            var postLikeId = new PostLike.Id(userId, post.id);
             PostLike postLike = new PostLike();
             postLike.id = postLikeId;
             postLikesRepo.save(postLike);
         }
 
         @DeleteMapping
-        void deleteLike(@Auth.User long userId, @PathVariable long postId) {
-            postRepo.findByIdAndDeletedFalse(postId).ensureAccess(userId, true);
-
-            var postLikeId = new PostLike.Id(userId, postId);
+        void deleteLike(@Auth.User long userId, @EntityAccess(mode = Mode.Read) PostModel post) {
+            var postLikeId = new PostLike.Id(userId, post.id);
             var postLike = postLikesRepo.findById(postLikeId);
             postLikesRepo.delete(postLike);
         }
