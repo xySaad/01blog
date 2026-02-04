@@ -20,7 +20,7 @@ import com.z01.blog.model.Post.PostModel;
 import com.z01.blog.services.CloudinaryService;
 
 @RestController
-@RequestMapping("/api/v1/posts/{postId}/media")
+@RequestMapping("/api/v1/posts/{post}/media")
 public class MediaController {
 
     @Autowired
