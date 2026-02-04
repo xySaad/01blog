@@ -1,9 +1,10 @@
 import { Convert } from '../app/lib/decorators/type';
+import { User } from './user';
 
 export class Post {
   id = '';
   account = '';
-  accountName = '';
+  owner = new User();
   title = 'Untitled';
   content = '';
   likesCount = 0;
@@ -13,4 +14,8 @@ export class Post {
 
   isPublic = false;
   deleted = false;
+
+  get visibility() {
+    return this.isPublic ? 'public' : 'private';
+  }
 }

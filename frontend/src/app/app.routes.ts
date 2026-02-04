@@ -4,7 +4,7 @@ import { Register } from './pages/auth/register/register';
 import { Login } from './pages/auth/login/login';
 import { NotFound } from './pages/404/404';
 import { authGuard } from './guards/auth.guard';
-import { PostEdit } from './pages/user-posts/edit/post-edit';
+import { PostEdit } from './pages/post/edit/post-edit';
 import { PostsList } from './pages/user-posts/user-posts';
 import { Home } from './pages/home/home';
 import { PostPage } from './pages/post/post.page';

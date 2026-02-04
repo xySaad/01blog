@@ -1,28 +1,9 @@
-<header class="mat-typography">
-  <button matButton>
-    <mat-icon>person</mat-icon>
-    {{ postData().accountName }}
-  </button>
-  {{ postData().createdAt.toDateString() }}
-</header>
+<user-header [owner]="data().owner" [createdAt]="data().createdAt" (edit)="edit()"></user-header>
 
-<div class="sideBar flex">
-  <button matButton (click)="like()">
-    <mat-icon>handshake</mat-icon>
-    {{ postData().likesCount }}
-  </button>
-  <button matButton onclick="location.hash = '#comments'">
-    <mat-icon>mode_comment</mat-icon>
-    {{ postData().commentsCount }}
-  </button>
-</div>
+<post-content [title]="data().title" [content]="data().content"></post-content>
 
-<div class="mat-typography">
-  <h1>{{ postData().title }}</h1>
-  <markdown
-    class="markdown"
-    clipboard
-    [data]="sanitizedPostContent()"
-    [disableSanitizer]="true"
-  ></markdown>
-</div>
+<post-footer
+  (readMore)="readMore.emit()"
+  [likesCount]="data().likesCount"
+  [commentsCount]="data().commentsCount"
+></post-footer>

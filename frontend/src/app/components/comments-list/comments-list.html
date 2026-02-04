@@ -1,0 +1,51 @@
+<mat-card appearance="outlined">
+  <mat-card-content class="writeComment">
+    <div mat-card-avatar>
+      <mat-icon>person</mat-icon>
+    </div>
+    <textarea #text placeholder="Write a comment"></textarea>
+    <button mat-icon-button (click)="sendComment(text.value); text.value = ''">
+      <mat-icon>send</mat-icon>
+    </button>
+  </mat-card-content>
+</mat-card>
+
+@for (comment of comments(); track $index) {
+  <mat-card class="comment-card" appearance="outlined">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>person</mat-icon>
+      </div>
+      <mat-card-subtitle> @{{ comment.user.login }} </mat-card-subtitle>
+
+      @if (comment.user.accountId === user.accountId && comment.comment.id !== editingId()) {
+        <button matIconButton [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      }
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="editingId.set(comment.comment.id)">
+          <mat-icon color="red">edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="deleteComment(comment.comment.id)">
+          <mat-icon color="red">delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </mat-card-header>
+    <mat-card-content class="writeComment">
+      @if (editingId() === comment.comment.id) {
+        <textarea #text placeholder="Write a comment" [value]="comment.comment.content"></textarea>
+        <button
+          mat-icon-button
+          (click)="editComment(comment.comment.id, text.value); text.value = ''"
+        >
+          <mat-icon>send</mat-icon>
+        </button>
+      } @else {
+        {{ comment.comment.content }}
+      }
+    </mat-card-content>
+  </mat-card>
+}

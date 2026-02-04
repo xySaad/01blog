@@ -48,6 +48,7 @@ body {
 
   post-card {
     flex: 1;
+    max-width: 100%;
 
     mat-card {
       height: 100%;

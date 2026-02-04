@@ -1,0 +1,9 @@
+post-footer .title {
+  margin: auto;
+  width: fit-content;
+}
+mat-card-content > h1 {
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}

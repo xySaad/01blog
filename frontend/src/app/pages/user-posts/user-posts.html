@@ -1,11 +1,11 @@
 <div class="posts">
   @for (post of localUnsavedDrafts; track $index) {
-    <post-card [isNew]="true" type="draft" [data]="post" />
+    <post-card [isNew]="true" visibility="draft" [data]="post" />
   }
   @for (draft of localDrafts; track $index) {
-    <post-card type="draft" [data]="draft" />
+    <post-card visibility="draft" [data]="draft" />
   }
   @for (post of savedPosts; track $index) {
-    <post-card type="{{ post.isPublic ? 'public' : 'private' }}" [data]="post" />
+    <post-card [visibility]="post.visibility" [data]="post" />
   }
 </div>

@@ -15,12 +15,7 @@
   }
 }
 
-.new-post {
-  padding: 0 10vw;
+:host {
+  display: block;
   padding-bottom: 30vh;
-
-  textarea {
-    resize: none;
-    margin-bottom: 50px;
-  }
 }

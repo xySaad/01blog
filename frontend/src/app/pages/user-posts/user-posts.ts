@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { DB_NAME, Storage } from '../../services/storage.service';
 import { Router } from '@angular/router';
 import { global } from '../../lib/global';
-import { PostCard } from '../../components/post-card/post-card.component';
+import { PostCard } from '../../components/post-card.component';
 import { Types } from '../../../types';
 import { Collection } from '../../../types/collection';
 @Component({

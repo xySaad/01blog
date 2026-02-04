@@ -1,0 +1,11 @@
+mat-card-header {
+  margin-bottom: 20px;
+}
+.avater mat-icon {
+  width: 40px;
+  height: auto;
+  font-size: 40px;
+}
+.menu {
+  margin-left: auto;
+}

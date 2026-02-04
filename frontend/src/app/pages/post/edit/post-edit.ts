@@ -1,29 +1,26 @@
-import { Component, computed, inject, Signal, signal, Type } from '@angular/core';
-import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import DOMPurify from 'dompurify';
-import { MatToolbar } from '@angular/material/toolbar';
-import { DB_NAME, Storage } from '../../../services/storage.service';
-import { ActivatedRoute } from '@angular/router';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteDialog } from './delete-dialog/delete-dialog.component';
-import { global } from '../../../lib/global';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Types } from '../../../../types';
 import { Post } from '../../../../types/post';
 import { WhileState } from '../../../lib/decorators/loading';
-import { Types } from '../../../../types';
-import { PostView } from '../../../components/post-view/post-view';
+import { global } from '../../../lib/global';
+import { DB_NAME, Storage } from '../../../services/storage.service';
 import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
+import { DeleteDialog } from './delete-dialog/delete-dialog.component';
 
 @Component({
-  selector: 'new-post',
+  selector: 'post-edit',
   templateUrl: 'post-edit.html',
   styleUrl: 'post-edit.css',
   //TODO: use account id as DB_NAME value
@@ -40,12 +37,13 @@ import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
     MatMenuModule,
     MatIconModule,
     MatTooltipModule,
-    PostView,
   ],
 })
 export class PostEdit {
-  private readonly route = inject(ActivatedRoute);
+  private readonly activeRoute = inject(ActivatedRoute);
   private readonly db = inject(Storage);
+  private readonly router = inject(Router);
+
   params = {
     isNew: false,
     isDraft: false,
@@ -54,7 +52,6 @@ export class PostEdit {
   postData = signal(new Types.Post());
   savedData = { title: '', content: '' };
   states = {
-    isOnPreview: true,
     isLoading: signal(false),
     isDraftSaved: computed(
       () =>
@@ -64,9 +61,9 @@ export class PostEdit {
   };
 
   constructor() {
-    this.params.isNew = this.route.snapshot.queryParamMap.get('new') === 'true';
-    this.params.isDraft = this.route.snapshot.queryParamMap.get('draft') === 'true';
-    const id = this.route.snapshot.paramMap.get('id');
+    this.params.isNew = this.activeRoute.snapshot.queryParamMap.get('new') === 'true';
+    this.params.isDraft = this.activeRoute.snapshot.queryParamMap.get('draft') === 'true';
+    const id = this.activeRoute.snapshot.paramMap.get('id');
     if (!id) throw new Error('should provide id param');
     this.postData().id = id;
     this.init();
@@ -90,7 +87,10 @@ export class PostEdit {
     };
   }
   async titleInput(target: any) {
-    this.postData.update((prev) => ({ ...prev, title: target.value }));
+    this.postData.update((prev) => {
+      prev.title = target.value;
+      return prev;
+    });
     await this.updateLocalDraft();
   }
 
@@ -104,7 +104,10 @@ export class PostEdit {
   private lastHeight = 0;
   async textInput(target: any) {
     this.adjustScrollbar();
-    this.postData.update((prev) => ({ ...prev, content: target.value }));
+    this.postData.update((prev) => {
+      prev.content = target.value;
+      return prev;
+    });
     await this.updateLocalDraft();
   }
 
@@ -146,7 +149,7 @@ export class PostEdit {
         const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
         postDrafts.delete(this.postData().id);
       }
-      this.postData.update((prev) => ({ ...prev, ...post }));
+      this.postData.update((prev) => Object.assign(prev, post));
       this.savedData = this.postData();
 
       //TODO: remove manual state manupilation
@@ -155,5 +158,9 @@ export class PostEdit {
     } catch (error) {
       //TODO: show error modal
     }
+  }
+
+  preview() {
+    this.router.navigate(['/posts', this.postData().id], { queryParamsHandling: 'preserve' });
   }
 }

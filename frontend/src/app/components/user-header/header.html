@@ -1,0 +1,27 @@
+<mat-card-header>
+  <div class="menu">
+    <mat-menu #menu="matMenu">
+      @if (me.accountId == owner().accountId) {
+        <button mat-menu-item (click)="edit.emit()">
+          <span>Edit</span>
+          <mat-icon>edit</mat-icon>
+        </button>
+      } @else {
+        <button mat-menu-item (click)="report()">
+          <span>Report</span>
+          <mat-icon>flag</mat-icon>
+        </button>
+      }
+    </mat-menu>
+
+    <button matIconButton [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </div>
+
+  <div mat-card-avatar class="avater">
+    <mat-icon>person</mat-icon>
+  </div>
+  <mat-card-title>{{ owner().firstName }} {{ owner().lastName }}</mat-card-title>
+  <mat-card-subtitle> @{{ owner().login }} - {{ createdAt().toDateString() }} </mat-card-subtitle>
+</mat-card-header>

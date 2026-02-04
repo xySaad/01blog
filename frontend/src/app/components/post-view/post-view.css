@@ -1,16 +1,9 @@
-.sideBar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1;
-  border-radius: 12px;
-}
-header {
-  display: flex;
-  align-items: center;
+post-content {
+  max-height: 40vh;
+  overflow: hidden;
+  min-width: 30vw;
 }
 
-::ng-deep post-view {
-  display: block;
-  margin-left: 20px;
+post-footer {
+  margin-top: auto;
 }

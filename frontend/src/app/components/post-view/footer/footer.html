@@ -1,0 +1,13 @@
+<mat-card-actions>
+  <div class="states" (click)="like.emit()">
+    <button matButton="outlined">
+      <mat-icon>handshake</mat-icon>
+      {{ likesCount() }}
+    </button>
+    <button matButton="outlined">
+      <mat-icon>mode_comment</mat-icon>
+      {{ commentsCount() }}
+    </button>
+  </div>
+  <button class="readMore" matButton (click)="readMore.emit()">read more</button>
+</mat-card-actions>

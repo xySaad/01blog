@@ -13,7 +13,7 @@
 
   <div class="posts">
     @for (post of posts(); track $index) {
-      <post-card type="feed" [data]="post"></post-card>
+      <post-card [visibility]="post.visibility" [data]="post"></post-card>
     }
   </div>
 </div>
