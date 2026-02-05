@@ -3,6 +3,7 @@
 <post-content [title]="data().title" [content]="data().content"></post-content>
 
 <post-footer
+  (comment)="comment.emit()"
   (readMore)="readMore.emit()"
   [likesCount]="data().likesCount"
   [commentsCount]="data().commentsCount"

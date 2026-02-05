@@ -1,0 +1,13 @@
+:host ::ng-deep post-content {
+  display: block;
+  max-height: 40vh;
+  overflow: hidden;
+  min-width: 30vw;
+}
+:host ::ng-deep markdown img {
+  display: none;
+}
+
+post-footer {
+  margin-top: auto;
+}

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { global } from '../../lib/global';
 import { Collection } from '../../../types/collection';
 import { Types } from '../../../types';
-import { PostCard } from '../../components/post-card.component';
+import { PostCard } from '../../components/post-card/post-card.component';
 @Component({
   templateUrl: 'home.html',
   imports: [MatButtonModule, MatIcon, PostCard],

@@ -1,3 +1,21 @@
 :host ::ng-deep .readMore {
   display: none;
 }
+
+textarea {
+  resize: none;
+  width: 100%;
+  outline: none;
+  border: none;
+  padding: 10px;
+  background: none;
+}
+
+.writeComment {
+  align-items: flex-start;
+  display: flex;
+}
+
+.comment-input {
+  margin: 10px;
+}

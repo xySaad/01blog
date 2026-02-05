@@ -20,6 +20,7 @@ export class PostView {
   data = input.required<Types.Post>();
   visibility = input.required<'draft' | 'public' | 'private'>();
   readMore = output();
+  comment = output();
 
   edit() {
     const queryParams = `new=${this.isNew()}&draft=${this.visibility() === 'draft'}`;

@@ -4,7 +4,7 @@
       <mat-icon>handshake</mat-icon>
       {{ likesCount() }}
     </button>
-    <button matButton="outlined">
+    <button matButton="outlined" (click)="comment.emit()">
       <mat-icon>mode_comment</mat-icon>
       {{ commentsCount() }}
     </button>
