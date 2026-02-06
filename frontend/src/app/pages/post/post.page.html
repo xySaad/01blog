@@ -1,8 +1,5 @@
-<post-view isNew="false" [data]="postData()" [visibility]="postData().visibility"></post-view>
-<mat-toolbar>
-  <mat-icon>comments</mat-icon>
-  Comments
-</mat-toolbar>
+<post-view isNew="false" [data]="postData()" />
+<mat-toolbar> Comments ({{ postData().commentsCount }}) </mat-toolbar>
 @if (postData().id) {
-  <comments-list [postId]="postData().id" (commentsUpdate)="commentsUpdate($event)" />
+  <comments-list [postId]="postData().id" />
 }

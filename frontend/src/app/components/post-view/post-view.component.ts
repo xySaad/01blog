@@ -18,12 +18,10 @@ export class PostView {
   router = inject(Router);
   isNew = input.required();
   data = input.required<Types.Post>();
-  visibility = input.required<'draft' | 'public' | 'private'>();
-  readMore = output();
   comment = output();
 
   edit() {
-    const queryParams = `new=${this.isNew()}&draft=${this.visibility() === 'draft'}`;
+    const queryParams = `new=${this.isNew()}&draft=${this.data().visibility === 'draft'}`;
     this.router.navigateByUrl(`/posts/edit/${this.data().id}?${queryParams}`);
   }
 

@@ -8,25 +8,8 @@ import { Types } from '../../../types';
 import { PostCard } from '../../components/post-card/post-card.component';
 @Component({
   templateUrl: 'home.html',
+  styleUrl: 'home.css',
   imports: [MatButtonModule, MatIcon, PostCard],
-  styles: [
-    `
-      .home {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-      .header {
-        display: flex;
-        gap: 10px;
-        width: 100%;
-
-        button {
-          flex: 1;
-        }
-      }
-    `,
-  ],
 })
 export class Home {
   router = inject(Router);

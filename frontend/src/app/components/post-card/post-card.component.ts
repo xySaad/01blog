@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, input, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCard, MatCardModule } from '@angular/material/card';
 import { Types } from '../../../types';
@@ -13,33 +13,15 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
   templateUrl: 'post-card.html',
   styleUrl: 'post-card.css',
 })
-export class PostCard implements OnInit {
+export class PostCard {
+  data = input.required<Types.Post>({ alias: 'data' });
   router = inject(Router);
-  inputPost = input.required<Types.Post>({ alias: 'data' });
-  visibility = input.required<'draft' | 'public' | 'private'>();
   isNew = input(false);
 
-  postData = signal(new Types.Post());
-  ngOnInit() {
-    this.postData.set(this.inputPost());
-  }
-  readMore = () => {
-    this.router.navigateByUrl(`/posts/${this.inputPost().id}`);
-  };
-
   private bottomSheet = inject(MatBottomSheet);
-  openCommentsSheet(): void {
+  openCommentsSheet() {
     this.bottomSheet.open(CommentsSheet, {
-      data: { postId: this.inputPost().id, onCommentsUpdate: this.commentsUpdate },
+      data: { postId: this.data().id, commentsCount: this.data().commentsCount },
     });
   }
-
-  commentsUpdate = (delta: number) => {
-    console.log(delta);
-
-    this.postData.update((prev) => {
-      prev.commentsCount += delta;
-      return prev;
-    });
-  };
 }

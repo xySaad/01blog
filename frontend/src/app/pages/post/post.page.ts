@@ -24,18 +24,13 @@ import { CommentsList } from '../../components/comments-list/comments-list.compo
 })
 export class PostPage {
   private readonly route = inject(ActivatedRoute);
-  postData = signal(new Types.Post());
-  id;
+  private readonly id = this.route.snapshot.paramMap.get('id');
+
+  protected readonly postData = signal(new Types.Post());
 
   constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) throw new Error('should provide id param');
-    this.id = id;
-    const post = global.api.getJson(Types.Post, `/posts/${id}`);
+    if (!this.id) throw new Error('should provide id param');
+    const post = global.api.getJson(Types.Post, `/posts/${this.id}`);
     post.then(this.postData.set);
-  }
-
-  commentsUpdate(delta: number) {
-    this.postData().commentsCount += delta;
   }
 }

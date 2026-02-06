@@ -10,7 +10,7 @@ import { CommentsList } from '../comments-list/comments-list.component';
 })
 export class CommentsSheet {
   private bottomSheet = inject(MatBottomSheetRef);
-  data: { postId: string; onCommentsUpdate: Function } = inject(MAT_BOTTOM_SHEET_DATA);
+  data: { postId: string; commentsCount: number } = inject(MAT_BOTTOM_SHEET_DATA);
 
   openLink(event: MouseEvent): void {
     this.bottomSheet.dismiss();

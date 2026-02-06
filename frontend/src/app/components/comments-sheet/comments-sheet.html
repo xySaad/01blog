@@ -1,3 +1,4 @@
 <mat-nav-list>
-  <comments-list [postId]="data.postId" (commentsUpdate)="data.onCommentsUpdate($event)" />
+  Comments ({{ data.commentsCount }})
+  <comments-list postId="{{ data.postId }}" />
 </mat-nav-list>

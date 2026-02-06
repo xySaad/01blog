@@ -31,7 +31,6 @@ export class CommentsList implements OnInit {
   comments = signal<CommentWithUser[]>([]);
   loading = signal(false);
   editingId = signal('0');
-  commentsUpdate = output<number>();
 
   ngOnInit() {
     const comments = global.api.getJson(
@@ -45,7 +44,6 @@ export class CommentsList implements OnInit {
   async sendComment(content: string) {
     const comment = await global.api.postJson(Comment, `/posts/${this.postId()}/comments`, content);
     this.comments.update((prev) => [{ user: global.user, comment }, ...prev]);
-    this.commentsUpdate.emit(+1);
   }
 
   @WhileState((self: CommentsList) => self.loading)
@@ -70,6 +68,5 @@ export class CommentsList implements OnInit {
       return;
     }
     this.comments.update((prev) => prev.filter((c) => c.comment.id !== commentId));
-    this.commentsUpdate.emit(-1);
   }
 }

@@ -1,10 +1,10 @@
-<user-header [owner]="data().owner" [createdAt]="data().createdAt" (edit)="edit()"></user-header>
+<user-header [owner]="data().owner" [createdAt]="data().createdAt" (edit)="edit()" />
 
-<post-content [title]="data().title" [content]="data().content"></post-content>
+<post-content [title]="data().title" [content]="data().content" />
 
 <post-footer
+  [postId]="data().id"
   (comment)="comment.emit()"
-  (readMore)="readMore.emit()"
   [likesCount]="data().likesCount"
   [commentsCount]="data().commentsCount"
-></post-footer>
+/>

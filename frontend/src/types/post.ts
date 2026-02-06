@@ -15,7 +15,7 @@ export class Post {
   isPublic = false;
   deleted = false;
 
-  get visibility() {
+  get visibility(): 'public' | 'private' | 'draft' {
     return this.isPublic ? 'public' : 'private';
   }
 }

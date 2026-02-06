@@ -1,7 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatCardActions } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'post-footer',
@@ -12,7 +13,14 @@ import { MatAnchor } from '@angular/material/button';
 export class PostCardFooter {
   likesCount = input.required<number>();
   commentsCount = input.required<number>();
-  readMore = output();
+  postId = input.required<string>();
+
   like = output();
   comment = output();
+
+  router = inject(Router);
+
+  readMore() {
+    this.router.navigateByUrl(`/posts/${this.postId()}`);
+  }
 }

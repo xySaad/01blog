@@ -1,9 +1,3 @@
 <mat-card>
-  <post-view
-    [isNew]="isNew()"
-    [data]="postData()"
-    [visibility]="postData().visibility"
-    (readMore)="readMore()"
-    (comment)="openCommentsSheet()"
-  ></post-view>
+  <post-view [isNew]="isNew()" [data]="data()" (comment)="openCommentsSheet()" />
 </mat-card>
