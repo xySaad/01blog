@@ -10,18 +10,14 @@
   </mat-card>
 
   @for (file of previewFiles(); track $index) {
-    <mat-card>
-      @if (!file.loading()) {
-        <mat-card-header>
-          <button mat-icon-button (click)="copyMarkdown(file)" title="Copy Markdown">
-            <mat-icon>file_copy</mat-icon>
-          </button>
-        </mat-card-header>
-      }
+    <mat-card [attr.loading]="file.loading()">
+      <mat-card-header class="copy">
+        <button mat-icon-button (click)="copyMarkdown(file)" title="Copy Markdown">
+          <mat-icon>file_copy</mat-icon>
+        </button>
+      </mat-card-header>
       <mat-card-content>
-        @if (file.loading()) {
-          <mat-spinner></mat-spinner>
-        }
+        <mat-spinner></mat-spinner>
         <img src="{{ file.url }}" />
       </mat-card-content>
       <mat-card-footer>

@@ -43,7 +43,6 @@ mat-card {
 
     img {
       width: 100%;
-      opacity: 50%;
     }
 
     mat-spinner {
@@ -60,5 +59,20 @@ mat-card {
     padding: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+mat-card[loading='false'] {
+  mat-spinner {
+    display: none;
+  }
+}
+
+mat-card[loading='true'] {
+  img {
+    opacity: 50%;
+  }
+  .copy {
+    display: none;
   }
 }
