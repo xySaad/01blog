@@ -7,7 +7,7 @@ import { global } from '../../lib/global';
 import { Comment, CommentWithUser } from '../../../types/comment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Collection } from '../../../types/collection';
+import { API } from '../../lib/api';
 
 @Component({
   selector: 'comments-list',
@@ -32,17 +32,14 @@ export class CommentsList implements OnInit {
   loading = signal(false);
   editingId = signal('0');
 
-  ngOnInit() {
-    const comments = global.api.getJson(
-      Collection(CommentWithUser),
-      `/posts/${this.postId()}/comments`,
-    );
-    comments.then(this.comments.set);
+  async ngOnInit() {
+    const comments: CommentWithUser[] = await API.get(`/posts/${this.postId()}/comments`);
+    this.comments.set(comments);
   }
 
   @WhileState((self: CommentsList) => self.loading)
   async sendComment(content: string) {
-    const comment = await global.api.postJson(Comment, `/posts/${this.postId()}/comments`, content);
+    const comment: Comment = await API.post(`/posts/${this.postId()}/comments`, content);
     this.comments.update((prev) => [{ user: global.user, comment }, ...prev]);
   }
 
@@ -50,7 +47,7 @@ export class CommentsList implements OnInit {
   async editComment(commentId: string, content: string) {
     this.editingId.set('0');
 
-    await global.api.put(`/comments/${commentId}`, content);
+    await API.put(`/comments/${commentId}`, content);
 
     this.comments.update((prev) =>
       prev.map((c) => {
@@ -62,11 +59,7 @@ export class CommentsList implements OnInit {
 
   @WhileState((self: CommentsList) => self.loading)
   async deleteComment(commentId: string) {
-    const resp = await global.api.delete(`/comments/${commentId}`);
-    if (!resp.ok) {
-      //TODO: handle errors
-      return;
-    }
+    await API.delete(`/comments/${commentId}`);
     this.comments.update((prev) => prev.filter((c) => c.comment.id !== commentId));
   }
 }

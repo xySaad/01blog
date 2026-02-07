@@ -1,8 +1,12 @@
-export const COLLECTION_TYPE = Symbol('COLLECTION_TYPE');
+import { Hydrator } from './api';
 
-export class CollectionClass<T> extends Array<T> {}
-export const Collection = <T>(type?: new () => T): new () => CollectionClass<T> => {
-  const typedClass = class extends CollectionClass<T> {};
-  Reflect.defineMetadata(COLLECTION_TYPE, type, typedClass);
-  return typedClass;
+export const Collection = <T extends Hydrator>(Class: new () => T) => {
+  return class extends Array<T> implements Hydrator {
+    hydrate() {
+      this.forEach((item) => {
+        Object.setPrototypeOf(item, Class.prototype);
+        item.hydrate();
+      });
+    }
+  };
 };

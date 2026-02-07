@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { global } from '../../../lib/global';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { API } from '../../../lib/api';
 @Component({
   styles: [
     `
@@ -101,10 +102,8 @@ export class Register {
 
     const body = JSON.stringify(this.data);
     try {
-      const res = await global.api.post('/register', body);
-      if (res.ok) {
-        this.selectedIndex.set(1);
-      }
+      await API.post('/register', body);
+      this.selectedIndex.set(1);
     } catch (error) {
       //TODO: show error modal
     }
@@ -115,10 +114,8 @@ export class Register {
   async verify() {
     this.loading.set(true);
     try {
-      const res = await global.api.post('/verify', this.data.code.toString());
-      if (res.ok) {
-        this.selectedIndex.set(2);
-      }
+      const res = await API.post('/verify', this.data.code.toString());
+      this.selectedIndex.set(2);
     } catch (error) {
       //TODO: show error modal
     }
@@ -130,12 +127,10 @@ export class Register {
     this.loading.set(true);
     try {
       const body = JSON.stringify(this.data);
-      const res = await global.api.post('/user', body);
-      if (res.ok) {
-        this.selectedIndex.set(3); // necessary?
-        localStorage.setItem('lastLogin', Date.now().toString());
-        this.router.navigate(['/']);
-      }
+      await API.post('/user', body);
+      this.selectedIndex.set(3); // necessary?
+      localStorage.setItem('lastLogin', Date.now().toString());
+      this.router.navigate(['/']);
     } catch (error) {
       //TODO: show error modal
     }

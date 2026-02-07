@@ -7,6 +7,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { global } from '../../../lib/global';
+import { API } from '../../../lib/api';
 
 @Component({
   styles: [
@@ -47,11 +48,9 @@ export class Login {
   async login() {
     this.loading.set(true);
     try {
-      const resp = await global.api.post('/login', JSON.stringify(this.data));
-      if (resp.ok) {
-        localStorage.setItem('lastLogin', Date.now().toString());
-        this.router.navigate(['/']);
-      }
+      await API.post('/login', JSON.stringify(this.data));
+      localStorage.setItem('lastLogin', Date.now().toString());
+      this.router.navigate(['/']);
     } catch (error) {
       //TODO: show error modal
     }

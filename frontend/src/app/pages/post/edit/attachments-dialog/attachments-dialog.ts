@@ -1,27 +1,19 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  inject,
-  signal,
-  Signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatDialogContent,
-  MatDialogActions,
-  MatDialogTitle,
-  MatDialogClose,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
 import { MatCard, MatCardContent, MatCardFooter, MatCardHeader } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatRipple } from '@angular/material/core';
-import { global } from '../../../../lib/global';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Collection } from '../../../../../types/collection';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { API } from '../../../../lib/api';
 
 type FilePreview = { url: string; name: string; loading: WritableSignal<boolean> };
 
@@ -57,7 +49,7 @@ export class AttachmentsDialog {
     //TODO: fetch post files
   }
   async init() {
-    const urls = await global.api.getJson(Collection<string>(), `/posts/${this.data.id}/media`);
+    const urls: string[] = await API.get(`/posts/${this.data.id}/media`);
     const files = urls.map((url) => {
       const idx = url.indexOf(this.data.id) + this.data.id.length + 1;
       return {
@@ -82,14 +74,9 @@ export class AttachmentsDialog {
 
   async uploadFile(file: FilePreview, blob: Blob) {
     const fNameNoExtension = file.name.substring(0, file.name.lastIndexOf('.'));
-
-    const resp = await global.api.post(`/posts/${this.data.id}/media`, blob, {
-      'X-File-Name': encodeURIComponent(fNameNoExtension),
-    });
-    if (resp.ok) {
-      //TODO: handle error
-    }
-    file.url = await resp.text();
+    const headers = { 'X-File-Name': encodeURIComponent(fNameNoExtension) };
+    const url: string = await API.post(`/posts/${this.data.id}/media`, blob, headers);
+    file.url = url;
     file.loading.set(false);
   }
   async blob2b64(blob: Blob) {

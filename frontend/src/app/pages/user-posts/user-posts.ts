@@ -5,6 +5,7 @@ import { global } from '../../lib/global';
 import { PostCard } from '../../components/post-card/post-card.component';
 import { Types } from '../../../types';
 import { Collection } from '../../../types/collection';
+import { API } from '../../lib/api';
 @Component({
   templateUrl: 'user-posts.html',
   imports: [PostCard],
@@ -29,10 +30,7 @@ export class PostsList {
   }
 
   async init() {
-    const posts = await global.api.getJson(
-      Collection(Types.Post),
-      `/user/${global.user?.accountId}/posts`,
-    );
+    const posts = await API.getH(Collection(Types.Post), `/user/${global.user.accountId}/posts`);
     this.savedPosts = posts;
 
     const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');

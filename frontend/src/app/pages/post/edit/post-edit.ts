@@ -13,8 +13,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Types } from '../../../../types';
 import { Post } from '../../../../types/post';
+import { API } from '../../../lib/api';
 import { WhileState } from '../../../lib/decorators/loading';
-import { global } from '../../../lib/global';
 import { DB_NAME, Storage } from '../../../services/storage.service';
 import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
 import { DeleteDialog } from './delete-dialog/delete-dialog.component';
@@ -74,7 +74,7 @@ export class PostEdit {
       this.queryLocalDraft();
       return;
     }
-    const post = await global.api.getJson(Post, '/posts/' + this.postData().id);
+    const post = await API.getH(Post, '/posts/' + this.postData().id);
     this.postData.set(post);
     this.savedData = this.postData();
   }
@@ -140,11 +140,7 @@ export class PostEdit {
   async save() {
     const pathId = this.params.isNew ? '' : this.postData().id;
     try {
-      const post = await global.api.postJson(
-        Post,
-        `/posts/${pathId}`,
-        JSON.stringify(this.postData()),
-      );
+      const post = await API.postH(Post, `/posts/${pathId}`, this.postData());
       if (this.params.isNew) {
         const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
         postDrafts.delete(this.postData().id);

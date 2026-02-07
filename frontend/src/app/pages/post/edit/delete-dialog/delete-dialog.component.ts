@@ -7,11 +7,11 @@ import {
   MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { DB_NAME, Storage } from '../../../../services/storage.service';
-import { Router } from '@angular/router';
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { Router } from '@angular/router';
+import { API } from '../../../../lib/api';
 import { WhileState } from '../../../../lib/decorators/loading';
-import { global } from '../../../../lib/global';
+import { DB_NAME, Storage } from '../../../../services/storage.service';
 
 @Component({
   selector: 'delete-dialog',
@@ -38,7 +38,7 @@ export class DeleteDialog {
       const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
       postDrafts.delete(this.data.id);
     } else {
-      await global.api.delete(`/posts/${this.data.id}`);
+      await API.delete(`/posts/${this.data.id}`);
       //TODO: handle success and error
     }
 

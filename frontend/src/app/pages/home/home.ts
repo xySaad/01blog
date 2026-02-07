@@ -2,10 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { global } from '../../lib/global';
 import { Collection } from '../../../types/collection';
 import { Types } from '../../../types';
 import { PostCard } from '../../components/post-card/post-card.component';
+import { API } from '../../lib/api';
 @Component({
   templateUrl: 'home.html',
   styleUrl: 'home.css',
@@ -16,6 +16,6 @@ export class Home {
   posts = signal<Types.Post[]>([]);
 
   constructor() {
-    global.api.getJson(Collection(Types.Post), '/posts').then(this.posts.set);
+    API.getH(Collection(Types.Post), '/posts').then(this.posts.set);
   }
 }
