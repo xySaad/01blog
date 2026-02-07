@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.EntityAccess;
 import com.z01.blog.annotation.EntityAccess.Mode;
-import com.z01.blog.model.CommentModel;
+import com.z01.blog.model.Comment.CommentExtra;
+import com.z01.blog.model.Comment.CommentModel;
+import com.z01.blog.model.Comment.CommentRepo;
 import com.z01.blog.model.Post.PostModel;
 
 import cn.hutool.core.util.IdUtil;
@@ -20,10 +22,10 @@ import cn.hutool.core.util.IdUtil;
 @RestController
 public class CommentsController {
     @Autowired
-    CommentModel.repo commentRepo;
+    CommentRepo commentRepo;
 
     @GetMapping("/api/v1/posts/{post}/comments")
-    List<CommentModel.WithUser> getPostComments(@EntityAccess(mode = Mode.Read) PostModel post) {
+    List<CommentExtra> getPostComments(@EntityAccess(mode = Mode.Read) PostModel post) {
         return commentRepo.findAllByPostAndDeletedFalse(post.id);
     }
 

@@ -1,7 +1,7 @@
 import { Post as PostClass } from './post';
 import { User as UserClass } from './user';
 import { Comment as CommentClass } from './comment';
-import { CommentWithUser as CommentWithUserClass } from './comment';
+import { CommentExtra as CommentWithUserClass } from './comment';
 
 export namespace Types {
   export type Post = PostClass;

@@ -8,7 +8,6 @@ export class Comment {
   deleted = false;
 }
 
-export class CommentWithUser {
-  comment = new Comment();
-  user = new User();
+export class CommentExtra extends Comment {
+  owner = new User();
 }

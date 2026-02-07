@@ -1,6 +1,4 @@
-package com.z01.blog.model.Post;
-
-import org.hibernate.annotations.Formula;
+package com.z01.blog.model.Comment;
 
 import com.z01.blog.model.User.UserEntity;
 
@@ -11,15 +9,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "posts")
-public class PostExtra extends PostModel {
+@Table(name = "comments")
+public class CommentExtra extends AbstractComment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account", insertable = false, updatable = false)
     public UserEntity owner;
 
-    @Formula("(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = id)")
-    public long likesCount;
-
-    @Formula("(SELECT COUNT(*) FROM comments c WHERE c.post = id AND c.deleted = false)")
-    public long commentsCount;
 }

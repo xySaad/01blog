@@ -2,14 +2,18 @@ package com.z01.blog.services;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.z01.blog.model.Session;
-import com.z01.blog.model.UserModel;
+import com.z01.blog.model.User.UserEntity;
+import com.z01.blog.model.User.UserRepo;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
@@ -20,7 +24,7 @@ public class AuthService {
     @Autowired
     private Session.repo sessionRepo;
     @Autowired
-    private UserModel.repo userRepo;
+    private UserRepo userRepo;
 
     public long getAccountId(String jwt) {
         try {
@@ -48,7 +52,7 @@ public class AuthService {
 
     public long getUserId(String jwt) {
         long accountId = getAccountId(jwt);
-        Optional<UserModel> user = userRepo.findById(accountId);
+        Optional<UserEntity> user = userRepo.findById(accountId);
         if (user.isEmpty())
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 

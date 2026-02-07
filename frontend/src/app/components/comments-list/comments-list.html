@@ -16,35 +16,32 @@
       <div mat-card-avatar>
         <mat-icon>person</mat-icon>
       </div>
-      <mat-card-subtitle> @{{ comment.user.login }} </mat-card-subtitle>
+      <mat-card-subtitle> @{{ comment.owner.login }} </mat-card-subtitle>
 
-      @if (comment.user.accountId === user.accountId && comment.comment.id !== editingId()) {
+      @if (comment.owner.accountId === user.accountId && comment.id !== editingId()) {
         <button matIconButton [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
       }
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="editingId.set(comment.comment.id)">
+        <button mat-menu-item (click)="editingId.set(comment.id)">
           <mat-icon color="red">edit</mat-icon>
           <span>Edit</span>
         </button>
-        <button mat-menu-item (click)="deleteComment(comment.comment.id)">
+        <button mat-menu-item (click)="deleteComment(comment.id)">
           <mat-icon color="red">delete</mat-icon>
           <span>Delete</span>
         </button>
       </mat-menu>
     </mat-card-header>
     <mat-card-content class="writeComment">
-      @if (editingId() === comment.comment.id) {
-        <textarea #text placeholder="Write a comment" [value]="comment.comment.content"></textarea>
-        <button
-          mat-icon-button
-          (click)="editComment(comment.comment.id, text.value); text.value = ''"
-        >
+      @if (editingId() === comment.id) {
+        <textarea #text placeholder="Write a comment" [value]="comment.content"></textarea>
+        <button mat-icon-button (click)="editComment(comment.id, text.value); text.value = ''">
           <mat-icon>send</mat-icon>
         </button>
       } @else {
-        {{ comment.comment.content }}
+        {{ comment.content }}
       }
     </mat-card-content>
   </mat-card>

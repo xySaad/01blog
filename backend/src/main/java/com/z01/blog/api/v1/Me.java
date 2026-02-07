@@ -10,12 +10,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.model.Account;
-import com.z01.blog.model.UserModel;
+import com.z01.blog.model.User.UserEntity;
+import com.z01.blog.model.User.UserModel;
+import com.z01.blog.model.User.UserRepo;
 
 @RestController
 public class Me {
     @Autowired
-    UserModel.repo userRepo;
+    UserRepo userRepo;
 
     @Autowired
     Account.repo accountRepo;
@@ -27,7 +29,7 @@ public class Me {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
         // verified but may not have created a user yet
-        Optional<UserModel> user = userRepo.findByAccountId(accountId);
+        Optional<UserEntity> user = userRepo.findByAccountId(accountId);
         if (user.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
