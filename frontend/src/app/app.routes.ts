@@ -8,6 +8,7 @@ import { PostEdit } from './pages/post/edit/post-edit';
 import { PostsList } from './pages/user-posts/user-posts';
 import { Home } from './pages/home/home';
 import { PostPage } from './pages/post/post.page';
+import { UserPage } from './pages/user/user-page';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,11 @@ export const routes: Routes = [
   {
     path: 'posts',
     component: PostsList,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'users/:id',
+    component: UserPage,
     canActivate: [authGuard],
   },
   { path: '**', component: NotFound },

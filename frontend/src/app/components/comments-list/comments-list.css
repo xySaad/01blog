@@ -17,6 +17,8 @@ textarea {
 .writeComment {
   align-items: flex-start;
   display: flex;
+  white-space: wrap;
+  word-break: break-all;
 }
 .comment-card button {
   margin-left: auto;

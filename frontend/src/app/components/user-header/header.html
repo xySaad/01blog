@@ -19,9 +19,15 @@
     </button>
   </div>
 
-  <div mat-card-avatar class="avater">
+  <a mat-card-avatar class="avatar" [routerLink]="['/users', owner().accountId]">
     <mat-icon>person</mat-icon>
-  </div>
+  </a>
   <mat-card-title>{{ owner().firstName }} {{ owner().lastName }}</mat-card-title>
-  <mat-card-subtitle> @{{ owner().login }} - {{ createdAt().toDateString() }} </mat-card-subtitle>
+  <mat-card-subtitle>
+    <div class="handler">@{{ owner().login }}</div>
+
+    @if (createdAt()) {
+      <div class="time">{{ createdAt()?.toDateString() }}</div>
+    }
+  </mat-card-subtitle>
 </mat-card-header>

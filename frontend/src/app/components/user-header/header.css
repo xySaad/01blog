@@ -1,11 +1,24 @@
 mat-card-header {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.avater mat-icon {
+.avatar mat-icon {
   width: 40px;
   height: auto;
   font-size: 40px;
 }
 .menu {
   margin-left: auto;
+}
+
+mat-card-subtitle {
+  display: flex;
+  color: var(--mat-sys-outline);
+}
+
+.time::before {
+  content: '•';
+  margin: 0 4px;
 }

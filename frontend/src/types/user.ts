@@ -12,6 +12,6 @@ export class UserExtra extends User implements Hydrator {
   posts: Post[] = [];
 
   hydrate() {
-    this.posts.forEach((p) => p.hydrate());
+    this.posts.forEach((p) => Post.prototype.hydrate.call(p));
   }
 }

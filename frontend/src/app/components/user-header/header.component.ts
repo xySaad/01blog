@@ -1,16 +1,18 @@
-import { Component, input, output } from '@angular/core';
+import { A11yModule } from '@angular/cdk/a11y';
+import { Component, inject, input, output } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
 import {
-  MatCardHeader,
-  MatCardTitle,
-  MatCardSubtitle,
   MatCardAvatar,
+  MatCardHeader,
+  MatCardSubtitle,
+  MatCardTitle,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { Router } from '@angular/router';
 import { User } from '../../../types/user';
-import { MatIconButton } from '@angular/material/button';
 import { global } from '../../lib/global';
-import { MatMenu, MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
-import { A11yModule } from '@angular/cdk/a11y';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'user-header',
@@ -28,15 +30,20 @@ import { A11yModule } from '@angular/cdk/a11y';
     MatMenuTrigger,
     MatMenuItem,
     A11yModule,
+    RouterLink,
   ],
 })
 export class UserHeader {
   owner = input.required<User>();
-  createdAt = input.required<Date>();
+  createdAt = input<Date>();
   edit = output<void>();
 
   me = global.user;
+  router = inject(Router);
 
+  visitProfile() {
+    this.router.navigateByUrl(`/users/${this.owner().accountId}`);
+  }
   //TODO: report API
   report() {}
 }

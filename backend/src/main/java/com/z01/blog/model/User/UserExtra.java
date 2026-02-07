@@ -2,6 +2,8 @@ package com.z01.blog.model.User;
 
 import java.util.List;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import com.z01.blog.model.Post.PostExtra;
 
 import jakarta.persistence.Entity;
@@ -15,5 +17,6 @@ import jakarta.persistence.Table;
 public class UserExtra extends UserModel {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "account", insertable = false, updatable = false)
+    @SQLRestriction("deleted = false AND public = true")
     public List<PostExtra> posts;
 }

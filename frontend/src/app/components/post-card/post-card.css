@@ -1,3 +1,8 @@
+mat-card:not(:hover) {
+  /* background: none; */
+  /* box-shadow: none; */
+}
+
 :host ::ng-deep post-content {
   display: block;
   max-height: 40vh;
@@ -8,6 +13,12 @@
   display: none;
 }
 
-post-footer {
+post-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep post-footer {
   margin-top: auto;
 }

@@ -1,0 +1,9 @@
+<mat-card>
+  <user-header [owner]="user()"></user-header>
+</mat-card>
+<mat-toolbar> Posts ({{ user().posts.length }}) </mat-toolbar>
+<div class="posts">
+  @for (post of user().posts; track $index) {
+    <post-card [data]="post" />
+  }
+</div>
