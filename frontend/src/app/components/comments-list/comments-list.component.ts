@@ -39,8 +39,7 @@ export class CommentsList implements OnInit {
 
   @WhileState((self: CommentsList) => self.loading)
   async sendComment(content: string) {
-    const comment: Comment = await API.post(`/posts/${this.postId()}/comments`, content);
-    console.log(comment);
+    const comment: Comment = await API.post(`/posts/${this.postId()}/comments`, { content });
 
     this.comments.update((prev) => [{ ...comment, owner: global.user }, ...prev]);
   }
@@ -49,7 +48,7 @@ export class CommentsList implements OnInit {
   async editComment(commentId: string, content: string) {
     this.editingId.set('0');
 
-    await API.put(`/comments/${commentId}`, content);
+    await API.put(`/comments/${commentId}`, { content });
 
     this.comments.update((prev) =>
       prev.map((c) => {

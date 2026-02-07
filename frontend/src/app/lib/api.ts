@@ -21,6 +21,12 @@ async function fetchJson<T>(
     const text = await resp.text();
     throw new ApiError(resp.status, text);
   }
+
+  const contentType = resp.headers.get('content-type');
+  if (!contentType?.includes('application/json')) {
+    return {} as T;
+  }
+
   const json = await resp.json();
 
   if (Class) {
@@ -50,6 +56,8 @@ export const API = {
   },
 
   put<T>(path: string, body?: any) {
+    console.log(body);
+
     const init = {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
