@@ -1,55 +1,66 @@
 @if (states.isLoading()) {
   <mat-progress-bar mode="indeterminate" class="progress"></mat-progress-bar>
 }
-<div class="header">
-  <button matButton="tonal" (click)="preview()" matTooltip="preview">
+
+<mat-toolbar class="header">
+  <mat-icon class="sync" [attr.hidden]="!states.currentlySyncing()">sync</mat-icon>
+
+  <button matButton="tonal" (click)="togglePreview()" matTooltip="preview">
     <mat-icon>visibility</mat-icon>
   </button>
-  <mat-toolbar class="save">
-    <button matButton="filled" (click)="save()" [disabled]="states.isDraftSaved()">
-      <mat-icon>save</mat-icon>
-      {{ params.isNew ? 'save' : 'update' }}
-    </button>
-  </mat-toolbar>
-  <button matIconButton [matMenuTriggerFor]="menu">
-    <mat-icon>more_vert</mat-icon>
+  <button matButton="filled" (click)="save()" [disabled]="states.isSynced()">
+    <mat-icon>save</mat-icon>
+    {{ states.isNew ? 'save' : 'update' }}
   </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="attachments()">
-      <mat-icon color="red">attach_file_add</mat-icon>
-      <span>Attachments</span>
-    </button>
-    <button mat-menu-item (click)="postData().isPublic = !postData().isPublic; save()">
-      @if (postData().isPublic) {
-        <ng-container>
-          <mat-icon>lock</mat-icon>
-          <span>Hide</span>
-        </ng-container>
-      } @else {
-        <ng-container>
-          <mat-icon>send</mat-icon>
-          <span>Publish</span>
-        </ng-container>
-      }
-    </button>
-    <button mat-menu-item (click)="delete()">
-      <mat-icon color="red">delete</mat-icon>
-      <span>Delete</span>
-    </button>
-  </mat-menu>
-</div>
+  <button class="menuVert" matIconButton [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
 
-<mat-form-field class="title full-width" appearance="outline">
-  <mat-label>Title</mat-label>
-  <input matInput type="text" [value]="postData().title" (input)="titleInput($event.target)" />
-</mat-form-field>
-<mat-form-field class="full-width" appearance="outline">
-  <textarea
-    matInput
-    cdkTextareaAutosize
-    (input)="textInput($event.target)"
-    [value]="postData().content"
-    placeholder="Start typing your story..."
-    name="blog content"
-  ></textarea>
-</mat-form-field>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="attachments()" [disabled]="states.isNew">
+        <mat-icon color="red">attach_file_add</mat-icon>
+        <span>Attachments</span>
+      </button>
+      <button mat-menu-item (click)="localPostData().isPublic = !localPostData().isPublic; save()">
+        @if (localPostData().isPublic) {
+          <ng-container>
+            <mat-icon>lock</mat-icon>
+            <span>Hide</span>
+          </ng-container>
+        } @else {
+          <ng-container>
+            <mat-icon>send</mat-icon>
+            <span>Publish</span>
+          </ng-container>
+        }
+      </button>
+      <button mat-menu-item (click)="delete()">
+        <mat-icon color="red">delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+  </button>
+</mat-toolbar>
+
+@if (states.isPreviewActive()) {
+  <post-content [title]="localPostData().title" [content]="localPostData().content" />
+} @else {
+  <mat-form-field class="title full-width" appearance="outline">
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      type="text"
+      [value]="localPostData().title"
+      (input)="titleInput($event.target)"
+    />
+  </mat-form-field>
+  <mat-form-field class="full-width" appearance="outline">
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      (input)="textInput($event.target)"
+      [value]="localPostData().content"
+      placeholder="Start typing your story..."
+      name="blog content"
+    ></textarea>
+  </mat-form-field>
+}

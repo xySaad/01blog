@@ -40,7 +40,7 @@ export const routes: Routes = [
     path: 'posts/edit',
     redirectTo: () => {
       const id = crypto.randomUUID();
-      return `/posts/edit/${id}?new=true&draft=true`;
+      return `/posts/edit/${id}`;
     },
   },
   { path: 'posts/:id', component: PostPage, canActivate: [authGuard] },

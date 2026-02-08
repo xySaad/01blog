@@ -11,13 +11,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Types } from '../../../../types';
 import { Post } from '../../../../types/post';
 import { API } from '../../../lib/api';
 import { WhileState } from '../../../lib/decorators/loading';
 import { DB_NAME, Storage } from '../../../services/storage.service';
 import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
 import { DeleteDialog } from './delete-dialog/delete-dialog.component';
+import { betterSignal } from '../../../lib/signal';
+import { PostCardContent } from '../../../components/post-view/content/content.component';
 
 @Component({
   selector: 'post-edit',
@@ -37,6 +38,7 @@ import { DeleteDialog } from './delete-dialog/delete-dialog.component';
     MatMenuModule,
     MatIconModule,
     MatTooltipModule,
+    PostCardContent,
   ],
 })
 export class PostEdit {
@@ -44,80 +46,111 @@ export class PostEdit {
   private readonly db = inject(Storage);
   private readonly router = inject(Router);
 
-  params = {
-    isNew: false,
-    isDraft: false,
-  };
-
-  postData = signal(new Types.Post());
-  savedData = { title: '', content: '' };
+  syncedPostData = signal(new Post());
+  localPostData = betterSignal(new Post());
   states = {
+    isPreviewActive: signal(false),
+    isNew: false,
+    currentlySyncing: signal(false),
     isLoading: signal(false),
-    isDraftSaved: computed(
-      () =>
-        this.savedData.title.trim() === this.postData().title.trim() &&
-        this.savedData.content.trim() === this.postData().content.trim(),
-    ),
+    isSynced: computed(() => {
+      const local = this.localPostData();
+      const synced = this.syncedPostData();
+      const titleChanged = local.title.trim() === synced.title.trim();
+      const contentChanged = local.content.trim() === synced.content.trim();
+
+      return titleChanged && contentChanged;
+    }),
   };
 
   constructor() {
-    this.params.isNew = this.activeRoute.snapshot.queryParamMap.get('new') === 'true';
-    this.params.isDraft = this.activeRoute.snapshot.queryParamMap.get('draft') === 'true';
     const id = this.activeRoute.snapshot.paramMap.get('id');
     if (!id) throw new Error('should provide id param');
-    this.postData().id = id;
-    this.init();
+    this.init(id);
   }
 
-  private async init() {
-    if (this.params.isDraft) {
-      this.queryLocalDraft();
-      return;
+  //TODO: cleanup this ugly code
+  private async init(postId: string) {
+    const storedLocalPost = await this.queryLocalDraft(postId);
+    try {
+      const syncedPost = await API.getH(Post, `/posts/${postId}`);
+      this.syncedPostData.set(syncedPost);
+      const localPostData = Object.assign(new Post(), storedLocalPost ?? syncedPost);
+      this.localPostData.set(localPostData);
+    } catch (error) {
+      this.states.isNew = true;
+      const localPostData = Object.assign(new Post(), storedLocalPost);
+      this.localPostData.set(localPostData);
     }
-    const post = await API.getH(Post, '/posts/' + this.postData().id);
-    this.postData.set(post);
-    this.savedData = this.postData();
   }
-  async queryLocalDraft() {
+
+  async queryLocalDraft(postId: string) {
     const store = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
-    const req = store.get(this.postData().id);
-    req.onsuccess = () => {
-      if (!req.result) return;
-      this.postData.set(req.result);
-    };
+    const req = store.get(postId);
+    const { resolve, promise } = Promise.withResolvers<Post | undefined | null>();
+    req.onsuccess = () => resolve(req.result);
+    return await promise;
   }
+
   async titleInput(target: any) {
-    this.postData.update((prev) => {
+    this.localPostData.patch((prev) => {
       prev.title = target.value;
       return prev;
     });
     await this.updateLocalDraft();
   }
 
-  private adjustScrollbar() {
+  private lastHeight = 0;
+  async textInput(target: any) {
+    //adjust scrollbar
+    //TODO: use css to limit scrollbar instead of js
     const scrollHeight = document.documentElement.scrollHeight;
     const diff = scrollHeight - this.lastHeight;
     window.scrollBy({ top: diff, left: 0 });
     this.lastHeight = scrollHeight;
-  }
 
-  private lastHeight = 0;
-  async textInput(target: any) {
-    this.adjustScrollbar();
-    this.postData.update((prev) => {
+    this.localPostData.patch((prev) => {
       prev.content = target.value;
       return prev;
     });
     await this.updateLocalDraft();
   }
 
-  async updateLocalDraft(force = false) {
-    if (!force && Date.now() - this.postData().updatedAt.getTime() < 5000) return;
+  async updateLocalDraft() {
+    const post = this.localPostData();
+    if (Date.now() - post.updatedAt.getTime() < 5000) return;
     console.debug('auto saving local draft');
-
-    this.postData().updatedAt = new Date();
+    this.states.currentlySyncing.set(true);
+    post.updatedAt = new Date();
     const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
-    postDrafts.put(this.postData(), this.postData().id);
+    postDrafts.put(post, post.id);
+    setTimeout(() => {
+      this.states.currentlySyncing.set(false);
+    }, 1000);
+  }
+
+  @WhileState((self) => self.states.isLoading)
+  async save() {
+    const post = this.localPostData();
+    const pathId = this.states.isNew ? '' : post.id;
+    try {
+      const postUpdate = await API.postH(Post, `/posts/${pathId}`, post);
+      const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+      postDrafts.delete(post.id);
+      const newPost = Object.assign(post, postUpdate);
+      this.syncedPostData.update((prev) => Object.assign(prev, newPost));
+      this.localPostData.patch((prev) => Object.assign(prev, newPost));
+      if (this.states.isNew) {
+        history.replaceState({}, '', `/posts/${newPost.id}`);
+        this.states.isNew = false;
+      }
+    } catch (error) {
+      //TODO: show error modal
+    }
+  }
+
+  togglePreview() {
+    this.states.isPreviewActive.update((prev) => !prev);
   }
 
   private readonly dialog = inject(MatDialog);
@@ -125,38 +158,15 @@ export class PostEdit {
     this.dialog.open(DeleteDialog, {
       enterAnimationDuration: '100ms',
       exitAnimationDuration: '100ms',
-      data: { id: this.postData().id, isDraft: this.params.isDraft },
+      data: { id: this.syncedPostData().id, isDraft: this.states.isNew },
     });
   }
+
   attachments() {
     this.dialog.open(AttachmentsDialog, {
       enterAnimationDuration: '100ms',
       exitAnimationDuration: '100ms',
-      data: { id: this.postData().id },
+      data: { id: this.syncedPostData().id },
     });
-  }
-
-  @WhileState((self) => self.states.isLoading)
-  async save() {
-    const pathId = this.params.isNew ? '' : this.postData().id;
-    try {
-      const post = await API.postH(Post, `/posts/${pathId}`, this.postData());
-      if (this.params.isNew) {
-        const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
-        postDrafts.delete(this.postData().id);
-      }
-      this.postData.update((prev) => Object.assign(prev, post));
-      this.savedData = this.postData();
-
-      //TODO: remove manual state manupilation
-      this.params.isNew = false;
-      history.replaceState({}, '', `/posts/edit/${this.postData().id}?isNew=false`);
-    } catch (error) {
-      //TODO: show error modal
-    }
-  }
-
-  preview() {
-    this.router.navigate(['/posts', this.postData().id], { queryParamsHandling: 'preserve' });
   }
 }

@@ -10,6 +10,13 @@
   position: sticky;
   top: 0;
   z-index: 2;
+  width: 100%;
+  background: none;
+  gap: 10px;
+
+  .menuVert {
+    margin-left: 10px;
+  }
   .mat-toolbar {
     background: none;
   }
@@ -18,4 +25,25 @@
 :host {
   display: block;
   padding-bottom: 30vh;
+}
+
+.sync[hidden='true'] {
+  opacity: 0;
+}
+
+.sync {
+  margin-right: auto;
+  animation-name: rotate;
+  animation-iteration-count: infinite;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

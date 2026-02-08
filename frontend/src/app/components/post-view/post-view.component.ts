@@ -13,16 +13,13 @@ import { PostCardFooter } from './footer/footer.component';
   styleUrl: 'post-view.css',
   imports: [MatCardModule, MatButtonModule, UserHeader, PostCardContent, PostCardFooter],
 })
-//TODO: isNew and visibility should be infered from post source (indexedDB or API)
 export class PostView {
   router = inject(Router);
-  isNew = input.required();
   data = input.required<Types.Post>();
   comment = output();
 
   edit() {
-    const queryParams = `new=${this.isNew()}&draft=${this.data().visibility === 'draft'}`;
-    this.router.navigateByUrl(`/posts/edit/${this.data().id}?${queryParams}`);
+    this.router.navigateByUrl(`/posts/edit/${this.data().id}`);
   }
 
   like() {
