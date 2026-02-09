@@ -19,6 +19,7 @@ import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
 import { DeleteDialog } from './delete-dialog/delete-dialog.component';
 import { betterSignal } from '../../../lib/signal';
 import { PostCardContent } from '../../../components/post-view/content/content.component';
+import { global } from '../../../lib/global';
 
 @Component({
   selector: 'post-edit',
@@ -79,7 +80,12 @@ export class PostEdit {
       this.localPostData.set(localPostData);
     } catch (error) {
       this.states.isNew = true;
-      const localPostData = Object.assign(new Post(), storedLocalPost);
+      const localPostData = Object.assign(
+        new Post(),
+        { id: postId, owner: global.user, account: global.user.accountId },
+        storedLocalPost,
+      );
+
       this.localPostData.set(localPostData);
     }
   }
@@ -87,9 +93,11 @@ export class PostEdit {
   async queryLocalDraft(postId: string) {
     const store = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
     const req = store.get(postId);
-    const { resolve, promise } = Promise.withResolvers<Post | undefined | null>();
-    req.onsuccess = () => resolve(req.result);
-    return await promise;
+    const { resolve, promise, reject } = Promise.withResolvers();
+    req.onsuccess = resolve;
+    req.onerror = reject;
+    await promise;
+    return req.result as Post | undefined;
   }
 
   async titleInput(target: any) {
@@ -158,7 +166,7 @@ export class PostEdit {
     this.dialog.open(DeleteDialog, {
       enterAnimationDuration: '100ms',
       exitAnimationDuration: '100ms',
-      data: { id: this.syncedPostData().id, isDraft: this.states.isNew },
+      data: { id: this.localPostData().id, isDraft: this.states.isNew },
     });
   }
 
@@ -166,7 +174,7 @@ export class PostEdit {
     this.dialog.open(AttachmentsDialog, {
       enterAnimationDuration: '100ms',
       exitAnimationDuration: '100ms',
-      data: { id: this.syncedPostData().id },
+      data: { id: this.localPostData().id },
     });
   }
 }
