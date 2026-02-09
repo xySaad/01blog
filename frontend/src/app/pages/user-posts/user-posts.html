@@ -1,6 +1,6 @@
 <div class="posts">
   @for (post of localUnsavedDrafts; track $index) {
-    <post-card [isNew]="true" [data]="post" />
+    <post-card [data]="post" />
   }
   @for (draft of localDrafts; track $index) {
     <post-card [data]="draft" />

@@ -16,7 +16,6 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 export class PostCard {
   data = input.required<Types.Post>({ alias: 'data' });
   router = inject(Router);
-  isNew = input(false);
 
   private bottomSheet = inject(MatBottomSheet);
   openCommentsSheet() {
