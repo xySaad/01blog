@@ -48,7 +48,7 @@ export class Login {
   async login() {
     this.loading.set(true);
     try {
-      await API.post('/login', JSON.stringify(this.data));
+      await API.post('/login', this.data);
       localStorage.setItem('lastLogin', Date.now().toString());
       this.router.navigate(['/']);
     } catch (error) {

@@ -100,9 +100,8 @@ export class Register {
   async register() {
     this.loading.set(true);
 
-    const body = JSON.stringify(this.data);
     try {
-      await API.post('/register', body);
+      await API.post('/register', this.data);
       this.selectedIndex.set(1);
     } catch (error) {
       //TODO: show error modal
@@ -126,8 +125,7 @@ export class Register {
   async createUser() {
     this.loading.set(true);
     try {
-      const body = JSON.stringify(this.data);
-      await API.post('/user', body);
+      await API.post('/user', this.data);
       this.selectedIndex.set(3); // necessary?
       localStorage.setItem('lastLogin', Date.now().toString());
       this.router.navigate(['/']);
