@@ -1,0 +1,13 @@
+:host ::ng-deep .draft mat-card[owned='true'] {
+  border: hsl(120, 100%, 50%) solid 2px;
+}
+:host ::ng-deep .draft .time {
+  display: none;
+}
+:host ::ng-deep .draft post-footer {
+  visibility: hidden;
+}
+
+:host {
+  padding-bottom: 20px;
+}

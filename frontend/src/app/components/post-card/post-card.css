@@ -1,6 +1,5 @@
-mat-card:not(:hover) {
-  /* background: none; */
-  /* box-shadow: none; */
+mat-card[owned='true'] {
+  border: var(--mat-sys-primary) solid 2px;
 }
 
 :host ::ng-deep post-content {

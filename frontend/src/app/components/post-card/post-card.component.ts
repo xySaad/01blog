@@ -6,6 +6,7 @@ import { PostView } from '../post-view/post-view.component';
 import { Router } from '@angular/router';
 import { CommentsSheet } from '../comments-sheet/comments-sheet.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { global } from '../../lib/global';
 
 @Component({
   imports: [MatCard, MatCardModule, MatButtonModule, PostView],
@@ -16,7 +17,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 export class PostCard {
   data = input.required<Types.Post>({ alias: 'data' });
   router = inject(Router);
-
+  selfUser = global.user;
   private bottomSheet = inject(MatBottomSheet);
   openCommentsSheet() {
     this.bottomSheet.open(CommentsSheet, {
