@@ -11,3 +11,10 @@
   display: flex;
   gap: 20px;
 }
+
+mat-card {
+  box-shadow: none;
+  background: none;
+  margin: auto;
+  max-width: 600px;
+}

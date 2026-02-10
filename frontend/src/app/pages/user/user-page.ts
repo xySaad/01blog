@@ -6,11 +6,10 @@ import { UserExtra } from '../../../types/user';
 import { PostCard } from '../../components/post-card/post-card.component';
 import { UserHeader } from '../../components/user-header/header.component';
 import { API } from '../../lib/api';
-import { MatDivider } from '@angular/material/divider';
 
 @Component({
   selector: 'user-page',
-  imports: [UserHeader, MatCard, PostCard, MatToolbar, MatCardContent, MatDivider],
+  imports: [UserHeader, MatCard, PostCard, MatToolbar, MatCardContent],
   templateUrl: './user-page.html',
   styleUrl: './user-page.css',
 })
