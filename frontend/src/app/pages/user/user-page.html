@@ -1,5 +1,16 @@
 <mat-card>
-  <user-header [owner]="user()"></user-header>
+  <user-header [owner]="user()"> </user-header>
+  <mat-divider />
+  <mat-card-content class="states">
+    <div class="followers">
+      {{ user().followersCount }}
+      follower
+    </div>
+    <div class="following">
+      {{ user().followingCount }}
+      following
+    </div>
+  </mat-card-content>
 </mat-card>
 <mat-toolbar> Posts ({{ user().posts.length }}) </mat-toolbar>
 <div class="posts">

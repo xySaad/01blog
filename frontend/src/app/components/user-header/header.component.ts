@@ -1,6 +1,6 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { Component, inject, input, output } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
+import { MatIconButton, MatAnchor } from '@angular/material/button';
 import {
   MatCardAvatar,
   MatCardHeader,
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { User } from '../../../types/user';
 import { global } from '../../lib/global';
 import { RouterLink } from '@angular/router';
+import { API } from '../../lib/api';
 
 @Component({
   selector: 'user-header',
@@ -31,6 +32,7 @@ import { RouterLink } from '@angular/router';
     MatMenuItem,
     A11yModule,
     RouterLink,
+    MatAnchor,
   ],
 })
 export class UserHeader {
@@ -46,4 +48,11 @@ export class UserHeader {
   }
   //TODO: report API
   report() {}
+  toggleFollow() {
+    const followed = this.owner().followed;
+    this.owner().followed = !followed;
+
+    const method = followed ? 'delete' : 'post';
+    API[method](`/follow/${this.owner().accountId}`, null);
+  }
 }

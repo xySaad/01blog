@@ -1,15 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
-import { UserHeader } from '../../components/user-header/header.component';
-import { UserExtra } from '../../../types/user';
-import { ActivatedRoute } from '@angular/router';
-import { MatCard } from '@angular/material/card';
-import { PostCard } from '../../components/post-card/post-card.component';
-import { API } from '../../lib/api';
+import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatToolbar } from '@angular/material/toolbar';
+import { ActivatedRoute } from '@angular/router';
+import { UserExtra } from '../../../types/user';
+import { PostCard } from '../../components/post-card/post-card.component';
+import { UserHeader } from '../../components/user-header/header.component';
+import { API } from '../../lib/api';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
   selector: 'user-page',
-  imports: [UserHeader, MatCard, PostCard, MatToolbar],
+  imports: [UserHeader, MatCard, PostCard, MatToolbar, MatCardContent, MatDivider],
   templateUrl: './user-page.html',
   styleUrl: './user-page.css',
 })

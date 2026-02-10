@@ -2,6 +2,7 @@ package com.z01.blog.model.User;
 
 import java.util.List;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.z01.blog.model.Post.PostExtra;
@@ -18,5 +19,12 @@ public class UserExtra extends UserModel {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "account", insertable = false, updatable = false)
     @SQLRestriction("deleted = false AND public = true")
+    // TODO: exclude owner from PostExtra
     public List<PostExtra> posts;
+
+    @Formula("(SELECT COUNT(*) FROM follows f WHERE f.user_id = account_id)")
+    public long followersCount;
+
+    @Formula("(SELECT COUNT(*) FROM follows f WHERE f.follower_id = account_id)")
+    public long followingCount;
 }

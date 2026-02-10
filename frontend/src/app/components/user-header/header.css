@@ -1,3 +1,9 @@
+:host {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 mat-card-header {
   margin-bottom: 20px;
   display: flex;
@@ -9,7 +15,9 @@ mat-card-header {
   height: auto;
   font-size: 40px;
 }
-.menu {
+
+.menu,
+.follow {
   margin-left: auto;
 }
 

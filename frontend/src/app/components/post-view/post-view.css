@@ -3,3 +3,8 @@ post-content {
   overflow: hidden;
   min-width: 30vw;
 }
+
+user-header {
+  margin-right: auto;
+  padding: 12px;
+}

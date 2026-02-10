@@ -1,24 +1,4 @@
 <mat-card-header>
-  <div class="menu">
-    <mat-menu #menu="matMenu">
-      @if (me.accountId == owner().accountId) {
-        <button mat-menu-item (click)="edit.emit()">
-          <span>Edit</span>
-          <mat-icon>edit</mat-icon>
-        </button>
-      } @else {
-        <button mat-menu-item (click)="report()">
-          <span>Report</span>
-          <mat-icon>flag</mat-icon>
-        </button>
-      }
-    </mat-menu>
-
-    <button matIconButton [matMenuTriggerFor]="menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-  </div>
-
   <a mat-card-avatar class="avatar" [routerLink]="['/users', owner().accountId]">
     <mat-icon>person</mat-icon>
   </a>
@@ -30,4 +10,31 @@
       <div class="time">{{ createdAt()?.toDateString() }}</div>
     }
   </mat-card-subtitle>
+  @if (me.accountId !== owner().accountId) {
+    <div class="follow">
+      @if (owner().followed) {
+        <button matButton="outlined" (click)="toggleFollow()">Unfollow</button>
+      } @else {
+        <button matButton="tonal" (click)="toggleFollow()">Follow</button>
+      }
+    </div>
+  }
 </mat-card-header>
+
+<button matIconButton [matMenuTriggerFor]="menu" class="menu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu">
+  @if (me.accountId == owner().accountId) {
+    <button mat-menu-item (click)="edit.emit()">
+      <span>Edit</span>
+      <mat-icon>edit</mat-icon>
+    </button>
+  } @else {
+    <button mat-menu-item (click)="report()">
+      <span>Report</span>
+      <mat-icon>flag</mat-icon>
+    </button>
+  }
+</mat-menu>

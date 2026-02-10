@@ -19,3 +19,16 @@ textarea {
 .comment-input {
   margin: 10px;
 }
+
+:host ::ng-deep user-header {
+  margin: auto;
+  max-width: 600px;
+}
+
+:host ::ng-deep user-header mat-card-header {
+  /* position: sticky;
+  top: 10px;
+  background: #000;
+  border-radius: 12px;
+  z-index: 2; */
+}
