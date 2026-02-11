@@ -7,6 +7,13 @@ import { CommentsList } from '../comments-list/comments-list.component';
   selector: 'bottom-sheet-overview-example-sheet',
   templateUrl: 'comments-sheet.html',
   imports: [MatListModule, CommentsList],
+  styles: [
+    `
+      :host ::ng-deep mat-card {
+        background: var(--mat-sys-surface-container-high);
+      }
+    `,
+  ],
 })
 export class CommentsSheet {
   private bottomSheet = inject(MatBottomSheetRef);

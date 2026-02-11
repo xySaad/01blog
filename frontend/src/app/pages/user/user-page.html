@@ -1,5 +1,5 @@
 <mat-card class="userInfo">
-  <user-header [owner]="user()"> </user-header>
+  <user-header [owner]="user()" (report)="report()" />
   <mat-card-content class="states">
     <div class="followers">
       {{ user().followersCount }}

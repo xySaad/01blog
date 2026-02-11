@@ -39,6 +39,7 @@ export class UserHeader {
   owner = input.required<User>();
   createdAt = input<Date>();
   edit = output<void>();
+  report = output<void>();
 
   me = global.user;
   router = inject(Router);
@@ -47,7 +48,6 @@ export class UserHeader {
     this.router.navigateByUrl(`/users/${this.owner().accountId}`);
   }
   //TODO: report API
-  report() {}
   toggleFollow() {
     const followed = this.owner().followed;
     this.owner().followed = !followed;

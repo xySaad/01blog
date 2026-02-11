@@ -1,12 +1,3 @@
-textarea {
-  resize: none;
-  width: 100%;
-  outline: none;
-  border: none;
-  padding: 10px;
-  background: none;
-}
-
 :host {
   display: flex;
   flex-direction: column;
@@ -14,12 +5,19 @@ textarea {
   padding: 10px;
 }
 
-.writeComment {
-  align-items: flex-start;
+mat-card-content {
+  align-items: center;
   display: flex;
-  white-space: wrap;
-  word-break: break-all;
+  word-break: break-word;
 }
-.comment-card button {
+
+mat-card-footer {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
   margin-left: auto;
+}
+
+mat-form-field {
+  width: 100%;
 }

@@ -1,4 +1,9 @@
-<user-header [owner]="data().owner" [createdAt]="data().createdAt" (edit)="edit()" />
+<user-header
+  [owner]="data().owner"
+  [createdAt]="data().createdAt"
+  (edit)="edit()"
+  (report)="report()"
+/>
 
 <post-content [title]="data().title" [content]="data().content" />
 

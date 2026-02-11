@@ -1,0 +1,28 @@
+<div matDialogTitle>Report {{ data.item }}</div>
+<mat-dialog-content>
+  <mat-radio-group [(ngModel)]="selectedReason">
+    @for (reason of reportReasons(); track $index) {
+      <mat-radio-button class="example-radio-button" [value]="reason.value">
+        {{ reason.text }}
+      </mat-radio-button>
+    }
+  </mat-radio-group>
+
+  @if (selectedReason.length > 0) {
+    <mat-form-field appearance="outline">
+      <mat-label>Description (optional)</mat-label>
+      <textarea
+        #descriptionText
+        cdkTextareaAutosize
+        matInput
+        placeholder="Explain your issue in more details"
+        (input)="description.set(descriptionText.value)"
+      ></textarea>
+      <mat-icon matPrefix>info_outline</mat-icon>
+    </mat-form-field>
+  }
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton matDialogClose>Close</button>
+  <button matButton [disabled]="selectedReason.length === 0" (click)="submit()">Submit</button>
+</mat-dialog-actions>

@@ -1,13 +1,18 @@
-import { Component, input, OnInit, output, signal, WritableSignal } from '@angular/core';
-import { MatCardHeader, MatCard, MatCardSubtitle, MatCardContent } from '@angular/material/card';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCard, MatCardContent, MatCardFooter } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { Comment, CommentExtra } from '../../../types/comment';
+import { API } from '../../lib/api';
 import { WhileState } from '../../lib/decorators/loading';
 import { global } from '../../lib/global';
-import { Comment, CommentExtra } from '../../../types/comment';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { API } from '../../lib/api';
+import { UserHeader } from '../user-header/header.component';
+import { ReportDialog } from '../report-dialog/report-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'comments-list',
@@ -20,8 +25,10 @@ import { API } from '../../lib/api';
     MatButtonModule,
     MatFormFieldModule,
     MatMenuModule,
-    MatCardHeader,
-    MatCardSubtitle,
+    UserHeader,
+    CdkTextareaAutosize,
+    MatCardFooter,
+    MatInput,
   ],
 })
 export class CommentsList implements OnInit {
@@ -62,5 +69,14 @@ export class CommentsList implements OnInit {
   async deleteComment(commentId: string) {
     await API.delete(`/comments/${commentId}`);
     this.comments.update((prev) => prev.filter((c) => c.id !== commentId));
+  }
+
+  private readonly dialog = inject(MatDialog);
+  reportComment(commentId: string) {
+    this.dialog.open(ReportDialog, {
+      enterAnimationDuration: '100ms',
+      exitAnimationDuration: '100ms',
+      data: { id: commentId, item: 'comment' },
+    });
   }
 }

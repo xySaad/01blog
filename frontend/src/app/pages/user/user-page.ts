@@ -6,6 +6,8 @@ import { UserExtra } from '../../../types/user';
 import { PostCard } from '../../components/post-card/post-card.component';
 import { UserHeader } from '../../components/user-header/header.component';
 import { API } from '../../lib/api';
+import { MatDialog } from '@angular/material/dialog';
+import { ReportDialog } from '../../components/report-dialog/report-dialog.component';
 
 @Component({
   selector: 'user-page',
@@ -21,5 +23,14 @@ export class UserPage {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) throw new Error('must provide id param');
     API.getH(UserExtra, `/user/${id}`).then(this.user.set);
+  }
+
+  private readonly dialog = inject(MatDialog);
+  report() {
+    this.dialog.open(ReportDialog, {
+      enterAnimationDuration: '100ms',
+      exitAnimationDuration: '100ms',
+      data: { id: this.user().accountId, item: 'user' },
+    });
   }
 }
