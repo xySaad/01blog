@@ -11,7 +11,7 @@ CREATE TYPE report_reason AS ENUM (
 );
 
 CREATE TABLE reports (
-    id bigserial PRIMARY KEY,
+    id bigint PRIMARY KEY,
     reported_by bigint NOT NULL REFERENCES accounts(id),
     reason report_reason NOT NULL,
     description text, -- optional
