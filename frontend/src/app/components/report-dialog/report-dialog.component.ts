@@ -6,6 +6,7 @@ import {
   MatDialogContent,
   MatDialogTitle,
   MatDialogClose,
+  MatDialogRef,
 } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { API } from '../../lib/api';
@@ -13,6 +14,7 @@ import { MatFormField, MatLabel, MatInput, MatPrefix } from '@angular/material/i
 import { MatIcon } from '@angular/material/icon';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { FormsModule } from '@angular/forms';
+import { DeleteDialog } from '../../pages/post/edit/delete-dialog/delete-dialog.component';
 
 type ReportReason = {
   text: string;
@@ -41,6 +43,7 @@ let REPORT_REASONS: ReportReason[] | null = null;
   ],
 })
 export class ReportDialog {
+  private dialogRef = inject(MatDialogRef<DeleteDialog>);
   data: { id: string; item: string } = inject(MAT_DIALOG_DATA);
   reportReasons = signal<ReportReason[]>([]);
   selectedReason = '';
@@ -58,14 +61,15 @@ export class ReportDialog {
 
     this.reportReasons.set(REPORT_REASONS);
   }
-  submit() {
+  async submit() {
     const body = {
       type: this.data.item.toUpperCase(),
       id: this.data.id,
       reason: this.selectedReason,
       description: this.description(),
     };
-    API.post('/report', body);
+    await API.post('/report', body);
+    this.dialogRef.close();
   }
   snake2StartCase(text: string) {
     return text
