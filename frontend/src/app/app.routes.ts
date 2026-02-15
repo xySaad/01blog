@@ -9,6 +9,7 @@ import { PostsList } from './pages/user-posts/user-posts';
 import { Home } from './pages/home/home';
 import { PostPage } from './pages/post/post.page';
 import { UserPage } from './pages/user/user-page';
+import { AdminPage } from './pages/admin/admin-page';
 
 export const routes: Routes = [
   {
@@ -52,6 +53,11 @@ export const routes: Routes = [
   {
     path: 'users/:id',
     component: UserPage,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'admin',
+    component: AdminPage,
     canActivate: [authGuard],
   },
   { path: '**', component: NotFound },

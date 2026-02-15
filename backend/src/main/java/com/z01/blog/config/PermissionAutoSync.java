@@ -1,6 +1,7 @@
 package com.z01.blog.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -26,18 +27,18 @@ public class PermissionAutoSync implements ApplicationListener<ContextRefreshedE
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        var rootPermissions = new ArrayList<PermissionModel>();
+        var scannedPermissions = new HashMap<Long, PermissionModel>();
         handlerMapping.getHandlerMethods().forEach((mapping, handlerMethod) -> {
             RequiresPermission annotation = handlerMethod.getMethodAnnotation(RequiresPermission.class);
             if (annotation != null) {
                 var perm = syncToDatabase(annotation.scope(), annotation.description());
-                rootPermissions.add(perm);
+                scannedPermissions.put(perm.id, perm);
             }
         });
 
         var role = roleRepo.findByName("root").orElse(new RoleModel());
         role.name = "root";
-        role.permissions = rootPermissions;
+        role.permissions = new ArrayList<>(scannedPermissions.values());
         roleRepo.save(role);
     }
 

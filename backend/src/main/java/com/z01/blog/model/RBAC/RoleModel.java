@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class RoleModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
     public String name;
     public String description;
 

@@ -59,3 +59,10 @@ body {
     }
   }
 }
+
+.actions {
+  display: flex;
+  margin-left: auto;
+  width: fit-content;
+  gap: 10px;
+}

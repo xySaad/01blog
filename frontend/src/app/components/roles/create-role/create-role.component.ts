@@ -1,0 +1,93 @@
+import { Component, computed, effect, input, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Permission, Role } from '../../../../types/role';
+import { API } from '../../../lib/api';
+import { MatAnchor } from '@angular/material/button';
+
+@Component({
+  selector: 'create-role',
+  templateUrl: 'create-role.html',
+  styleUrl: 'create-role.css',
+  imports: [
+    MatExpansionModule,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatChip,
+    MatChipSet,
+    MatAutocomplete,
+    MatOption,
+    MatAutocompleteTrigger,
+    MatInput,
+    MatChipRemove,
+    FormsModule,
+    MatTooltip,
+    MatAnchor,
+  ],
+})
+export class CreateRole {
+  initialRole = input<Role>();
+  roles = input.required<Role[]>();
+  cancel = output();
+
+  permInput = '';
+  nameInput = '';
+  descriptionInput = '';
+
+  constructor() {
+    effect(() => {
+      const initialRole = this.initialRole();
+      if (initialRole) {
+        this.nameInput = initialRole.name;
+        this.descriptionInput = initialRole.description;
+        this.selectedPermissions.set(initialRole.permissions);
+      }
+    });
+  }
+
+  permissions = computed(() => {
+    const roles = this.roles();
+    const permissions = roles.flatMap((r) => r.permissions);
+    const seen = new Set<number>();
+
+    return permissions.filter((perm) => {
+      if (seen.has(perm.id)) return false;
+      seen.add(perm.id);
+      return perm.scope.includes(this.permInput);
+    });
+  });
+
+  selectedPermissions = signal<Permission[]>([]);
+  select(added: Permission) {
+    const oldPerms = this.selectedPermissions();
+    const seen = new Set<number>();
+    const newPerms = [...oldPerms, added].filter((perm) => {
+      if (seen.has(perm.id)) return false;
+      seen.add(perm.id);
+      return true;
+    });
+
+    this.selectedPermissions.set(Array.from(newPerms));
+    this.permInput = '';
+  }
+  remove(removed: Permission) {
+    this.selectedPermissions.update((prev) => prev.filter((perm) => perm.id !== removed.id));
+  }
+
+  createOrUpdate() {
+    const createdRole: Partial<Role> = {
+      id: this.initialRole()?.id,
+      name: this.nameInput,
+      description: this.descriptionInput,
+      permissions: this.selectedPermissions(),
+    };
+
+    API.post('/moderation/roles', createdRole);
+  }
+}

@@ -1,0 +1,38 @@
+<section>
+  <mat-form-field>
+    <mat-label>role name</mat-label>
+    <input matInput [(ngModel)]="nameInput" />
+  </mat-form-field>
+  <mat-form-field class="description">
+    <mat-label>description</mat-label>
+    <input matInput [(ngModel)]="descriptionInput" />
+  </mat-form-field>
+</section>
+
+<mat-form-field appearance="outline">
+  <mat-label>permissions</mat-label>
+  <input type="text" matInput [matAutocomplete]="autoGroup" [(ngModel)]="permInput" />
+  <mat-autocomplete #autoGroup="matAutocomplete">
+    @for (perm of permissions(); track $index) {
+      <div (click)="select(perm)">
+        <mat-option [value]="perm.scope">{{ perm.scope }}</mat-option>
+      </div>
+    }
+  </mat-autocomplete>
+</mat-form-field>
+<mat-chip-set>
+  @for (perm of selectedPermissions(); track $index) {
+    <mat-chip matTooltip="{{ perm.description }}" (removed)="remove(perm)">
+      {{ perm.scope }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  }
+</mat-chip-set>
+<div class="actions">
+  <button matButton="outlined" (click)="cancel.emit()">cancel</button>
+  <button matButton="tonal" (click)="createOrUpdate()">
+    {{ initialRole() ? 'update' : 'create' }}
+  </button>
+</div>

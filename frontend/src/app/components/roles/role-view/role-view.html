@@ -1,0 +1,10 @@
+<div class="permissionsList">
+  @for (perm of permissions(); track $index) {
+    <mat-card>
+      <mat-card-content class="permission">
+        <div>{{ perm.scope }}</div>
+        <div>{{ perm.description }}</div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,27 @@
+<mat-accordion multi>
+  <!-- <mat-slide-toggle>Expand All</mat-slide-toggle> -->
+  <mat-expansion-panel #panel hideToggle class="newRole">
+    <mat-expansion-panel-header>
+      <mat-icon>add</mat-icon>
+      new role
+    </mat-expansion-panel-header>
+    <create-role [roles]="roles()" (cancel)="panel.close()" />
+  </mat-expansion-panel>
+
+  @for (role of roles(); track role.id) {
+    <mat-expansion-panel #panel>
+      <mat-expansion-panel-header>
+        @if (editIdx() === role.id) {
+          editing ({{ role.name }})
+        } @else {
+          <role-view-header [role]="role" [panel]="panel" (edit)="editIdx.set($event)" />
+        }
+      </mat-expansion-panel-header>
+      @if (editIdx() === role.id) {
+        <create-role [roles]="roles()" [initialRole]="role" (cancel)="editIdx.set(0)" />
+      } @else {
+        <role-view [permissions]="role.permissions" />
+      }
+    </mat-expansion-panel>
+  }
+</mat-accordion>

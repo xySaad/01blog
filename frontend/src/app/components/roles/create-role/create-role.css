@@ -1,0 +1,8 @@
+section {
+  display: flex;
+  gap: 20px;
+
+  .description {
+    flex: 2;
+  }
+}
