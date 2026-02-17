@@ -36,10 +36,19 @@ public class PermissionAutoSync implements ApplicationListener<ContextRefreshedE
             }
         });
 
-        var role = roleRepo.findByName("root").orElse(new RoleModel());
-        role.name = "root";
-        role.permissions = new ArrayList<>(scannedPermissions.values());
-        roleRepo.save(role);
+        // create default role with no permissions
+        if (!roleRepo.existsByName("default")) {
+            var defaultRole = new RoleModel();
+            defaultRole.name = "default";
+            defaultRole.description = "default role - should be assigned to all users";
+            roleRepo.save(defaultRole);
+        }
+
+        // create root role with no permissions
+        var rootRole = roleRepo.findByName("root").orElse(new RoleModel());
+        rootRole.name = "root";
+        rootRole.permissions = new ArrayList<>(scannedPermissions.values());
+        roleRepo.save(rootRole);
     }
 
     private PermissionModel syncToDatabase(String scope, String description) {

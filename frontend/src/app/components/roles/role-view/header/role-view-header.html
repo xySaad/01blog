@@ -1,0 +1,16 @@
+<mat-panel-title> {{ role().name }} </mat-panel-title>
+<mat-panel-description>
+  <div class="description">
+    {{ role().description }}
+  </div>
+  @if (canEdit()) {
+    <div class="actions" (click)="$event.stopPropagation()">
+      <button matIconButton (click)="edit.emit(role().id)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button matIconButton (click)="delete(role().id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  }
+</mat-panel-description>

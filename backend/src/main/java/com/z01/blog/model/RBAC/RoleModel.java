@@ -29,5 +29,7 @@ public class RoleModel {
 
     public interface repo extends JpaRepository<RoleModel, Long> {
         Optional<RoleModel> findByName(String name);
+
+        boolean existsByName(String name);
     }
 }

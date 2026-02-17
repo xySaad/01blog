@@ -8,3 +8,66 @@
     </mat-card>
   }
 </div>
+
+<mat-expansion-panel (afterExpand)="loadUsers()">
+  <mat-expansion-panel-header>
+    <mat-icon>people</mat-icon>
+    <div>Users</div>
+  </mat-expansion-panel-header>
+  @if (users().length === 0) {
+    none
+  }
+  <mat-chip-set>
+    @for (user of users(); track $index) {
+      <mat-chip (click)="openUserSheet(user)" matTooltip="{{ user.firstName }} {{ user.lastName }}">
+        {{ user.login }}
+      </mat-chip>
+    }
+    <button
+      [disabled]="!canEdit()"
+      [matMenuTriggerFor]="addMenu"
+      matIconButton
+      matTooltip="Manage Users"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+  </mat-chip-set>
+  <mat-menu #addMenu="matMenu" yPosition="above" (closed)="closed()">
+    <div class="addUserMenu" (click)="$event.stopPropagation()">
+      <form ngForm (submit)="searchUser(input.value)">
+        <mat-form-field appearance="outline">
+          <input #input type="text" matInput />
+        </mat-form-field>
+      </form>
+      <mat-chip-set>
+        @for (user of selectedUsers(); track $index) {
+          <mat-chip
+            (click)="openUserSheet(user)"
+            matTooltip="{{ user.firstName }} {{ user.lastName }}"
+          >
+            {{ user.login }}
+            <button matChipRemove (click)="removeUser(user)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        }
+      </mat-chip-set>
+
+      <mat-radio-group class="userList" [(ngModel)]="choice">
+        @for (user of foundUsers(); track user.accountId) {
+          <mat-radio-button [value]="user">
+            <div class="handler">@{{ user.login }}</div>
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+      <button matButton="outlined" (click)="addUsers()" [disabled]="choice === null">
+        <mat-icon>group_add</mat-icon>
+        <span>Add</span>
+      </button>
+      <button matButton="outlined" (click)="save()" [disabled]="!changed()">
+        <mat-icon>save</mat-icon>
+        <span>Save</span>
+      </button>
+    </div>
+  </mat-menu>
+</mat-expansion-panel>

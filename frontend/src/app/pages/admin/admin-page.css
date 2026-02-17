@@ -1,3 +1,9 @@
 mat-icon {
   margin-right: 8px;
 }
+:host ::ng-deep mat-tab-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--mat-sys-background);
+}

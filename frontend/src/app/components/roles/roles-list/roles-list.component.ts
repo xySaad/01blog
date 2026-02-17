@@ -9,7 +9,7 @@ import { Role } from '../../../../types/role';
 import { API } from '../../../lib/api';
 import { CreateRole } from '../create-role/create-role.component';
 import { RoleView } from '../role-view/role-view.component';
-import { RoleViewHeader } from '../role-view/role-view-header.component';
+import { RoleViewHeader } from '../role-view/header/role-view-header.component';
 
 @Component({
   selector: 'roles-list',
@@ -36,5 +36,10 @@ export class RolesList {
   async init() {
     const roles = await API.get<Role[]>('/moderation/roles');
     this.roles.set(roles);
+  }
+  canEdit(role: Role, panel: MatExpansionPanel) {
+    const expanded = panel._getExpandedState() === 'expanded';
+    const isDefaultRole = role.id === 1;
+    return expanded && !isDefaultRole;
   }
 }

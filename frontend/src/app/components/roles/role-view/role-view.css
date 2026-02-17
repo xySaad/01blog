@@ -12,3 +12,42 @@
     }
   }
 }
+
+mat-expansion-panel {
+  background: var(--mat-sys-on-secondary);
+  margin-top: 10px;
+  div {
+    margin-left: 10px;
+  }
+}
+
+.addUserMenu {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .userList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    mat-card-header {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      justify-content: flex-start;
+
+      .handler {
+        color: var(--mat-sys-outline);
+      }
+    }
+  }
+  input {
+    padding: 0 10px;
+    border-radius: 12px;
+  }
+}

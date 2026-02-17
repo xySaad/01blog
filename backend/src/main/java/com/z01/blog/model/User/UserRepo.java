@@ -1,5 +1,6 @@
 package com.z01.blog.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,7 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByAccountId(long accountId);
 
     Optional<UserEntity> findByLogin(String login);
+
+    List<UserEntity> findTop20ByLoginStartingWithIgnoreCaseOrderByLogin(String login);
+
 }
