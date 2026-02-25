@@ -1,0 +1,54 @@
+@let report = this.report();
+<mat-card-header>
+  <div class="reason">
+    {{ report.fmtReason }}
+  </div>
+  <mat-card-title>
+    <mat-icon fontSet="material-symbols-outlined" [title]="iconTitle()">
+      {{ iconName() }}
+    </mat-icon>
+    {{ title() }}
+  </mat-card-title>
+  @let tooltip = `reported by ${report.reportedBy.login}`;
+  <mat-card-subtitle [matTooltip]="tooltip">
+    <mat-icon>flag</mat-icon>
+    {{ report.reportedBy.login }}
+  </mat-card-subtitle>
+</mat-card-header>
+
+<mat-card-content>
+  <p>
+    {{ report.description }}
+  </p>
+</mat-card-content>
+<mat-card-footer>
+  <mat-card-actions>
+    <button matButton (click)="review.emit()">
+      Review
+      <mat-icon>visibility_on</mat-icon>
+    </button>
+    <button
+      matButton
+      [matMenuTriggerFor]="menu"
+      [matMenuTriggerRestoreFocus]="false"
+      [disabled]="report.resolvedBy"
+    >
+      Take Action
+      <mat-icon>gavel</mat-icon>
+    </button>
+  </mat-card-actions>
+  @if (report.resolvedBy) {
+    <div class="resolvedBy">Resolved By {{ report.resolvedBy.login }}</div>
+  }
+</mat-card-footer>
+
+<mat-menu #menu="matMenu">
+  @for (action of actions(); track $index) {
+    @let icon = ActionIcons[action];
+
+    <button mat-menu-item (click)="takeAction(action)">
+      <mat-icon>{{ icon }}</mat-icon>
+      <span>{{ snake2StartCase(action) }}</span>
+    </button>
+  }
+</mat-menu>

@@ -24,7 +24,8 @@ async function fetchJson<T>(
 
   const contentType = resp.headers.get('content-type');
   if (!contentType?.includes('application/json')) {
-    return {} as T;
+    const text = await resp.text();
+    return (text || {}) as T;
   }
 
   const json = await resp.json();
@@ -84,6 +85,9 @@ export const API = {
     return fetchJson<T>('POST', path, init);
   },
 
+  postRaw<T>(path: string, body: any, headers?: HeadersInit) {
+    return fetchJson<T>('POST', path, { body, headers });
+  },
   postH<T extends Hydrator>(Class: Hydratable<T>, path: string, body: any, headers?: HeadersInit) {
     const init = {
       body: JSON.stringify(body),

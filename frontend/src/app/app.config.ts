@@ -1,8 +1,9 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, RouteReuseStrategy } from '@angular/router';
 import { routes } from './app.routes';
 import { CLIPBOARD_OPTIONS, provideMarkdown } from 'ngx-markdown';
 import { Copy } from './components/copy/copy.component';
+import { AppReuseStrategy } from './app-reuse-strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,6 +15,7 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    { provide: RouteReuseStrategy, useClass: AppReuseStrategy },
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
   ],

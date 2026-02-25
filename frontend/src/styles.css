@@ -66,3 +66,7 @@ body {
   width: fit-content;
   gap: 10px;
 }
+
+body .mat-mdc-menu-panel {
+  border-radius: 12px;
+}

@@ -12,7 +12,12 @@
     <mat-icon>save</mat-icon>
     {{ states.isNew ? 'save' : 'update' }}
   </button>
-  <button class="menuVert" matIconButton [matMenuTriggerFor]="menu">
+  <button
+    class="menuVert"
+    matIconButton
+    [matMenuTriggerFor]="menu"
+    [matMenuTriggerRestoreFocus]="false"
+  >
     <mat-icon>more_vert</mat-icon>
 
     <mat-menu #menu="matMenu">

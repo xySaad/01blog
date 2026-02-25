@@ -55,6 +55,8 @@ public class AuthService {
         Optional<UserEntity> user = userRepo.findById(accountId);
         if (user.isEmpty())
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if (user.get().banned)
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account is banned");
 
         return user.get().accountId;
     }

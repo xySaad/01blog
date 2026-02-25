@@ -14,5 +14,5 @@ public class UserModel {
     public String login;
     public String firstName;
     public String lastName;
-
+    public boolean banned;
 }

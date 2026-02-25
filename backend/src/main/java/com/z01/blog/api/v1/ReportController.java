@@ -16,6 +16,7 @@ import com.z01.blog.annotation.Auth;
 import com.z01.blog.model.Report.ReportModel;
 import com.z01.blog.model.Report.ReportReason;
 import com.z01.blog.model.Report.ReportRepository;
+import com.z01.blog.model.Report.ReportedBy;
 
 import cn.hutool.core.util.IdUtil;
 
@@ -41,10 +42,11 @@ public class ReportController {
     void reportEntity(@Auth.User long userId, @RequestBody Request body) {
         ReportModel report = generateReport(body.type, body.id);
         report.id = IdUtil.getSnowflake().nextId();
-        report.reportedBy = userId;
+        report.reportedBy = new ReportedBy();
+        report.reportedBy.id = userId;
         report.reason = body.reason;
         report.description = body.description;
-        report.created_at = LocalDateTime.now();
+        report.createdAt = LocalDateTime.now();
         repo.save(report);
     }
 

@@ -1,0 +1,46 @@
+<select-list [(value)]="selectedReason.value">
+  <carousel [steps]="1">
+    <select-option #option [carouselSkip]="option.selected()" value="all">All</select-option>
+    @for (reason of reportReasons; track $index) {
+      <select-option #option [value]="reason.value" [carouselSkip]="option.selected()">
+        {{ reason.text }}
+      </select-option>
+    }
+  </carousel>
+</select-list>
+<li>
+  @for (report of reports(); track $index) {
+    @if ([report.reason, 'all'].includes(selectedReason.value)) {
+      @if (report.is('POST')) {
+        <report-card
+          [report]="report"
+          [title]="report.postTitle"
+          iconName="two_pager"
+          iconTitle="Post Content"
+        />
+      } @else if (report.is('COMMENT')) {
+        <report-card
+          [report]="report"
+          [title]="report.postTitle"
+          iconName="forum"
+          iconTitle="Comment"
+        />
+      } @else if (report.is('USER')) {
+        <report-card
+          [report]="report"
+          [title]="report.userLogin"
+          iconName="person"
+          iconTitle="User Account"
+          [actions]="['BAN_USER', 'IGNORE']"
+        />
+      } @else {
+        <report-card
+          [report]="report"
+          title="N/A"
+          iconName="assignment_late"
+          iconTitle="Other System Activity"
+        />
+      }
+    }
+  }
+</li>

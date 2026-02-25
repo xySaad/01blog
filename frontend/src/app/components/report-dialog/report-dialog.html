@@ -1,7 +1,7 @@
 <div matDialogTitle>Report {{ data.item }}</div>
 <mat-dialog-content>
   <mat-radio-group [(ngModel)]="selectedReason">
-    @for (reason of reportReasons(); track $index) {
+    @for (reason of reportReasons; track $index) {
       <mat-radio-button class="example-radio-button" [value]="reason.value">
         {{ reason.text }}
       </mat-radio-button>

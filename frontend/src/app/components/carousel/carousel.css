@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+
+  .container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+  }
+}

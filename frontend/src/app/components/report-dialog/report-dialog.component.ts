@@ -15,13 +15,8 @@ import { MatIcon } from '@angular/material/icon';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { FormsModule } from '@angular/forms';
 import { DeleteDialog } from '../../pages/post/edit/delete-dialog/delete-dialog.component';
+import { global } from '../../lib/global';
 
-type ReportReason = {
-  text: string;
-  value: string;
-};
-
-let REPORT_REASONS: ReportReason[] | null = null;
 @Component({
   selector: 'report-dialog',
   templateUrl: 'report-dialog.html',
@@ -45,22 +40,10 @@ let REPORT_REASONS: ReportReason[] | null = null;
 export class ReportDialog {
   private dialogRef = inject(MatDialogRef<DeleteDialog>);
   data: { id: string; item: string } = inject(MAT_DIALOG_DATA);
-  reportReasons = signal<ReportReason[]>([]);
+  reportReasons = global.reportReasons;
   selectedReason = '';
   description = signal('');
 
-  constructor() {
-    this.init();
-  }
-
-  async init() {
-    if (!REPORT_REASONS) {
-      const reportReasons = await API.get<string[]>(`/report`);
-      REPORT_REASONS = reportReasons.map((r) => ({ text: this.snake2StartCase(r), value: r }));
-    }
-
-    this.reportReasons.set(REPORT_REASONS);
-  }
   async submit() {
     const body = {
       type: this.data.item.toUpperCase(),
@@ -70,11 +53,5 @@ export class ReportDialog {
     };
     await API.post('/report', body);
     this.dialogRef.close();
-  }
-  snake2StartCase(text: string) {
-    return text
-      .split('_')
-      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-      .join(' ');
   }
 }

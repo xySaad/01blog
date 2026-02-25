@@ -18,7 +18,7 @@
       </mat-card-header>
       <mat-card-content>
         <mat-spinner></mat-spinner>
-        <img src="{{ file.url }}" />
+        <img [src]="file.url" />
       </mat-card-content>
       <mat-card-footer>
         {{ file.name }}

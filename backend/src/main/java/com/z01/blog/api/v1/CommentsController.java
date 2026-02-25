@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.annotation.RequiresPermission;
 import com.z01.blog.annotation.EntityAccess.Mode;
 import com.z01.blog.model.Comment.CommentExtra;
 import com.z01.blog.model.Comment.CommentModel;
@@ -33,6 +34,7 @@ public class CommentsController {
     }
 
     @PostMapping("/api/v1/posts/{post}/comments")
+    @RequiresPermission(scope = "v1:comment:write", description = "create comments on certain posts")
     CommentModel create(@Auth.User long userId,
             @EntityAccess(mode = Mode.Read) PostModel post,
             @RequestBody CommentReq body) {

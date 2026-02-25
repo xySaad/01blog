@@ -1,0 +1,14 @@
+@if (isOverflowing()) {
+  <button matIconButton (click)="navigate('prev')">
+    <mat-icon fontSet="material-symbols-outlined">chevron_backward</mat-icon>
+  </button>
+}
+
+<div class="container" #scrollContainer>
+  <ng-content />
+</div>
+@if (isOverflowing()) {
+  <button matIconButton="outline" (click)="navigate('next')">
+    <mat-icon fontSet="material-symbols-outlined">chevron_forward</mat-icon>
+  </button>
+}

@@ -74,8 +74,11 @@ export class AttachmentsDialog {
 
   async uploadFile(file: FilePreview, blob: Blob) {
     const fNameNoExtension = file.name.substring(0, file.name.lastIndexOf('.'));
-    const headers = { 'X-File-Name': encodeURIComponent(fNameNoExtension) };
-    const url: string = await API.post(`/posts/${this.data.id}/media`, blob, headers);
+    const headers = {
+      'X-File-Name': encodeURIComponent(fNameNoExtension),
+      'Content-Type': 'application/octet-stream',
+    };
+    const url: string = await API.postRaw(`/posts/${this.data.id}/media`, blob, headers);
     file.url = url;
     file.loading.set(false);
   }

@@ -1,0 +1,31 @@
+.reason {
+  margin-left: auto;
+  width: fit-content;
+  height: fit-content;
+  font-size: small;
+  border-bottom: solid var(--mat-sys-outline) 1px;
+}
+mat-card-title {
+  align-items: center;
+  display: flex;
+}
+
+mat-card-subtitle {
+  display: flex;
+  align-items: center;
+  font-size: small;
+
+  mat-icon {
+    font-size: medium;
+    width: fit-content;
+    height: fit-content;
+  }
+}
+mat-card-footer {
+  display: flex;
+  align-items: center;
+
+  mat-card-actions {
+    margin-right: auto;
+  }
+}
