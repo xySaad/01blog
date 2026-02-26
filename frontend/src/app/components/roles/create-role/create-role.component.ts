@@ -1,6 +1,11 @@
 import { Component, computed, effect, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+  MatOptgroup,
+} from '@angular/material/autocomplete';
 import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIcon } from '@angular/material/icon';
@@ -29,6 +34,7 @@ import { MatAnchor } from '@angular/material/button';
     FormsModule,
     MatTooltip,
     MatAnchor,
+    MatOptgroup,
   ],
 })
 export class CreateRole {
@@ -53,14 +59,27 @@ export class CreateRole {
 
   permissions = computed(() => {
     const roles = this.roles();
-    const permissions = roles.flatMap((r) => r.permissions);
+    const allPermissions = roles.flatMap((r) => r.permissions);
     const seen = new Set<number>();
+    const selectedIds = new Set(this.selectedPermissions().map((p) => p.id));
 
-    return permissions.filter((perm) => {
-      if (seen.has(perm.id)) return false;
+    const unassigned: Permission[] = [];
+    const assigned: Permission[] = [];
+
+    for (const perm of allPermissions) {
+      if (seen.has(perm.id)) continue;
       seen.add(perm.id);
-      return perm.scope.includes(this.permInput);
-    });
+
+      if (!perm.scope.includes(this.permInput)) continue;
+
+      if (selectedIds.has(perm.id)) assigned.push(perm);
+      else unassigned.push(perm);
+    }
+
+    return [
+      { label: 'Available', perms: unassigned },
+      { label: 'Assigned', perms: assigned },
+    ];
   });
 
   selectedPermissions = signal<Permission[]>([]);

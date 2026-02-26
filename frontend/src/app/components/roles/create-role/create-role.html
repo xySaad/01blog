@@ -13,10 +13,14 @@
   <mat-label>permissions</mat-label>
   <input type="text" matInput [matAutocomplete]="autoGroup" [(ngModel)]="permInput" />
   <mat-autocomplete #autoGroup="matAutocomplete">
-    @for (perm of permissions(); track $index) {
-      <div (click)="select(perm)">
-        <mat-option [value]="perm.scope">{{ perm.scope }}</mat-option>
-      </div>
+    @for (group of permissions(); track $index) {
+      <mat-optgroup [label]="group.label">
+        @for (perm of group.perms; track $index) {
+          <mat-option [value]="perm.scope" (click)="select(perm)">
+            {{ perm.scope }}
+          </mat-option>
+        }
+      </mat-optgroup>
     }
   </mat-autocomplete>
 </mat-form-field>
