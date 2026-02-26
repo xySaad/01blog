@@ -51,7 +51,7 @@ public class AuditService {
                 commentRepo.save(comment);
             }
             case ReportModel.Post rp -> {
-                var post = postRepo.findById(rp.postId).get();
+                var post = postRepo.findById(rp.postId);
                 post.deleted = true;
                 postRepo.save(post);
             }
@@ -69,7 +69,7 @@ public class AuditService {
                 userRepo.save(user);
             }
             case ReportModel.Post rp -> {
-                var post = postRepo.findById(rp.postId).get();
+                var post = postRepo.findById(rp.postId);
                 var user = userRepo.findById(post.account).get();
                 user.banned = true;
                 userRepo.save(user);
