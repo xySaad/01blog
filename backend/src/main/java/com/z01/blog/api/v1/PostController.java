@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.EntityAccess;
 import com.z01.blog.annotation.EntityAccess.Mode;
+import com.z01.blog.model.DTO.PostRequest;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostModel;
 import com.z01.blog.model.Post.PostRepo;
@@ -23,14 +24,11 @@ public class PostController {
     @Autowired
     PostRepo postRepo;
 
-    record Request(String title, String content, boolean isPublic) {
-    }
-
     record Response(String id, boolean isPublic, LocalDateTime updatedAt) {
     };
 
     @PostMapping("/api/v1/posts/")
-    Response create(@RequestBody @Valid Request req, @Auth.User long userId) {
+    Response create(@RequestBody @Valid PostRequest req, @Auth.User long userId) {
         PostModel post = new PostExtra();
         post.id = IdUtil.getSnowflake().nextId();
         post.account = userId;
@@ -46,7 +44,7 @@ public class PostController {
     // TODO: change method to PUT
     @PostMapping("/api/v1/posts/{oldPost}")
     Response update(
-            @RequestBody @Valid PostExtra post,
+            @RequestBody @Valid PostRequest post,
             @EntityAccess(mode = Mode.Write) PostModel oldPost) {
 
         oldPost.title = post.title;

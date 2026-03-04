@@ -16,17 +16,16 @@ import com.z01.blog.annotation.EntityAccess.Mode;
 import com.z01.blog.model.Comment.CommentExtra;
 import com.z01.blog.model.Comment.CommentModel;
 import com.z01.blog.model.Comment.CommentRepo;
+import com.z01.blog.model.DTO.CommentRequest;
 import com.z01.blog.model.Post.PostModel;
 
 import cn.hutool.core.util.IdUtil;
+import jakarta.validation.Valid;
 
 @RestController
 public class CommentsController {
     @Autowired
     CommentRepo commentRepo;
-
-    public record CommentReq(String content) {
-    }
 
     @GetMapping("/api/v1/posts/{post}/comments")
     List<CommentExtra> getPostComments(@EntityAccess(mode = Mode.Read) PostModel post) {
@@ -36,7 +35,7 @@ public class CommentsController {
     @PostMapping("/api/v1/posts/{post}/comments")
     CommentModel create(@Auth.User long userId,
             @EntityAccess(mode = Mode.Read) PostModel post,
-            @RequestBody CommentReq body) {
+            @RequestBody @Valid CommentRequest body) {
 
         CommentModel comment = new CommentModel();
         comment.id = IdUtil.getSnowflake().nextId();
@@ -53,7 +52,7 @@ public class CommentsController {
     }
 
     @PutMapping("/api/v1/comments/{comment}")
-    void update(@EntityAccess(mode = Mode.Write) CommentModel comment, @RequestBody CommentReq body) {
+    void update(@EntityAccess(mode = Mode.Write) CommentModel comment, @RequestBody @Valid CommentRequest body) {
         comment.content = body.content;
         commentRepo.save(comment);
     }

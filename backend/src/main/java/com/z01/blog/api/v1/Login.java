@@ -12,11 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Account;
-import com.z01.blog.model.AuthRequest;
 import com.z01.blog.model.Session;
+import com.z01.blog.model.DTO.AuthRequest;
 
 import io.jsonwebtoken.Jwts;
 
@@ -30,7 +31,7 @@ public class Login {
     private Session.repo sessionRepo;
 
     @PostMapping("/api/v1/login")
-    void login(@RequestBody AuthRequest body, HttpServletResponse response) {
+    void login(@RequestBody @Valid AuthRequest body, HttpServletResponse response) {
         Optional<Account> account = accRepo.findByEmail(body.email);
         if (account.isEmpty()) {
             throw AppError.INVALID_EMAIL_OR_PASSWORD.asException();

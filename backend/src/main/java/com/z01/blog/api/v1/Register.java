@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Account;
-import com.z01.blog.model.AuthRequest;
 import com.z01.blog.model.Session;
+import com.z01.blog.model.DTO.AuthRequest;
 import com.z01.blog.services.EmailService;
 
 import cn.hutool.core.util.IdUtil;
@@ -35,7 +35,7 @@ public class Register {
     private SecretKey jwtKey;
 
     @PostMapping("/api/v1/register")
-    public void register(@Valid @RequestBody AuthRequest body, HttpServletResponse response) {
+    public void register(@RequestBody @Valid AuthRequest body, HttpServletResponse response) {
         if (accRepo.existsByEmail(body.email)) {
             throw AppError.EMAIL_ALREADY_EXISTS.asException();
         }

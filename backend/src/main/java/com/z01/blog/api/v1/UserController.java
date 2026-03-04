@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.RequiresPermission;
 import com.z01.blog.exception.AppError;
+import com.z01.blog.model.DTO.UserUpdateRequest;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostRepo;
 import com.z01.blog.model.RBAC.AccountRoleModel;
@@ -22,6 +23,8 @@ import com.z01.blog.model.RBAC.RoleModel;
 import com.z01.blog.model.User.UserEntity;
 import com.z01.blog.model.User.UserExtra;
 import com.z01.blog.model.User.UserRepo;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -46,10 +49,8 @@ public class UserController {
     }
 
     @PostMapping
-    public void saveOrUpdate(@Auth.Account long accountId, @RequestBody UserEntity data) {
-        data.accountId = accountId;
-
-        if (userRepo.existsByLogin(data.login)) {
+    public void saveOrUpdate(@Auth.Account long accountId, @RequestBody @Valid UserUpdateRequest req) {
+        if (userRepo.existsByLogin(req.login)) {
             throw AppError.USERNAME_ALREADY_EXISTS.asException();
         }
 
@@ -60,7 +61,13 @@ public class UserController {
             accountRoleRepo.save(accRole);
         }
 
-        userRepo.save(data);
+        var user = userRepo.findByAccountId(accountId).orElse(new UserEntity());
+        user.accountId = accountId;
+        user.login = req.login;
+        user.firstName = req.firstName;
+        user.lastName = req.lastName;
+
+        userRepo.save(user);
     }
 
     @GetMapping("{id}/posts")
