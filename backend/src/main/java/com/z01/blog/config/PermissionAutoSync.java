@@ -44,7 +44,7 @@ public class PermissionAutoSync implements ApplicationListener<ContextRefreshedE
             roleRepo.save(defaultRole);
         }
 
-        // create root role with no permissions
+        // create root role with all permissions
         var rootRole = roleRepo.findByName("root").orElse(new RoleModel());
         rootRole.name = "root";
         rootRole.permissions = new ArrayList<>(scannedPermissions.values());
