@@ -6,10 +6,9 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Session;
 import com.z01.blog.model.User.UserEntity;
 import com.z01.blog.model.User.UserRepo;
@@ -46,7 +45,7 @@ public class AuthService {
 
             return accountId;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw AppError.INVALID_JWT.asException();
         }
     }
 
@@ -54,9 +53,9 @@ public class AuthService {
         long accountId = getAccountId(jwt);
         Optional<UserEntity> user = userRepo.findById(accountId);
         if (user.isEmpty())
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw AppError.USER_NOT_FOUND.asException();
         if (user.get().banned)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account is banned");
+            throw AppError.ACCOUNT_IS_BANNED.asException();
 
         return user.get().accountId;
     }

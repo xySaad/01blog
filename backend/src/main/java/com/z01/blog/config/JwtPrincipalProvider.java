@@ -1,11 +1,10 @@
 package com.z01.blog.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.WebUtils;
 
+import com.z01.blog.exception.AppError;
 import com.z01.blog.infrastructure.PrincipalProvider;
 import com.z01.blog.services.AuthService;
 
@@ -23,7 +22,7 @@ public class JwtPrincipalProvider implements PrincipalProvider<Long> {
     public Long getCurrentPrincipal() {
         Cookie cookie = WebUtils.getCookie(request, "jwt");
         if (cookie == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw AppError.MISSING_JWT_TOKEN.asException();
 
         return authService.getUserId(cookie.getValue());
     }

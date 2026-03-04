@@ -2,22 +2,26 @@ package com.z01.blog.api.v1;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+
 import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
+
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Account;
 import com.z01.blog.model.AuthRequest;
 import com.z01.blog.model.Session;
 import com.z01.blog.services.EmailService;
+
 import cn.hutool.core.util.IdUtil;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @RestController
 public class Register {
@@ -31,9 +35,9 @@ public class Register {
     private SecretKey jwtKey;
 
     @PostMapping("/api/v1/register")
-    public ResponseEntity<String> register(@Valid @RequestBody AuthRequest body) {
+    public void register(@Valid @RequestBody AuthRequest body, HttpServletResponse response) {
         if (accRepo.existsByEmail(body.email)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
+            throw AppError.EMAIL_ALREADY_EXISTS.asException();
         }
 
         Account account = new Account();
@@ -69,6 +73,6 @@ public class Register {
                 .sameSite("Lax")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.OK).header("Set-Cookie", cookie.toString()).body(null);
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

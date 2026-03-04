@@ -1,15 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { global } from '../../../lib/global';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { API } from '../../../lib/api';
+import { WhileState } from '../../../lib/decorators/loading';
 @Component({
   styles: [
     `
@@ -97,42 +97,23 @@ export class Register {
     this.data.lastName = value;
   }
 
+  @WhileState((self) => self.loading)
   async register() {
-    this.loading.set(true);
-
-    try {
-      await API.post('/register', this.data);
-      this.selectedIndex.set(1);
-    } catch (error) {
-      //TODO: show error modal
-    }
-
-    this.loading.set(false);
+    await API.post('/register', this.data);
+    this.selectedIndex.set(1);
   }
 
+  @WhileState((self) => self.loading)
   async verify() {
-    this.loading.set(true);
-    try {
-      const res = await API.post('/verify', this.data.code.toString());
-      this.selectedIndex.set(2);
-    } catch (error) {
-      //TODO: show error modal
-    }
-
-    this.loading.set(false);
+    const res = await API.post('/verify', this.data.code.toString());
+    this.selectedIndex.set(2);
   }
 
+  @WhileState((self) => self.loading)
   async createUser() {
-    this.loading.set(true);
-    try {
-      await API.post('/user', this.data);
-      this.selectedIndex.set(3); // necessary?
-      localStorage.setItem('lastLogin', Date.now().toString());
-      this.router.navigate(['/']);
-    } catch (error) {
-      //TODO: show error modal
-    }
-
-    this.loading.set(false);
+    await API.post('/user', this.data);
+    this.selectedIndex.set(3); // necessary?
+    localStorage.setItem('lastLogin', Date.now().toString());
+    this.router.navigate(['/']);
   }
 }

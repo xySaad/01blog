@@ -7,13 +7,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
+import com.z01.blog.exception.AppError;
 
 @Service
 public class CloudinaryService {
@@ -51,7 +50,7 @@ public class CloudinaryService {
 
             return resources.stream().map(resource -> (String) resource.get("url")).toList();
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw AppError.FAILED_TO_FETCH_MEDIA.asException();
         }
     }
 }

@@ -1,7 +1,14 @@
 <mat-form-field appearance="outline">
   <mat-icon matPrefix class="avatar">person</mat-icon>
   <textarea cdkTextareaAutosize matInput #text placeholder="Write a comment"></textarea>
-  <button matSuffix matIconButton (click)="sendComment(text.value); text.value = ''">
+
+  <button
+    loadingButton
+    matSuffix
+    matIconButton
+    [hideContent]="true"
+    [onClick]="sendComment.bind(this, text)"
+  >
     <mat-icon>send</mat-icon>
   </button>
 </mat-form-field>

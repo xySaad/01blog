@@ -8,10 +8,12 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import jakarta.servlet.http.HttpServletResponse;
 
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Account;
 import com.z01.blog.model.AuthRequest;
 import com.z01.blog.model.Session;
@@ -28,14 +30,14 @@ public class Login {
     private Session.repo sessionRepo;
 
     @PostMapping("/api/v1/login")
-    ResponseEntity<?> login(@RequestBody AuthRequest body) {
+    void login(@RequestBody AuthRequest body, HttpServletResponse response) {
         Optional<Account> account = accRepo.findByEmail(body.email);
         if (account.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw AppError.INVALID_EMAIL_OR_PASSWORD.asException();
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (!encoder.matches(body.password, account.get().passwordHash)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
         long id = account.get().id;
@@ -55,6 +57,6 @@ public class Login {
                 .sameSite("Lax")
                 .build();
 
-        return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

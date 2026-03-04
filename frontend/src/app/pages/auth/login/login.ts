@@ -1,13 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { MatAnchor } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { global } from '../../../lib/global';
 import { API } from '../../../lib/api';
+import { WhileState } from '../../../lib/decorators/loading';
 
 @Component({
   styles: [
@@ -45,16 +45,10 @@ export class Login {
     this.data.password = value;
   }
 
+  @WhileState((self) => self.loading)
   async login() {
-    this.loading.set(true);
-    try {
-      await API.post('/login', this.data);
-      localStorage.setItem('lastLogin', Date.now().toString());
-      this.router.navigate(['/']);
-    } catch (error) {
-      //TODO: show error modal
-    }
-
-    this.loading.set(false);
+    await API.post('/login', this.data);
+    localStorage.setItem('lastLogin', Date.now().toString());
+    this.router.navigate(['/']);
   }
 }

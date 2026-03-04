@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.RequiresPermission;
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostRepo;
 import com.z01.blog.model.RBAC.AccountRoleModel;
@@ -47,8 +46,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveOrUpdate(@Auth.Account long accountId, @RequestBody UserEntity data) {
+    public void saveOrUpdate(@Auth.Account long accountId, @RequestBody UserEntity data) {
         data.accountId = accountId;
+
+        if (userRepo.existsByLogin(data.login)) {
+            throw AppError.USERNAME_ALREADY_EXISTS.asException();
+        }
 
         var defaultRole = roleRepo.findByName("default").get();
 
@@ -57,12 +60,7 @@ public class UserController {
             accountRoleRepo.save(accRole);
         }
 
-        try {
-            userRepo.save(data);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        userRepo.save(data);
     }
 
     @GetMapping("{id}/posts")

@@ -16,6 +16,8 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByLogin(String login);
 
+    boolean existsByLogin(String login);
+
     List<UserEntity> findTop20ByLoginStartingWithIgnoreCaseOrderByLogin(String login);
 
 }

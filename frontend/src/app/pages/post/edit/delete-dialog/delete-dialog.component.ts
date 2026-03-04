@@ -39,7 +39,6 @@ export class DeleteDialog {
       postDrafts.delete(this.data.id);
     } else {
       await API.delete(`/posts/${this.data.id}`);
-      //TODO: handle success and error
     }
 
     this.dialogRef.close(true);

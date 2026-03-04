@@ -141,19 +141,16 @@ export class PostEdit {
   async save() {
     const post = this.localPostData();
     const pathId = this.states.isNew ? '' : post.id;
-    try {
-      const postUpdate = await API.postH(Post, `/posts/${pathId}`, post);
-      const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
-      postDrafts.delete(post.id);
-      const newPost = Object.assign(post, postUpdate);
-      this.syncedPostData.update((prev) => Object.assign(prev, newPost));
-      this.localPostData.patch((prev) => Object.assign(prev, newPost));
-      if (this.states.isNew) {
-        history.replaceState({}, '', `/posts/${newPost.id}`);
-        this.states.isNew = false;
-      }
-    } catch (error) {
-      //TODO: show error modal
+
+    const postUpdate = await API.postH(Post, `/posts/${pathId}`, post);
+    const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+    postDrafts.delete(post.id);
+    const newPost = Object.assign(post, postUpdate);
+    this.syncedPostData.update((prev) => Object.assign(prev, newPost));
+    this.localPostData.patch((prev) => Object.assign(prev, newPost));
+    if (this.states.isNew) {
+      history.replaceState({}, '', `/posts/${newPost.id}`);
+      this.states.isNew = false;
     }
   }
 

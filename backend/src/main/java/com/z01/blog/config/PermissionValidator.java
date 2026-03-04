@@ -20,7 +20,6 @@ public class PermissionValidator implements PermissionProvider {
     @Override
     public boolean hasPermission(String scope) {
         Long accountId = principalProvider.getCurrentPrincipal();
-        System.out.println("account with id: " + accountId + " needs: " + scope);
         return roleRepo.existsById_AccountIdAndRole_Permissions_Scope(accountId, scope);
     }
 }

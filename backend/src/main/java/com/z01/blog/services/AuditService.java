@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Audit.AuditData;
 import com.z01.blog.model.Comment.CommentRepo;
 import com.z01.blog.model.Post.PostRepo;
@@ -29,7 +30,7 @@ public class AuditService {
         var report = reportRepo.findById(request.id())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (report.resolvedBy != null)
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Report already resolved");
+            throw AppError.REPORT_ALREADY_RESOLVED.asException();
 
         switch (request.action()) {
             case BAN_USER -> banUser(report);

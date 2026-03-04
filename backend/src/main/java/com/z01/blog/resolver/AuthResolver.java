@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.WebUtils;
 
 import com.z01.blog.annotation.Auth;
+import com.z01.blog.exception.AppError;
 import com.z01.blog.services.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         Cookie cookie = WebUtils.getCookie(request, "jwt");
         if (cookie == null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw AppError.MISSING_JWT_TOKEN.asException();
 
         if (parameter.hasParameterAnnotation(Auth.User.class))
             return this.authService.getUserId(cookie.getValue());

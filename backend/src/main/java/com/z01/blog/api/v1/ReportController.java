@@ -4,15 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.z01.blog.annotation.Auth;
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Report.ReportModel;
 import com.z01.blog.model.Report.ReportReason;
 import com.z01.blog.model.Report.ReportRepository;
@@ -68,7 +67,7 @@ public class ReportController {
                 return ur;
             }
             default -> {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                throw AppError.INVALID_REPORT_TYPE.asException();
             }
         }
     }

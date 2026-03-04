@@ -1,9 +1,7 @@
 package com.z01.blog.model;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.exception.AppError;
 import com.z01.blog.infrastructure.RestrictedEntity;
 
 import jakarta.persistence.Id;
@@ -23,7 +21,7 @@ public class BaseEntity implements RestrictedEntity<Long> {
     @Override
     public void ensureAccess(Long userId, EntityAccess.Mode accessMode) {
         if (deleted)
-            throw new ResponseStatusException(HttpStatus.GONE);
+            throw AppError.ENTITY_DELETED.asException();
 
         if (accessMode == EntityAccess.Mode.Read)
             return;
@@ -31,6 +29,6 @@ public class BaseEntity implements RestrictedEntity<Long> {
         if (userId != null && userId == account)
             return;
 
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        throw AppError.ACCESS_DENIED.asException();
     }
 }

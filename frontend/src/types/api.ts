@@ -3,14 +3,18 @@ export interface Hydrator {
 }
 export type Hydratable<T extends Hydrator> = new () => T;
 
-export class ApiError implements Error {
-  name: string;
-  message: string;
+export class FetchError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class ApiError extends FetchError {
   status: number;
 
   constructor(status: number, message: string) {
-    this.name = ApiError.name;
+    super(message);
     this.status = status;
-    this.message = message;
   }
 }

@@ -2,6 +2,7 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCard, MatCardContent, MatCardFooter } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -10,9 +11,9 @@ import { Comment, CommentExtra } from '../../../types/comment';
 import { API } from '../../lib/api';
 import { WhileState } from '../../lib/decorators/loading';
 import { global } from '../../lib/global';
-import { UserHeader } from '../user-header/header.component';
+import { LoadingButton } from '../loading-button.component';
 import { ReportDialog } from '../report-dialog/report-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { UserHeader } from '../user-header/header.component';
 
 @Component({
   selector: 'comments-list',
@@ -29,6 +30,7 @@ import { MatDialog } from '@angular/material/dialog';
     CdkTextareaAutosize,
     MatCardFooter,
     MatInput,
+    LoadingButton,
   ],
 })
 export class CommentsList implements OnInit {
@@ -45,10 +47,12 @@ export class CommentsList implements OnInit {
   }
 
   @WhileState((self: CommentsList) => self.loading)
-  async sendComment(content: string) {
+  async sendComment(text: HTMLTextAreaElement) {
+    const content = text.value;
     const comment: Comment = await API.post(`/posts/${this.postId()}/comments`, { content });
 
     this.comments.update((prev) => [{ ...comment, owner: global.user }, ...prev]);
+    text.value = '';
   }
 
   @WhileState((self: CommentsList) => self.loading)

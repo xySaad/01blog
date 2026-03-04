@@ -19,6 +19,8 @@ export const authGuard = async () => {
     if (error instanceof ApiError) {
       let step = error.status === 403 ? 'verify' : error.status === 404 ? 'profile' : undefined;
       if (step) return router.parseUrl(`/auth/register?step=${step}`);
+    } else {
+      throw error;
     }
 
     const path = localStorage.getItem('lastLogin') === null ? 'register' : 'login';

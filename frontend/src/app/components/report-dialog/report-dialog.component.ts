@@ -1,21 +1,22 @@
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatAnchor } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogContent,
-  MatDialogTitle,
   MatDialogClose,
+  MatDialogContent,
   MatDialogRef,
+  MatDialogTitle,
 } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatInput, MatLabel, MatPrefix } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { API } from '../../lib/api';
-import { MatFormField, MatLabel, MatInput, MatPrefix } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { FormsModule } from '@angular/forms';
-import { DeleteDialog } from '../../pages/post/edit/delete-dialog/delete-dialog.component';
 import { global } from '../../lib/global';
+import { DeleteDialog } from '../../pages/post/edit/delete-dialog/delete-dialog.component';
+import { LoadingButton } from '../loading-button.component';
 
 @Component({
   selector: 'report-dialog',
@@ -35,6 +36,7 @@ import { global } from '../../lib/global';
     MatPrefix,
     CdkTextareaAutosize,
     FormsModule,
+    LoadingButton,
   ],
 })
 export class ReportDialog {
