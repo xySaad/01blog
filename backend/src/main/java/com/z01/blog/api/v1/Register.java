@@ -16,6 +16,8 @@ import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Account;
 import com.z01.blog.model.Session;
 import com.z01.blog.model.DTO.AuthRequest;
+import com.z01.blog.model.RBAC.AccountRoleModel;
+import com.z01.blog.model.RBAC.RoleModel;
 import com.z01.blog.services.EmailService;
 
 import cn.hutool.core.util.IdUtil;
@@ -33,6 +35,10 @@ public class Register {
     private Session.repo sessionRepo;
     @Autowired
     private SecretKey jwtKey;
+    @Autowired
+    private AccountRoleModel.repo accountRoleRepo;
+    @Autowired
+    private RoleModel.repo roleRepo;
 
     @PostMapping("/api/v1/register")
     public void register(@RequestBody @Valid AuthRequest body, HttpServletResponse response) {
@@ -47,6 +53,10 @@ public class Register {
         account.codeCreatedAt = LocalDateTime.now();
         account.verificationCode = new Random().nextInt(999999);
         accRepo.save(account);
+
+        var defaultRole = roleRepo.findByName("default").get();
+        var accRole = new AccountRoleModel(account.id, defaultRole);
+        accountRoleRepo.save(accRole);
 
         // TODO: implement refresh and access token
         String jwt = Jwts.builder()

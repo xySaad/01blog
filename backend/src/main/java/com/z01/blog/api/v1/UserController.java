@@ -18,8 +18,6 @@ import com.z01.blog.exception.AppError;
 import com.z01.blog.model.DTO.UserUpdateRequest;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostRepo;
-import com.z01.blog.model.RBAC.AccountRoleModel;
-import com.z01.blog.model.RBAC.RoleModel;
 import com.z01.blog.model.User.UserEntity;
 import com.z01.blog.model.User.UserExtra;
 import com.z01.blog.model.User.UserRepo;
@@ -33,10 +31,6 @@ public class UserController {
     private UserRepo userRepo;
     @Autowired
     private PostRepo postRepo;
-    @Autowired
-    private AccountRoleModel.repo accountRoleRepo;
-    @Autowired
-    private RoleModel.repo roleRepo;
 
     @DeleteMapping
     public void delete(@Auth.Account long accountId) {
@@ -52,13 +46,6 @@ public class UserController {
     public void saveOrUpdate(@Auth.Account long accountId, @RequestBody @Valid UserUpdateRequest req) {
         if (userRepo.existsByLogin(req.login)) {
             throw AppError.USERNAME_ALREADY_EXISTS.asException();
-        }
-
-        var defaultRole = roleRepo.findByName("default").get();
-
-        if (!accountRoleRepo.existsById_AccountIdAndRole(accountId, defaultRole)) {
-            var accRole = new AccountRoleModel(accountId, defaultRole);
-            accountRoleRepo.save(accRole);
         }
 
         var user = userRepo.findByAccountId(accountId).orElse(new UserEntity());
