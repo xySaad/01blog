@@ -14,6 +14,7 @@ import { User } from '../../../types/user';
 import { global } from '../../lib/global';
 import { RouterLink } from '@angular/router';
 import { API } from '../../lib/api';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'user-header',
@@ -41,7 +42,7 @@ export class UserHeader {
   edit = output<void>();
   report = output<void>();
 
-  me = global.user;
+  me = inject(UserService).user;
   router = inject(Router);
 
   visitProfile() {

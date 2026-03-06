@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,5 +32,12 @@ public class RoleModel {
         Optional<RoleModel> findByName(String name);
 
         boolean existsByName(String name);
+
+        @Query("""
+                SELECT DISTINCT p.scope FROM RoleModel r
+                JOIN r.permissions p
+                JOIN AccountRoleModel ar ON ar.id.roleId = r.id
+                WHERE ar.id.accountId = :accountId""")
+        List<String> findScopeByAccountId(long accountId);
     }
 }

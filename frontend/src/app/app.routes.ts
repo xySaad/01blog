@@ -10,6 +10,7 @@ import { Home } from './pages/home/home';
 import { PostPage } from './pages/post/post.page';
 import { UserPage } from './pages/user/user-page';
 import { AdminPage } from './pages/admin/admin-page';
+import { adminGuard } from './guards/admin.guard';
 export const routes: Routes = [
   {
     path: 'auth',
@@ -54,7 +55,6 @@ export const routes: Routes = [
     component: UserPage,
     canActivate: [authGuard],
   },
-  { path: 'admin', component: AdminPage },
-  { matcher: AdminPage.matcher('admin/:tab'), component: AdminPage },
+  { path: 'admin', component: AdminPage, canMatch: [adminGuard] },
   { path: '**', component: NotFound },
 ];

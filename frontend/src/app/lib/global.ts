@@ -1,9 +1,7 @@
-import { User } from '../../types/user';
 import { API } from './api';
 import { snake2StartCase } from './fmt';
 
 export const global = {
-  user: new User(),
   reportReasons: await getReportReasons(),
 };
 

@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { API } from '../../../lib/api';
 import { WhileState } from '../../../lib/decorators/loading';
+import { UserService } from '../../../services/user.service';
 @Component({
   styles: [
     `
@@ -40,6 +41,7 @@ import { WhileState } from '../../../lib/decorators/loading';
 export class Register {
   router = inject(Router);
   loading = signal(false);
+  readonly user = inject(UserService);
 
   errors = {
     email: '',
@@ -115,5 +117,6 @@ export class Register {
     this.selectedIndex.set(3); // necessary?
     localStorage.setItem('lastLogin', Date.now().toString());
     this.router.navigate(['/']);
+    this.user.init();
   }
 }

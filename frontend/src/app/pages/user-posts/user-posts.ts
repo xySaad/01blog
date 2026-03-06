@@ -4,8 +4,8 @@ import { Collection } from '../../../types/collection';
 import { Post } from '../../../types/post';
 import { PostCard } from '../../components/post-card/post-card.component';
 import { API } from '../../lib/api';
-import { global } from '../../lib/global';
 import { DB_NAME, Storage } from '../../services/storage.service';
+import { UserService } from '../../services/user.service';
 @Component({
   templateUrl: 'user-posts.html',
   styleUrl: 'user-posts.css',
@@ -22,7 +22,7 @@ export class PostsList {
   private db = inject(Storage);
   protected syncedPosts = signal<Post[]>([]);
   protected draftposts = signal<Post[]>([]);
-
+  selfUser = inject(UserService).user;
   constructor() {
     this.init();
   }
@@ -30,7 +30,7 @@ export class PostsList {
   async init() {
     const syncedPosts = await API.getH(
       Collection(Types.Post),
-      `/user/${global.user.accountId}/posts`,
+      `/user/${this.selfUser.accountId}/posts`,
     );
     this.syncedPosts.set(syncedPosts);
 

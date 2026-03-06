@@ -8,6 +8,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { API } from '../../../lib/api';
 import { WhileState } from '../../../lib/decorators/loading';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   styles: [
@@ -27,6 +28,8 @@ import { WhileState } from '../../../lib/decorators/loading';
 export class Login {
   router = inject(Router);
   loading = signal(false);
+  readonly user = inject(UserService);
+
   name = '';
   data = {
     email: '',
@@ -49,6 +52,7 @@ export class Login {
   async login() {
     await API.post('/login', this.data);
     localStorage.setItem('lastLogin', Date.now().toString());
+    await this.user.init();
     this.router.navigate(['/']);
   }
 }

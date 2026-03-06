@@ -12,14 +12,14 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../../../types/post';
+import { PostCardContent } from '../../../components/post-view/content/content.component';
 import { API } from '../../../lib/api';
 import { WhileState } from '../../../lib/decorators/loading';
+import { betterSignal } from '../../../lib/signal';
 import { DB_NAME, Storage } from '../../../services/storage.service';
+import { UserService } from '../../../services/user.service';
 import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
 import { DeleteDialog } from './delete-dialog/delete-dialog.component';
-import { betterSignal } from '../../../lib/signal';
-import { PostCardContent } from '../../../components/post-view/content/content.component';
-import { global } from '../../../lib/global';
 
 @Component({
   selector: 'post-edit',
@@ -46,7 +46,7 @@ export class PostEdit {
   private readonly activeRoute = inject(ActivatedRoute);
   private readonly db = inject(Storage);
   private readonly router = inject(Router);
-
+  selfUser = inject(UserService).user;
   syncedPostData = signal(new Post());
   localPostData = betterSignal(new Post());
   states = {
@@ -82,7 +82,7 @@ export class PostEdit {
       this.states.isNew = true;
       const localPostData = Object.assign(
         new Post(),
-        { id: postId, owner: global.user, account: global.user.accountId },
+        { id: postId, owner: this.selfUser, account: this.selfUser.accountId },
         storedLocalPost,
       );
 

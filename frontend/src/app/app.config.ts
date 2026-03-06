@@ -1,10 +1,17 @@
-import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter, RouteReuseStrategy } from '@angular/router';
 import { CLIPBOARD_OPTIONS, provideMarkdown } from 'ngx-markdown';
 import { AppReuseStrategy } from './app-reuse-strategy';
 import { routes } from './app.routes';
 import { Copy } from './components/copy/copy.component';
 import { GlobalExceptions } from './services/global-exceptions.service';
+import { UserService } from './services/user.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,5 +22,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     { provide: ErrorHandler, useClass: GlobalExceptions },
+    provideAppInitializer(async () => await inject(UserService).init()),
   ],
 };

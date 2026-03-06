@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Comment, CommentExtra } from '../../../types/comment';
 import { API } from '../../lib/api';
 import { WhileState } from '../../lib/decorators/loading';
-import { global } from '../../lib/global';
+import { UserService } from '../../services/user.service';
 import { LoadingButton } from '../loading-button.component';
 import { ReportDialog } from '../report-dialog/report-dialog.component';
 import { UserHeader } from '../user-header/header.component';
@@ -34,7 +34,7 @@ import { UserHeader } from '../user-header/header.component';
   ],
 })
 export class CommentsList implements OnInit {
-  readonly user = global.user;
+  readonly user = inject(UserService).user;
   readonly postId = input.required<string>();
 
   comments = signal<CommentExtra[]>([]);
@@ -51,7 +51,7 @@ export class CommentsList implements OnInit {
     const content = text.value;
     const comment: Comment = await API.post(`/posts/${this.postId()}/comments`, { content });
 
-    this.comments.update((prev) => [{ ...comment, owner: global.user }, ...prev]);
+    this.comments.update((prev) => [{ ...comment, owner: this.user }, ...prev]);
     text.value = '';
   }
 
