@@ -1,5 +1,4 @@
 import { Hydrator } from './api';
-import { Post } from './post';
 
 export class User {
   accountId = '';
@@ -10,12 +9,7 @@ export class User {
   banned = false;
 }
 
-export class UserExtra extends User implements Hydrator {
-  posts: Post[] = [];
+export class UserExtra extends User {
   followersCount = 0;
   followingCount = 0;
-
-  hydrate() {
-    this.posts.forEach((p) => Post.prototype.hydrate.call(p));
-  }
 }

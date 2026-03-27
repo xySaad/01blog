@@ -8,6 +8,8 @@ import { UserHeader } from '../../components/user-header/header.component';
 import { API } from '../../lib/api';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialog } from '../../components/report-dialog/report-dialog.component';
+import { Post } from '../../../types/post';
+import { Collection } from '../../../types/collection';
 
 @Component({
   selector: 'user-page',
@@ -18,11 +20,13 @@ import { ReportDialog } from '../../components/report-dialog/report-dialog.compo
 export class UserPage {
   route = inject(ActivatedRoute);
   user = signal(new UserExtra());
+  posts = signal<Post[]>([]);
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) throw new Error('must provide id param');
-    API.getH(UserExtra, `/user/${id}`).then(this.user.set);
+    API.get<UserExtra>(`/user/${id}`).then(this.user.set);
+    API.getH(Collection(Post), `/user/${id}/posts`).then(this.posts.set);
   }
 
   private readonly dialog = inject(MatDialog);

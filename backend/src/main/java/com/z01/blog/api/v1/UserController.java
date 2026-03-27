@@ -1,6 +1,7 @@
 package com.z01.blog.api.v1;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,7 +68,13 @@ public class UserController {
         if (id == userId)
             return postRepo.findAllByAccountAndDeletedFalse(userId);
 
-        return postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(userId);
+        var posts = postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(id);
+
+        List<Long> postIds = posts.stream().map(p -> p.id).toList();
+        Set<Long> likedIds = postRepo.findLikedPostIds(userId, postIds);
+        posts.forEach(post -> post.liked = likedIds.contains(post.id));
+
+        return posts;
     }
 
     @GetMapping("search/{query}")

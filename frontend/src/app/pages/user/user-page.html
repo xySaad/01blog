@@ -11,9 +11,9 @@
     </div>
   </mat-card-content>
 </mat-card>
-<mat-toolbar> Posts ({{ user().posts.length }}) </mat-toolbar>
+<mat-toolbar> Posts ({{ posts().length }}) </mat-toolbar>
 <div class="posts">
-  @for (post of user().posts; track $index) {
+  @for (post of posts(); track $index) {
     <post-card [data]="post" />
   }
 </div>
