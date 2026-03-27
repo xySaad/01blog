@@ -6,7 +6,8 @@ export class User {
   firstName = '';
   lastName = '';
   login = '';
-  followed = false;
+  followed: boolean | null = false;
+  banned = false;
 }
 
 export class UserExtra extends User implements Hydrator {

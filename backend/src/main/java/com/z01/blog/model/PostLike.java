@@ -1,5 +1,7 @@
 package com.z01.blog.model;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import jakarta.persistence.Embeddable;
@@ -17,8 +19,8 @@ public class PostLike {
     @EmbeddedId
     public Id id;
 
-    public static interface repo extends JpaRepository<PostLike, Long> {
-        PostLike findById(Id id);
+    public static interface repo extends JpaRepository<PostLike, Id> {
+        Optional<PostLike> findById(Id id);
 
         long countById(Id id);
     }

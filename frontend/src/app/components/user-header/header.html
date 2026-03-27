@@ -10,7 +10,7 @@
       <div class="time">{{ createdAt()?.toDateString() }}</div>
     }
   </mat-card-subtitle>
-  @if (me.accountId !== owner().accountId) {
+  @if (me.accountId !== owner().accountId && owner().followed !== null) {
     <div class="follow">
       @if (owner().followed) {
         <button matButton="outlined" (click)="toggleFollow()">Unfollow</button>

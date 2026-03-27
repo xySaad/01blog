@@ -1,6 +1,7 @@
 package com.z01.blog.model.Post;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,7 @@ public interface PostRepo extends JpaRepository<PostModel, Long> {
     List<PostExtra> findAllByAccountAndDeletedFalseAndIsPublicTrue(long id);
 
     List<PostExtra> findAllByDeletedFalseAndIsPublicTrueAndAccountNot(long id);
+
+    @Query("SELECT pl.id.postId FROM PostLike pl WHERE pl.id.userId = :userId AND pl.id.postId IN :postIds")
+    Set<Long> findLikedPostIds(long userId, List<Long> postIds);
 }

@@ -41,7 +41,10 @@ public class LikesController {
         void deleteLike(@Auth.User long userId, @EntityAccess(mode = Mode.Read) PostModel post) {
             var postLikeId = new PostLike.Id(userId, post.id);
             var postLike = postLikesRepo.findById(postLikeId);
-            postLikesRepo.delete(postLike);
+            if (postLike.isPresent()) {
+                postLikesRepo.delete(postLike.get());
+
+            }
         }
     }
 }

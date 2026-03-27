@@ -1,6 +1,10 @@
 package com.z01.blog.model;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
@@ -20,6 +24,9 @@ public class Follow {
     }
 
     static public interface repo extends JpaRepository<Follow, Id> {
+        @Query("SELECT f.id.userId FROM Follow f WHERE f.id.followerId = :followerId AND f.id.userId IN :userIdsList")
+        Set<Long> findFollowedIds(long followerId, List<Long> userIdsList);
 
+        boolean existsByIdFollowerIdAndIdUserId(long followerId, long userId);
     }
 }

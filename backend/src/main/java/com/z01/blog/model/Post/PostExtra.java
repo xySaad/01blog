@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "posts")
@@ -22,4 +23,7 @@ public class PostExtra extends PostModel {
 
     @Formula("(SELECT COUNT(*) FROM comments c WHERE c.post = id AND c.deleted = false)")
     public long commentsCount;
+
+    @Transient
+    public boolean liked;
 }

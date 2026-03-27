@@ -1,7 +1,6 @@
 package com.z01.blog.api.v1;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.RequiresPermission;
 import com.z01.blog.exception.AppError;
+import com.z01.blog.model.Follow;
 import com.z01.blog.model.DTO.UserUpdateRequest;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostRepo;
@@ -31,15 +31,20 @@ public class UserController {
     private UserRepo userRepo;
     @Autowired
     private PostRepo postRepo;
+    @Autowired
+    Follow.repo followRepo;
 
     @DeleteMapping
     public void delete(@Auth.Account long accountId) {
         userRepo.deleteById(accountId);
     }
 
-    @GetMapping("{userId}")
-    public Optional<UserExtra> get(@PathVariable long userId) {
-        return userRepo.findExtraById(userId);
+    @GetMapping("{postOwnerId}")
+    public UserExtra get(@Auth.User long userId, @PathVariable long postOwnerId) {
+        var userOpt = userRepo.findExtraById(postOwnerId);
+        var user = userOpt.get();
+        user.followed = followRepo.existsByIdFollowerIdAndIdUserId(userId, postOwnerId);
+        return user;
     }
 
     @PostMapping

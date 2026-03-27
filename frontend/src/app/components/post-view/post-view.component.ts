@@ -8,6 +8,7 @@ import { PostCardContent } from './content/content.component';
 import { PostCardFooter } from './footer/footer.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialog } from '../report-dialog/report-dialog.component';
+import { API } from '../../lib/api';
 
 @Component({
   selector: 'post-view',
@@ -33,8 +34,8 @@ export class PostView {
       data: { id: this.data().id, item: 'post' },
     });
   }
-  like() {
-    // let method: 'post' | 'delete' = this.liked ? 'delete' : 'post';
-    // global.api[method](`/posts/${this.postData().id}/likes`, '');
+  async like(liked: boolean) {
+    const method = liked ? 'delete' : 'post';
+    await API[method](`/posts/${this.data().id}/likes`, null);
   }
 }

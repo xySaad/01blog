@@ -11,6 +11,7 @@ export class Post implements Hydrator {
   commentsCount = 0;
   createdAt = new Date(0);
   updatedAt = new Date(0);
+  liked = false;
 
   isPublic = false;
   deleted = false;
