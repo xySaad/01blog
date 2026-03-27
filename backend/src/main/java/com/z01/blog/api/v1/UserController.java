@@ -40,21 +40,21 @@ public class UserController {
         userRepo.deleteById(accountId);
     }
 
-    @GetMapping("{postOwnerId}")
-    public UserExtra get(@Auth.User long userId, @PathVariable long postOwnerId) {
-        var userOpt = userRepo.findExtraById(postOwnerId);
+    @GetMapping("{targetUserId}")
+    public UserExtra get(@Auth.User long userId, @PathVariable long targetUserId) {
+        var userOpt = userRepo.findExtraById(targetUserId);
         var user = userOpt.get();
-        user.followed = followRepo.existsByIdFollowerIdAndIdUserId(userId, postOwnerId);
+        user.followed = followRepo.existsByIdFollowerIdAndIdUserId(userId, targetUserId);
         return user;
     }
 
     @PostMapping
     public void saveOrUpdate(@Auth.Account long accountId, @RequestBody @Valid UserUpdateRequest req) {
-        if (userRepo.existsByLogin(req.login)) {
+        if (userRepo.existsByLoginAndDeletedFalse(req.login)) {
             throw AppError.USERNAME_ALREADY_EXISTS.asException();
         }
 
-        var user = userRepo.findByAccountId(accountId).orElse(new UserEntity());
+        var user = userRepo.findByAccountIdAndDeletedFalse(accountId).orElse(new UserEntity());
         user.accountId = accountId;
         user.login = req.login;
         user.firstName = req.firstName;
@@ -80,6 +80,6 @@ public class UserController {
     @GetMapping("search/{query}")
     @RequiresPermission(scope = "v1:users:read", description = "view and search for users")
     public List<UserEntity> searchUsers(@PathVariable String query) {
-        return userRepo.findTop20ByLoginStartingWithIgnoreCaseOrderByLogin(query);
+        return userRepo.findTop20ByLoginStartingWithIgnoreCaseAndDeletedFalseOrderByLogin(query);
     }
 }

@@ -12,12 +12,12 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
     @Query("select u from UserExtra u where u.accountId = :id")
     Optional<UserExtra> findExtraById(long id);
 
-    Optional<UserEntity> findByAccountId(long accountId);
+    Optional<UserEntity> findByAccountIdAndDeletedFalse(long accountId);
 
-    Optional<UserEntity> findByLogin(String login);
+    Optional<UserEntity> findByLoginAndDeletedFalse(String login);
 
-    boolean existsByLogin(String login);
+    boolean existsByLoginAndDeletedFalse(String login);
 
-    List<UserEntity> findTop20ByLoginStartingWithIgnoreCaseOrderByLogin(String login);
+    List<UserEntity> findTop20ByLoginStartingWithIgnoreCaseAndDeletedFalseOrderByLogin(String login);
 
 }

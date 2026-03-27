@@ -35,7 +35,7 @@ public class AuditService {
         switch (request.action()) {
             case BAN_USER -> banUser(report);
             case DELETE_CONTENT -> deleteContent(report);
-            case IGNORE -> {
+            case IGNORE_REPORT -> {
             }
         }
 
@@ -55,6 +55,11 @@ public class AuditService {
                 var post = postRepo.findById(rp.postId);
                 post.deleted = true;
                 postRepo.save(post);
+            }
+            case ReportModel.User up -> {
+                var user = userRepo.findById(up.userId).get();
+                user.deleted = true;
+                userRepo.save(user);
             }
             default -> throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
                     "material doesn't support delete action");

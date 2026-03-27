@@ -16,6 +16,7 @@ public class UserModel {
     public String firstName;
     public String lastName;
     public boolean banned;
+    public boolean deleted;
 
     @Transient
     public Boolean followed;

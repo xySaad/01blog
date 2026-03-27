@@ -19,7 +19,7 @@ import { snake2StartCase } from '../../lib/fmt';
 const ActionIcons = {
   BAN_USER: 'block',
   DELETE_CONTENT: 'delete',
-  IGNORE: 'close',
+  IGNORE_REPORT: 'close',
 } as const;
 type Actions = keyof typeof ActionIcons;
 

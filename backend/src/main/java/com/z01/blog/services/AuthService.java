@@ -56,6 +56,8 @@ public class AuthService {
             throw AppError.USER_NOT_FOUND.asException();
         if (user.get().banned)
             throw AppError.ACCOUNT_IS_BANNED.asException();
+        if (user.get().deleted)
+            throw AppError.ACCOUNT_IS_BANNED.asException();
 
         return user.get().accountId;
     }
