@@ -24,6 +24,7 @@ mat-card-subtitle {
 mat-card-footer {
   display: flex;
   align-items: center;
+  margin-top: auto;
 
   mat-card-actions {
     margin-right: auto;
