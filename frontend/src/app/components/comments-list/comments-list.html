@@ -17,7 +17,7 @@
     <user-header
       [owner]="comment.owner"
       (edit)="editingId.set(comment.id)"
-      (report)="reportComment(comment.id)"
+      (report)="reportService.reportComment(comment.id)"
     />
     @if (editingId() === comment.id) {
       <mat-card-content>

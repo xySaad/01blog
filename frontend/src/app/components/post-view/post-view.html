@@ -2,7 +2,7 @@
   [owner]="data().owner"
   [createdAt]="data().createdAt"
   (edit)="edit()"
-  (report)="report()"
+  (report)="reportService.reportPost(data().id)"
 />
 
 <post-content [title]="data().title" [content]="data().content" />

@@ -12,13 +12,13 @@ import com.z01.blog.model.Audit.AuditData;
 import com.z01.blog.services.AuditService;
 
 @RestController
-@RequestMapping("/api/v1/moderation")
+@RequestMapping("/api/v1/moderation/audit")
 public class AuditController {
 
     @Autowired
     private AuditService auditService;
 
-    @PostMapping("/audit")
+    @PostMapping
     @RequiresPermission(scope = "v1:audit:write", description = "audit reports by banning users, deleting posts and comments or ignoring the report")
     void audit(@RequestBody AuditData request, @Auth.User long userId) {
         auditService.audit(request, userId);

@@ -26,7 +26,7 @@ import com.z01.blog.model.User.UserRepo;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 public class UserController {
     @Autowired
     private UserRepo userRepo;

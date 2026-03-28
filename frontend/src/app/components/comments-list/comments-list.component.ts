@@ -2,7 +2,6 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCard, MatCardContent, MatCardFooter } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -12,8 +11,8 @@ import { API } from '../../lib/api';
 import { WhileState } from '../../lib/decorators/loading';
 import { UserService } from '../../services/user.service';
 import { LoadingButton } from '../loading-button.component';
-import { ReportDialog } from '../report-dialog/report-dialog.component';
 import { UserHeader } from '../user-header/header.component';
+import { ReportService } from '../../services/report.service';
 
 @Component({
   selector: 'comments-list',
@@ -36,6 +35,7 @@ import { UserHeader } from '../user-header/header.component';
 export class CommentsList implements OnInit {
   readonly user = inject(UserService).user;
   readonly postId = input.required<string>();
+  reportService = inject(ReportService);
 
   comments = signal<CommentExtra[]>([]);
   loading = signal(false);
@@ -73,14 +73,5 @@ export class CommentsList implements OnInit {
   async deleteComment(commentId: string) {
     await API.delete(`/comments/${commentId}`);
     this.comments.update((prev) => prev.filter((c) => c.id !== commentId));
-  }
-
-  private readonly dialog = inject(MatDialog);
-  reportComment(commentId: string) {
-    this.dialog.open(ReportDialog, {
-      enterAnimationDuration: '100ms',
-      exitAnimationDuration: '100ms',
-      data: { id: commentId, item: 'comment' },
-    });
   }
 }

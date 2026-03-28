@@ -56,7 +56,7 @@ export class RoleView {
 
   async searchUser(query: string) {
     this.choice = null;
-    const foundUsers = await API.get<User[]>(`/user/search/${query}`);
+    const foundUsers = await API.get<User[]>(`/users/search/${query}`);
     this.foundUsers.set(foundUsers);
   }
 

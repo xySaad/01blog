@@ -113,7 +113,7 @@ export class Register {
 
   @WhileState((self) => self.loading)
   async createUser() {
-    await API.post('/user', this.data);
+    await API.post('/users', this.data);
     this.selectedIndex.set(3); // necessary?
     localStorage.setItem('lastLogin', Date.now().toString());
     this.router.navigate(['/']);

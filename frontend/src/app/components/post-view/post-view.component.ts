@@ -3,12 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { Types } from '../../../types';
+import { API } from '../../lib/api';
 import { UserHeader } from '../user-header/header.component';
 import { PostCardContent } from './content/content.component';
 import { PostCardFooter } from './footer/footer.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ReportDialog } from '../report-dialog/report-dialog.component';
-import { API } from '../../lib/api';
+import { ReportService } from '../../services/report.service';
 
 @Component({
   selector: 'post-view',
@@ -19,21 +18,14 @@ import { API } from '../../lib/api';
 export class PostView {
   data = input.required<Types.Post>();
   comment = output();
+  reportService = inject(ReportService);
 
   router = inject(Router);
-  private readonly dialog = inject(MatDialog);
 
   edit() {
     this.router.navigateByUrl(`/posts/edit/${this.data().id}`);
   }
 
-  report() {
-    this.dialog.open(ReportDialog, {
-      enterAnimationDuration: '100ms',
-      exitAnimationDuration: '100ms',
-      data: { id: this.data().id, item: 'post' },
-    });
-  }
   async like(liked: boolean) {
     const method = liked ? 'delete' : 'post';
     await API[method](`/posts/${this.data().id}/likes`, null);

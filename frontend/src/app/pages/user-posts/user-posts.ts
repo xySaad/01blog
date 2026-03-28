@@ -30,7 +30,7 @@ export class PostsList {
   async init() {
     const syncedPosts = await API.getH(
       Collection(Types.Post),
-      `/user/${this.selfUser.accountId}/posts`,
+      `/users/${this.selfUser.accountId}/posts`,
     );
     this.syncedPosts.set(syncedPosts);
 
