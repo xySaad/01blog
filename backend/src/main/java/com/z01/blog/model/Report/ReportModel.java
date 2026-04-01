@@ -58,13 +58,11 @@ public class ReportModel {
 
         @JsonSerialize(using = ToStringSerializer.class)
         public long commentId;
-
+        @Formula("(SELECT c.content FROM comments c WHERE c.id = comment_id)")
+        public String commentContent;
         @JsonSerialize(using = ToStringSerializer.class)
         @Formula("(SELECT p.id FROM posts p JOIN comments c ON c.post = p.id WHERE c.id = comment_id)")
         public Long postId;
-
-        @Formula("(SELECT p.title FROM posts p JOIN comments c ON c.post = p.id WHERE c.id = comment_id)")
-        public String postTitle;
     }
 
     @Entity

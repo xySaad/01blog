@@ -7,25 +7,21 @@ export type Report = {
   USER: UserReport;
   OTHER: ReportModel;
 };
+export const ByDefault = {
+  id: '',
+  login: '',
+};
 
 export class ReportModel implements Hydrator {
+  readonly type: keyof Report = 'OTHER';
   id = '';
-  reportedBy = {
-    id: '',
-    login: '',
-  };
-  resolvedBy? = {
-    id: '',
-    login: '',
-  };
-
   reason = '';
   description = '';
   createdAt = new Date();
-
-  readonly type: keyof Report = 'OTHER';
-
+  reportedBy = ByDefault;
+  resolvedBy? = ByDefault;
   fmtReason = '';
+
   hydrate() {
     this.createdAt = new Date(this.createdAt);
     this.fmtReason = snake2StartCase(this.reason);
@@ -45,6 +41,7 @@ export class PostReport extends ReportModel {
 export class CommentReport extends ReportModel {
   override readonly type = 'COMMENT';
   commentId = '';
+  commentContent = '';
   postId = '';
   postTitle = '';
 }
