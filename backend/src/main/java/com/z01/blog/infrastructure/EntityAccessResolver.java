@@ -2,6 +2,7 @@ package com.z01.blog.infrastructure;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,6 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.exception.AppError;
 
 @Component
 public class EntityAccessResolver<T> implements HandlerMethodArgumentResolver {
@@ -45,7 +47,15 @@ public class EntityAccessResolver<T> implements HandlerMethodArgumentResolver {
         String raw = pathVariables.get(parameter.getParameterName());
         Class<?> idType = repoMethod.method.getParameterTypes()[0];
         Object convertedId = conversionService.convert(raw, idType);
+        var entity = repoMethod.method.invoke(repoMethod.repo, convertedId);
+        if (entity == null || entity instanceof Optional<?>)
+            throw AppError.ENTITY_NOT_FOUND.asException();
 
-        return repoMethod.method.invoke(repoMethod.repo, convertedId);
+        if (entity instanceof RestrictedEntity re) {
+            var access = parameter.getParameterAnnotation(EntityAccess.class);
+            re.ensureAccess(principalProvider.getCurrentPrincipal(), access.mode());
+        }
+
+        return entity;
     }
 }
