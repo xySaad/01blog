@@ -13,34 +13,5 @@
   </button>
 </mat-form-field>
 @for (comment of comments(); track $index) {
-  <mat-card>
-    <user-header
-      [owner]="comment.owner"
-      (edit)="editingId.set(comment.id)"
-      (report)="reportService.reportComment(comment.id)"
-    />
-    @if (editingId() === comment.id) {
-      <mat-card-content>
-        <mat-form-field appearance="outline">
-          <textarea
-            cdkTextareaAutosize
-            #text
-            matInput
-            placeholder="Write a comment"
-            [value]="comment.content"
-          ></textarea>
-        </mat-form-field>
-      </mat-card-content>
-      <mat-card-footer>
-        <button matButton (click)="editingId.set('')">Cancel</button>
-        <button matButton="filled" (click)="editComment(comment.id, text.value); text.value = ''">
-          Save
-        </button>
-      </mat-card-footer>
-    } @else {
-      <mat-card-content>
-        {{ comment.content }}
-      </mat-card-content>
-    }
-  </mat-card>
+  <comment-card [comment]="comment" />
 }

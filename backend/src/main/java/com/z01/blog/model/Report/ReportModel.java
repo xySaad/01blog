@@ -38,7 +38,7 @@ public class ReportModel {
     @Entity
     @Table(name = "post_reports")
     @PrimaryKeyJoinColumn(name = "id")
-    public static class Post extends ReportModel {
+    public static class Post extends ReportModel implements PostRelatedReport {
         @Transient
 
         public String type = "POST";
@@ -47,12 +47,16 @@ public class ReportModel {
 
         @Formula("(SELECT p.title FROM posts p WHERE p.id = post_id)")
         public String postTitle;
+
+        public long getPostId() {
+            return postId;
+        }
     }
 
     @Entity
     @Table(name = "comment_reports")
     @PrimaryKeyJoinColumn(name = "id")
-    public static class Comment extends ReportModel {
+    public static class Comment extends ReportModel implements PostRelatedReport {
         @Transient
         public String type = "COMMENT";
 
@@ -62,7 +66,11 @@ public class ReportModel {
         public String commentContent;
         @JsonSerialize(using = ToStringSerializer.class)
         @Formula("(SELECT p.id FROM posts p JOIN comments c ON c.post = p.id WHERE c.id = comment_id)")
-        public Long postId;
+        public long postId;
+
+        public long getPostId() {
+            return postId;
+        }
     }
 
     @Entity

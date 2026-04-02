@@ -10,6 +10,12 @@ public interface CommentRepo extends JpaRepository<CommentModel, Long> {
     @Query("SELECT c FROM CommentExtra c WHERE c.post = :postId AND c.deleted = false")
     List<CommentExtra> findAllByPostAndDeletedFalse(long postId);
 
+    @Query("SELECT c FROM CommentExtra c WHERE c.post = :postId")
+    List<CommentExtra> findAllByPost(long postId);
+
+    @Query("SELECT c FROM CommentExtra c WHERE c.id = :commentId")
+    CommentExtra findExtraById(long commentId);
+
     @AccessMethod
     CommentModel findByIdAndDeletedFalse(long commentId);
 }

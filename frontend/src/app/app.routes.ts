@@ -9,8 +9,11 @@ import { PostsList } from './pages/user-posts/user-posts';
 import { Home } from './pages/home/home';
 import { PostPage } from './pages/post/post.page';
 import { UserPage } from './pages/user/user-page';
-import { AdminPage } from './pages/admin/admin-page';
-import { adminGuard } from './guards/admin.guard';
+import { PanelPage } from './pages/moderation/panel/panel-page';
+import { moderationGuard } from './guards/moderation.guard';
+import { ReportedPostPage } from './pages/moderation/report/post/reported-post';
+import { ReportedCommentPage } from './pages/moderation/report/comment/reported-comment';
+import { ReportedUserPage } from './pages/moderation/report/user/reported-user';
 export const routes: Routes = [
   {
     path: 'auth',
@@ -44,7 +47,7 @@ export const routes: Routes = [
       return `/posts/edit/${id}`;
     },
   },
-  { path: 'posts/:id', component: PostPage, canActivate: [authGuard] },
+  { path: 'posts/:postId', component: PostPage, canActivate: [authGuard] },
   {
     path: 'posts',
     component: PostsList,
@@ -55,6 +58,22 @@ export const routes: Routes = [
     component: UserPage,
     canActivate: [authGuard],
   },
-  { path: 'admin', component: AdminPage, canMatch: [adminGuard] },
+  { path: 'moderation/panel', component: PanelPage, canMatch: [moderationGuard] },
+
+  {
+    path: 'moderation/reports/:reportId/post',
+    component: ReportedPostPage,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'moderation/reports/:reportId/comment',
+    component: ReportedCommentPage,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'moderation/reports/:reportId/user',
+    component: ReportedUserPage,
+    canActivate: [authGuard],
+  },
   { path: '**', component: NotFound },
 ];

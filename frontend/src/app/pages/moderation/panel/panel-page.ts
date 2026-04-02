@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ReportsList } from '../../components/reports-list/reports-list.component';
-import { RolesList } from '../../components/roles/roles-list/roles-list.component';
-import { UserService } from '../../services/user.service';
+import { ReportsList } from '../../../components/reports-list/reports-list.component';
+import { RolesList } from '../../../components/roles/roles-list/roles-list.component';
+import { UserService } from '../../../services/user.service';
 import { NgComponentOutlet } from '@angular/common';
 
 const TABS = [
@@ -11,16 +11,16 @@ const TABS = [
   { permission: 'v1:reports:read', icon: 'flag', label: 'Reports', component: ReportsList },
 ];
 
-export function hasAdminAccess(permissions: string[]): boolean {
+export function hasPanelAccess(permissions: string[]): boolean {
   return TABS.some((t) => permissions.includes(t.permission));
 }
 
 @Component({
-  templateUrl: 'admin-page.html',
-  styleUrl: 'admin-page.css',
+  templateUrl: 'panel-page.html',
+  styleUrl: 'panel-page.css',
   imports: [MatTabsModule, MatIconModule, NgComponentOutlet],
 })
-export class AdminPage {
+export class PanelPage {
   readonly user = inject(UserService).user;
   readonly tabs = TABS.filter((t) => this.user.permissions.includes(t.permission));
 

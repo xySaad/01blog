@@ -1,0 +1,5 @@
+<post-view [data]="postData()" />
+<mat-toolbar> Comments ({{ postData().commentsCount }}) </mat-toolbar>
+@if (postData().id) {
+  <reported-comments-list [postId]="postData().id" />
+}

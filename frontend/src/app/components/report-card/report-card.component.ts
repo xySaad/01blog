@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import {
   MatCard,
@@ -15,6 +15,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { ReportModel } from '../../../types/Report';
 import { API } from '../../lib/api';
 import { snake2StartCase } from '../../lib/fmt';
+import { Router } from '@angular/router';
 //actions and their icons
 const ActionIcons = {
   BAN_USER: 'block',
@@ -48,12 +49,24 @@ export class ReportCard extends MatCard {
   title = input.required<string>();
   iconName = input<string>();
   iconTitle = input<string>();
+  actions = input<Actions[]>(Object.keys(ActionIcons) as Actions[]);
+  materialPath = input<string>();
+
+  router = inject(Router);
   ActionIcons = ActionIcons;
   snake2StartCase = snake2StartCase;
-  actions = input<Actions[]>(Object.keys(ActionIcons) as Actions[]);
-  review = output();
+
   takeAction(action: Actions) {
     const { id } = this.report();
     return API.post('/moderation/audit', { id, action });
+  }
+
+  review() {
+    const { id } = this.report();
+    const path = this.materialPath();
+    if (!path) return;
+    console.log('navigating to:', `/moderation/reports/${id}/${path}`);
+
+    this.router.navigateByUrl(`/moderation/reports/${id}/${path}`);
   }
 }

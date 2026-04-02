@@ -11,7 +11,6 @@ import { API } from '../../lib/api';
 import { ReportService } from '../../services/report.service';
 
 @Component({
-  selector: 'user-page',
   imports: [UserHeader, MatCard, PostCard, MatToolbar, MatCardContent],
   templateUrl: './user-page.html',
   styleUrl: './user-page.css',
@@ -22,10 +21,13 @@ export class UserPage {
   posts = signal<Post[]>([]);
   reportService = inject(ReportService);
 
-  constructor() {
+  get API_ENDPOINT() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) throw new Error('must provide id param');
-    API.get<UserExtra>(`/users/${id}`).then(this.user.set);
-    API.getH(Collection(Post), `/users/${id}/posts`).then(this.posts.set);
+    return `/users/${id}`;
+  }
+  constructor() {
+    API.get<UserExtra>(this.API_ENDPOINT).then(this.user.set);
+    API.getH(Collection(Post), `${this.API_ENDPOINT}/posts`).then(this.posts.set);
   }
 }

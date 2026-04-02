@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { CanMatchFn } from '@angular/router';
-import { hasAdminAccess } from '../pages/admin/admin-page';
+import { hasPanelAccess } from '../pages/moderation/panel/panel-page';
 import { UserService } from '../services/user.service';
 
-export const adminGuard: CanMatchFn = () => {
+export const moderationGuard: CanMatchFn = () => {
   const user = inject(UserService).user;
-  return hasAdminAccess(user.permissions);
+  return hasPanelAccess(user.permissions);
 };

@@ -17,6 +17,7 @@
           [title]="report.postTitle"
           iconName="two_pager"
           iconTitle="Post Content"
+          [materialPath]="`post`"
         />
       } @else if (report.is('COMMENT')) {
         <report-card
@@ -24,6 +25,7 @@
           [title]="report.commentContent"
           iconName="forum"
           iconTitle="Comment"
+          [materialPath]="`comment`"
         />
       } @else if (report.is('USER')) {
         <report-card
@@ -31,6 +33,7 @@
           [title]="report.userLogin"
           iconName="person"
           iconTitle="User Account"
+          [materialPath]="`user`"
         />
       } @else {
         <report-card

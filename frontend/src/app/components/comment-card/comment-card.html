@@ -1,0 +1,30 @@
+@let comment = this.comment();
+
+<mat-card>
+  <user-header
+    [owner]="comment.owner"
+    (edit)="editing.set(true)"
+    (report)="reportService.reportComment(comment.id)"
+  />
+  @if (!editing()) {
+    <mat-card-content>
+      {{ comment.content }}
+    </mat-card-content>
+  } @else {
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <textarea
+          cdkTextareaAutosize
+          #text
+          matInput
+          placeholder="Write a comment"
+          [value]="comment.content"
+        ></textarea>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-footer>
+      <button matButton (click)="editing.set(false)">Cancel</button>
+      <button matButton="filled" (click)="updateComment(comment.id, text.value)">Save</button>
+    </mat-card-footer>
+  }
+</mat-card>

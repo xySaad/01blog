@@ -7,8 +7,8 @@ import { API } from '../../lib/api';
 import { global } from '../../lib/global';
 import { requiredSelect } from '../../lib/requiredSelect';
 import { Carousel, CarouselSkipDirective } from '../carousel/carousel.component';
-import { SelectList, SelectOption } from '../select-list.component';
 import { ReportCard } from '../report-card/report-card.component';
+import { SelectList, SelectOption } from '../select-list.component';
 
 @Component({
   selector: 'reports-list',
@@ -27,8 +27,8 @@ import { ReportCard } from '../report-card/report-card.component';
 export class ReportsList {
   reports = signal<ReportModel[]>([]);
   reportReasons = global.reportReasons;
-
   selectedReason = requiredSelect('all');
+
   constructor() {
     API.getH(Collection(ReportModel), '/moderation/reports').then(this.reports.set);
   }

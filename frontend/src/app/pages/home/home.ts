@@ -7,7 +7,7 @@ import { Collection } from '../../../types/collection';
 import { PostCard } from '../../components/post-card/post-card.component';
 import { API } from '../../lib/api';
 import { UserService } from '../../services/user.service';
-import { hasAdminAccess } from '../admin/admin-page';
+import { hasPanelAccess } from '../moderation/panel/panel-page';
 @Component({
   templateUrl: 'home.html',
   styleUrl: 'home.css',
@@ -17,7 +17,7 @@ export class Home {
   router = inject(Router);
   posts = signal<Types.Post[]>([]);
   readonly user = inject(UserService).user;
-  readonly showAdmin = hasAdminAccess(this.user.permissions);
+  readonly showPanel = hasPanelAccess(this.user.permissions);
   constructor() {
     API.getH(Collection(Types.Post), '/posts').then(this.posts.set);
   }

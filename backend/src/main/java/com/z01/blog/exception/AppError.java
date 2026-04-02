@@ -29,12 +29,15 @@ public enum AppError {
         // Reports
         REPORT_ALREADY_RESOLVED(HttpStatus.CONFLICT),
         INVALID_REPORT_TYPE(HttpStatus.BAD_REQUEST),
+        REPORT_NOT_POST_RELATED(HttpStatus.BAD_REQUEST),
+        REPORT_NOT_USER_RELATED(HttpStatus.BAD_REQUEST),
 
         // Posts
         PARENT_POST_NOT_FOUND(HttpStatus.NOT_FOUND),
 
         // Entities
         ENTITY_DELETED(HttpStatus.GONE),
+        ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND),
 
         // Files / Media
         FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR),
