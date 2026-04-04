@@ -1,3 +1,4 @@
+import { enumString } from '../app/lib/enum';
 import { snake2StartCase } from '../app/lib/fmt';
 import { Hydrator } from './api';
 
@@ -11,6 +12,8 @@ export const ByDefault = {
   id: '',
   login: '',
 };
+export type Action = keyof typeof Action;
+export const Action = enumString('BAN_USER', 'DELETE_CONTENT', 'IGNORE_REPORT');
 
 export class ReportModel implements Hydrator {
   readonly type: keyof Report = 'OTHER';
@@ -21,6 +24,7 @@ export class ReportModel implements Hydrator {
   reportedBy = ByDefault;
   resolvedBy? = ByDefault;
   fmtReason = '';
+  actionTaken?: keyof typeof Action;
 
   hydrate() {
     this.createdAt = new Date(this.createdAt);

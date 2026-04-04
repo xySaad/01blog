@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import {
   MatCard,
@@ -12,17 +12,18 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ReportModel } from '../../../types/Report';
-import { API } from '../../lib/api';
-import { snake2StartCase } from '../../lib/fmt';
 import { Router } from '@angular/router';
+import { Action, ReportModel } from '../../../types/Report';
+import { API } from '../../lib/api';
+import { enumValues as enumValues } from '../../lib/enum';
+import { snake2StartCase } from '../../lib/fmt';
+
 //actions and their icons
-const ActionIcons = {
+const Icons: Record<keyof typeof Action, string> = {
   BAN_USER: 'block',
   DELETE_CONTENT: 'delete',
   IGNORE_REPORT: 'close',
-} as const;
-type Actions = keyof typeof ActionIcons;
+};
 
 @Component({
   selector: 'report-card',
@@ -49,14 +50,14 @@ export class ReportCard extends MatCard {
   title = input.required<string>();
   iconName = input<string>();
   iconTitle = input<string>();
-  actions = input<Actions[]>(Object.keys(ActionIcons) as Actions[]);
   materialPath = input<string>();
-
   router = inject(Router);
-  ActionIcons = ActionIcons;
-  snake2StartCase = snake2StartCase;
 
-  takeAction(action: Actions) {
+  snake2StartCase = snake2StartCase;
+  actions = enumValues(Action);
+  Icons = Icons;
+
+  takeAction(action: Action) {
     const { id } = this.report();
     return API.post('/moderation/audit', { id, action });
   }

@@ -41,6 +41,7 @@ public class AuditService {
 
         report.resolvedBy = new ResolvedBy();
         report.resolvedBy.id = userId;
+        report.actionTaken = request.action().name();
         reportRepo.save(report);
     }
 

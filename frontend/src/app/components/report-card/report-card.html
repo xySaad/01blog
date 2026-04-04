@@ -38,14 +38,23 @@
     </button>
   </mat-card-actions>
   @if (report.resolvedBy) {
-    <div class="resolvedBy">Resolved By {{ report.resolvedBy.login }}</div>
+    @if (report.actionTaken) {
+      @let action = report.actionTaken;
+      @let icon = Icons[report.actionTaken];
+
+      <div class="resolvedBy">
+        <mat-icon [matTooltip]="action">{{ icon }}</mat-icon>
+        {{ report.resolvedBy.login }}
+      </div>
+    } @else {
+      <div class="resolvedBy">Resolved By {{ report.resolvedBy.login }}</div>
+    }
   }
 </mat-card-footer>
 
 <mat-menu #menu="matMenu">
-  @for (action of actions(); track $index) {
-    @let icon = ActionIcons[action];
-
+  @for (action of actions; track $index) {
+    @let icon = Icons[action];
     <button mat-menu-item (click)="takeAction(action)">
       <mat-icon>{{ icon }}</mat-icon>
       <span>{{ snake2StartCase(action) }}</span>

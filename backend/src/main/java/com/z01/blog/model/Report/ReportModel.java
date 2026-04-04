@@ -34,6 +34,7 @@ public class ReportModel {
     public ReportedBy reportedBy;
     @Embedded
     public ResolvedBy resolvedBy;
+    public String actionTaken;
 
     @Entity
     @Table(name = "post_reports")

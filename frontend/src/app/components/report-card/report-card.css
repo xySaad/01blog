@@ -30,3 +30,9 @@ mat-card-footer {
     margin-right: auto;
   }
 }
+
+.resolvedBy {
+  display: flex;
+  color: red;
+  padding: 10px;
+}
