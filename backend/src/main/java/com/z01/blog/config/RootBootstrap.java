@@ -26,24 +26,23 @@ public class RootBootstrap implements ApplicationListener<ContextRefreshedEvent>
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-
-        if (accountRepo.findByEmail("root").isPresent())
-            return;
-
-        char[] password = resolvePassword();
-
-        Account root = new Account();
-        root.id = IdUtil.getSnowflakeNextId();
-        root.email = "root";
-        root.passwordHash = new BCryptPasswordEncoder().encode(new String(password));
-        root.codeCreatedAt = LocalDateTime.now();
-        root.verificationCode = null;
-        accountRepo.save(root);
+        Account root = accountRepo.findByEmail("root").orElseGet(() -> {
+            char[] password = resolvePassword();
+            Account r = new Account();
+            r.id = IdUtil.getSnowflakeNextId();
+            r.email = "root";
+            r.passwordHash = new BCryptPasswordEncoder().encode(new String(password));
+            r.codeCreatedAt = LocalDateTime.now();
+            r.verificationCode = null;
+            return accountRepo.save(r);
+        });
 
         RoleModel rootRole = roleRepo.findByName("root")
                 .orElseThrow(() -> new IllegalStateException("root role not found"));
 
-        userRoleRepo.save(new AccountRoleModel(root.id, rootRole));
+        if (!userRoleRepo.existsById_AccountIdAndRole(root.id, rootRole)) {
+            userRoleRepo.save(new AccountRoleModel(root.id, rootRole));
+        }
     }
 
     private char[] resolvePassword() {
