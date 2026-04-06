@@ -39,12 +39,14 @@ export class LoadingSpinner<T extends unknown> {
   hideContent = input(false);
 
   async withLoading(callback: () => T) {
+    const start = Date.now();
+
     this.loading.set(true);
     try {
       const result = await callback();
       return result;
     } finally {
-      this.loading.set(false);
+      setTimeout(() => this.loading.set(false), Date.now() - start + 1000);
     }
   }
 
