@@ -15,6 +15,8 @@ async function fetchJson<T>(
   init?: RequestInit,
   Class?: Hydratable<any>,
 ): Promise<T> {
+  if (init) init.headers = { ...init.headers, 'X-JSON-Format': 'long-as-string' };
+
   const resp = await fetch(API.ENDPOINT + path, { method, credentials: 'include', ...init });
 
   if (!resp.ok) {

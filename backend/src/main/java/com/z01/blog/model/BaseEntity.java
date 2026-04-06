@@ -6,15 +6,11 @@ import com.z01.blog.infrastructure.RestrictedEntity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import tools.jackson.databind.annotation.JsonSerialize;
-import tools.jackson.databind.ser.std.ToStringSerializer;
 
 @MappedSuperclass
 public class BaseEntity implements RestrictedEntity<Long> {
     @Id
-    @JsonSerialize(using = ToStringSerializer.class)
     public long id;
-    @JsonSerialize(using = ToStringSerializer.class)
     public long account;
     public boolean deleted;
 
