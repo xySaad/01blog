@@ -1,11 +1,11 @@
+import { NgComponentOutlet } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute } from '@angular/router';
 import { ReportsList } from '../../../components/reports-list/reports-list.component';
 import { RolesList } from '../../../components/roles/roles-list/roles-list.component';
 import { UserService } from '../../../services/user.service';
-import { NgComponentOutlet } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 
 const TABS = [
   { permission: 'v1:roles:read', icon: 'person_shield', label: 'Roles', component: RolesList },

@@ -12,6 +12,20 @@ body {
   color: var(--mat-sys-on-surface);
 }
 
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+main {
+  height: 100%;
+  overflow-y: auto;
+  padding: 5vh 5vw;
+  padding-top: 0;
+}
+
 .flex {
   display: flex;
   flex-direction: column;

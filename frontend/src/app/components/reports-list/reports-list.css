@@ -1,9 +1,13 @@
+select-list {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--mat-sys-surface);
+  display: block;
+}
 select-option {
   white-space: nowrap;
   margin-right: 10px;
-
-  /* &[active='true'] {
-  } */
 }
 
 li {

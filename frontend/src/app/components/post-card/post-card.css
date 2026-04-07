@@ -1,3 +1,7 @@
+:host {
+  max-width: 800px;
+  display: block;
+}
 :host ::ng-deep post-content {
   display: block;
   max-height: 40vh;
