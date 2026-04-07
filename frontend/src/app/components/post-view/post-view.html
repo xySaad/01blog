@@ -1,4 +1,5 @@
 <user-header
+  [visibility]="data().visibility"
   [material]="{ type: 'POST', id: data().id }"
   [deleted]="data().deleted || data().hidden"
   [actions]="['BAN_USER', 'DELETE', 'HIDE']"

@@ -18,10 +18,39 @@
     </div>
   }
 </mat-card-header>
+<section class="options">
+  @let v = visibility();
+  @if (v !== undefined) {
+    <span class="visibility" [matTooltip]="Visibility[v]">
+      @switch (v) {
+        @case (Visibility.PUBLIC) {
+          <mat-icon>public</mat-icon>
+        }
+        @case (Visibility.PRIVATE) {
+          <mat-icon>lock</mat-icon>
+        }
+        @case (Visibility.HIDDEN) {
+          <mat-icon>visibility_off</mat-icon>
+        }
+        @case (Visibility.DELETED) {
+          <mat-icon>delete</mat-icon>
+        }
+        @case (Visibility.DRAFT) {
+          <mat-icon fontSet="material-symbols-outlined">draft</mat-icon>
+        }
+      }
+    </span>
+  }
 
-<button matIconButton [matMenuTriggerRestoreFocus]="false" [matMenuTriggerFor]="menu" class="menu">
-  <mat-icon>more_vert</mat-icon>
-</button>
+  <button
+    matIconButton
+    [matMenuTriggerRestoreFocus]="false"
+    [matMenuTriggerFor]="menu"
+    class="menu"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</section>
 
 <mat-menu #menu>
   @if (me.accountId == owner().accountId) {

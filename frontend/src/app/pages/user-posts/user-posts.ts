@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Types } from '../../../types';
 import { Collection } from '../../../types/collection';
-import { Post } from '../../../types/post';
+import { DraftPost, Post } from '../../../types/post';
 import { PostCard } from '../../components/post-card/post-card.component';
 import { API } from '../../lib/api';
 import { DB_NAME, Storage } from '../../services/storage.service';
@@ -44,7 +44,10 @@ export class PostsList {
     req.onerror = reject;
     await promise;
 
-    const draftPosts = req.result.filter((lp) => !syncedPostsMap.has(lp.id));
+    const draftPosts = req.result.filter((lp) => {
+      Object.setPrototypeOf(lp, DraftPost.prototype);
+      return !syncedPostsMap.has(lp.id);
+    });
     console.log(draftPosts);
 
     this.draftposts.set(draftPosts);

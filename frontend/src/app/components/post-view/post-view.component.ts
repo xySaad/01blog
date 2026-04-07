@@ -2,12 +2,13 @@ import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
-import { Types } from '../../../types';
+import { Post } from '../../../types/post';
 import { API } from '../../lib/api';
+import { ReportService } from '../../services/report.service';
+import { UserService } from '../../services/user.service';
 import { UserHeader } from '../user-header/header.component';
 import { PostCardContent } from './content/content.component';
 import { PostCardFooter } from './footer/footer.component';
-import { ReportService } from '../../services/report.service';
 
 @Component({
   selector: 'post-view',
@@ -16,11 +17,11 @@ import { ReportService } from '../../services/report.service';
   imports: [MatCardModule, MatButtonModule, UserHeader, PostCardContent, PostCardFooter],
 })
 export class PostView {
-  data = input.required<Types.Post>();
+  data = input.required<Post>();
   comment = output();
   reportService = inject(ReportService);
-
   router = inject(Router);
+  selfUser = inject(UserService).user;
 
   edit() {
     this.router.navigateByUrl(`/posts/edit/${this.data().id}`);

@@ -1,7 +1,3 @@
-mat-card[owned='true'] {
-  border: var(--mat-sys-primary) solid 2px;
-}
-
 :host ::ng-deep post-content {
   display: block;
   max-height: 40vh;

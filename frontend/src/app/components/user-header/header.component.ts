@@ -15,6 +15,8 @@ import { API } from '../../lib/api';
 import { UserService } from '../../services/user.service';
 import { AuditActionMenu } from '../audit-action-menu/audit-action-menu.component';
 import { Auditable, AuditAction } from '../../../types/Report';
+import { Visibility } from '../../../types/post';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'user-header',
@@ -35,6 +37,7 @@ import { Auditable, AuditAction } from '../../../types/Report';
     RouterLink,
     MatAnchor,
     AuditActionMenu,
+    MatTooltip,
   ],
 })
 export class UserHeader {
@@ -43,7 +46,8 @@ export class UserHeader {
   deleted = input(false);
   createdAt = input<Date>();
   actions = input.required<AuditAction[]>();
-
+  visibility = input<Visibility>();
+  Visibility = Visibility;
   edit = output<void>();
   report = output<void>();
   me = inject(UserService).user;
