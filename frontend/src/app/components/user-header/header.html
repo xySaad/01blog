@@ -6,7 +6,10 @@
   <mat-card-subtitle>
     <div class="handler">@{{ owner().login }}</div>
 
-    <div class="time">{{ createdAt()?.toDateString() }}</div>
+    @let crAt = createdAt();
+    @if (crAt) {
+      <div class="time">{{ crAt.toDateString() }}</div>
+    }
   </mat-card-subtitle>
   @if (me.accountId !== owner().accountId) {
     <div class="follow">
