@@ -1,5 +1,8 @@
 import { ApiError, Hydratable, Hydrator } from '../../types/api';
 
+const defaultHeader = { 'Content-Type': 'application/json', 'X-JSON-Format': 'long-as-string' };
+const ENDPOINT = 'http://localhost:8080/api/v1';
+
 async function fetchJson<T>(method: string, path: string, init?: RequestInit): Promise<T>;
 
 async function fetchJson<T extends Hydrator>(
@@ -12,12 +15,12 @@ async function fetchJson<T extends Hydrator>(
 async function fetchJson<T>(
   method: string,
   path: string,
-  init?: RequestInit,
+  init: RequestInit = {},
   Class?: Hydratable<any>,
 ): Promise<T> {
-  if (init) init.headers = { ...init.headers, 'X-JSON-Format': 'long-as-string' };
-
-  const resp = await fetch(API.ENDPOINT + path, { method, credentials: 'include', ...init });
+  init.headers = { ...defaultHeader, ...init.headers };
+  console.log(init.headers);
+  const resp = await fetch(ENDPOINT + path, { method, credentials: 'include', ...init });
 
   if (!resp.ok) {
     const text = await resp.text();
@@ -40,8 +43,6 @@ async function fetchJson<T>(
   return json;
 }
 export const API = {
-  ENDPOINT: 'http://localhost:8080/api/v1',
-
   get<T>(path: string) {
     return fetchJson<T>('GET', path);
   },
@@ -59,43 +60,22 @@ export const API = {
   },
 
   put<T>(path: string, body?: any) {
-    console.log(body);
-
-    const init = {
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' },
-    };
-
+    const init = { body: JSON.stringify(body) };
     return fetchJson<T>('PUT', path, init);
   },
 
   putH<T extends Hydrator>(Class: Hydratable<T>, path: string, body?: any) {
-    const init = {
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' },
-    };
-
-    return fetchJson('PUT', path, init, Class);
+    return fetchJson('PUT', path, { body: JSON.stringify(body) }, Class);
   },
 
   post<T>(path: string, body: any, headers?: HeadersInit) {
-    const init = {
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json', ...headers },
-    };
-
-    return fetchJson<T>('POST', path, init);
+    return fetchJson<T>('POST', path, { headers, body: JSON.stringify(body) });
   },
 
   postRaw<T>(path: string, body: any, headers?: HeadersInit) {
     return fetchJson<T>('POST', path, { body, headers });
   },
   postH<T extends Hydrator>(Class: Hydratable<T>, path: string, body: any, headers?: HeadersInit) {
-    const init = {
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json', ...headers },
-    };
-
-    return fetchJson('POST', path, init, Class);
+    return fetchJson('POST', path, { headers, body: JSON.stringify(body) }, Class);
   },
 };

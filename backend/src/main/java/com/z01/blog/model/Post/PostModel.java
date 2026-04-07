@@ -2,23 +2,38 @@ package com.z01.blog.model.Post;
 
 import java.time.LocalDateTime;
 
-import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.annotation.EntityAccess.Mode;
+import com.z01.blog.exception.AppError;
 import com.z01.blog.model.BaseEntity;
+import com.z01.blog.model.Account.repo;
+import com.z01.blog.model.Audit.Hideable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class PostModel extends BaseEntity {
+public class PostModel extends BaseEntity implements Hideable {
     public String title;
     public String content;
     public LocalDateTime createdAt;
     public LocalDateTime updatedAt;
     @Column(name = "public")
     public boolean isPublic;
+    public boolean hidden;
 
     @Override
-    public void ensureAccess(Long userId, EntityAccess.Mode mode) {
-        super.ensureAccess(userId, isPublic ? mode : EntityAccess.Mode.Write);
+    public void ensureAccess(Long userId, Mode mode) {
+        super.ensureAccess(userId, isPublic ? mode : Mode.Write);
+        if (!hidden)
+            return;
+
+        if (account != userId || mode == Mode.Write)
+            throw AppError.ACCESS_DENIED.asException();
+
+    }
+
+    @Override
+    public void hide() {
+        this.hidden = true;
     }
 }

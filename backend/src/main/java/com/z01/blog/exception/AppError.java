@@ -27,11 +27,13 @@ public enum AppError {
         ACCESS_DENIED(HttpStatus.FORBIDDEN),
 
         // Reports
+        REPORT_NOT_FOUND(HttpStatus.NOT_FOUND),
         REPORT_ALREADY_RESOLVED(HttpStatus.CONFLICT),
         INVALID_REPORT_TYPE(HttpStatus.BAD_REQUEST),
-        REPORT_NOT_POST_RELATED(HttpStatus.BAD_REQUEST),
+        MATERIAL_NOT_DELETEABLE(HttpStatus.BAD_REQUEST),
+        MATERIAL_NOT_HIDEABLE(HttpStatus.BAD_REQUEST),
         REPORT_NOT_USER_RELATED(HttpStatus.BAD_REQUEST),
-
+        MATERIAL_NOT_FOUND(HttpStatus.NOT_FOUND),
         // Posts
         PARENT_POST_NOT_FOUND(HttpStatus.NOT_FOUND),
 

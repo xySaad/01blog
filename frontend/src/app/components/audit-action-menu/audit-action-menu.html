@@ -1,0 +1,23 @@
+@if (asMenuItem()) {
+  <!-- Inside mat-menu: render as a submenu item -->
+  <button mat-menu-item [matMenuTriggerFor]="actionMenu" [disabled]="disabled()">
+    <mat-icon>gavel</mat-icon>
+    <span>Take Action</span>
+  </button>
+} @else {
+  <!-- Standalone: render as a regular button -->
+  <button matButton [matMenuTriggerFor]="actionMenu" [disabled]="disabled()">
+    Take Action
+    <mat-icon>gavel</mat-icon>
+  </button>
+}
+
+<mat-menu #actionMenu>
+  @for (action of actions(); track $index) {
+    @let icon = auditService.ActionIcons[action];
+    <button mat-menu-item (click)="takeAction(action)">
+      <mat-icon>{{ icon }}</mat-icon>
+      <span>{{ snake2StartCase(action) }}</span>
+    </button>
+  }
+</mat-menu>

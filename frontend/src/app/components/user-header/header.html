@@ -6,11 +6,9 @@
   <mat-card-subtitle>
     <div class="handler">@{{ owner().login }}</div>
 
-    @if (createdAt()) {
-      <div class="time">{{ createdAt()?.toDateString() }}</div>
-    }
+    <div class="time">{{ createdAt()?.toDateString() }}</div>
   </mat-card-subtitle>
-  @if (me.accountId !== owner().accountId && owner().followed !== null) {
+  @if (me.accountId !== owner().accountId) {
     <div class="follow">
       @if (owner().followed) {
         <button matButton="outlined" (click)="toggleFollow()">Unfollow</button>
@@ -25,12 +23,14 @@
   <mat-icon>more_vert</mat-icon>
 </button>
 
-<mat-menu #menu="matMenu">
+<mat-menu #menu>
   @if (me.accountId == owner().accountId) {
-    <button mat-menu-item (click)="edit.emit()">
+    <button mat-menu-item (click)="edit.emit()" [disabled]="deleted()">
       <span>Edit</span>
       <mat-icon>edit</mat-icon>
     </button>
+  } @else if (me.permissions.includes('v1:content:audit')) {
+    <audit-action-menu [material]="material()" [actions]="actions()" [asMenuItem]="true" />
   } @else {
     <button mat-menu-item (click)="report.emit()">
       <span>Report</span>

@@ -10,20 +10,12 @@ import {
   MatCardTitle,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { Action, ReportModel } from '../../../types/Report';
+import { AuditAction, Report, Auditable } from '../../../types/Report';
+import { AuditService } from '../../services/audit-service.service';
+import { AuditActionMenu } from '../audit-action-menu/audit-action-menu.component';
 import { API } from '../../lib/api';
-import { enumValues as enumValues } from '../../lib/enum';
-import { snake2StartCase } from '../../lib/fmt';
-
-//actions and their icons
-const Icons: Record<keyof typeof Action, string> = {
-  BAN_USER: 'block',
-  DELETE_CONTENT: 'delete',
-  IGNORE_REPORT: 'close',
-};
 
 @Component({
   selector: 'report-card',
@@ -37,31 +29,30 @@ const Icons: Record<keyof typeof Action, string> = {
     MatCardContent,
     MatCardActions,
     MatAnchor,
-    MatMenuTrigger,
-    MatMenuItem,
-    MatMenu,
     MatTooltip,
     MatCardFooter,
+    AuditActionMenu,
   ],
 })
-//TODO: fetch actions from server
 export class ReportCard extends MatCard {
-  report = input.required<ReportModel>();
+  report = input.required<Report>();
   title = input.required<string>();
   iconName = input<string>();
   iconTitle = input<string>();
   materialPath = input<string>();
   router = inject(Router);
 
-  snake2StartCase = snake2StartCase;
-  actions = enumValues(Action);
-  Icons = Icons;
+  auditService = inject(AuditService);
 
-  takeAction(action: Action) {
-    const { id } = this.report();
-    return API.post('/moderation/audit', { id, action });
+  actions(type: Auditable) {
+    let base: AuditAction[] = ['BAN_USER', 'DELETE'];
+    if (type === Auditable.POST) base = ['HIDE', ...base];
+    return base;
   }
-
+  async ignore() {
+    const { id } = this.report();
+    await API.post(`/moderation/audit/report/${id}/ignore`, null);
+  }
   review() {
     const { id } = this.report();
     const path = this.materialPath();

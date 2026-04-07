@@ -7,6 +7,7 @@ import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Report.PostRelatedReport;
 import com.z01.blog.model.Report.ReportModel;
 import com.z01.blog.model.Report.ReportRepository;
+import com.z01.blog.model.Report.UserReport;
 import com.z01.blog.model.User.UserExtra;
 import com.z01.blog.model.User.UserRepo;
 
@@ -26,13 +27,13 @@ public class ModerationService {
         if (report instanceof PostRelatedReport pr)
             return pr.getPostId();
         else
-            throw AppError.REPORT_NOT_POST_RELATED.asException();
+            throw AppError.MATERIAL_NOT_DELETEABLE.asException();
     }
 
     public UserExtra getUserByReportId(long reportId) {
         var report = this.getReport(reportId);
 
-        if (report instanceof ReportModel.User u) {
+        if (report instanceof UserReport u) {
             var user = userRepo.findExtraById(u.userId).orElseThrow(
                     () -> AppError.USER_PROFILE_NOT_FOUND.asException());
             return user;

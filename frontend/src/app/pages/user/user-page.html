@@ -1,5 +1,11 @@
 <mat-card class="userInfo">
-  <user-header [owner]="user()" (report)="reportService.reportUser(user().accountId)" />
+  <user-header
+    [material]="{ type: 'USER', id: user().accountId }"
+    [deleted]="user().banned"
+    [owner]="user()"
+    [actions]="['BAN_USER', 'DELETE']"
+    (report)="reportService.reportUser(user().accountId)"
+  />
   <mat-card-content class="states">
     <div class="followers">
       {{ user().followersCount }}

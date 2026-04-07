@@ -1,10 +1,11 @@
-import { Hydrator } from './api';
-
-export class User {
+export class UserMinimal {
   accountId = '';
+  login = '';
+}
+
+export class User extends UserMinimal {
   firstName = '';
   lastName = '';
-  login = '';
   followed: boolean | null = false;
   banned = false;
 }

@@ -27,20 +27,27 @@
       Review
       <mat-icon>visibility_on</mat-icon>
     </button>
+    <audit-action-menu
+      [actions]="actions(report.material.type)"
+      #menu
+      [material]="{ reportId: report.id }"
+      [disabled]="report.resolvedBy"
+    />
+
     <button
       matButton
-      [matMenuTriggerFor]="menu"
-      [matMenuTriggerRestoreFocus]="false"
-      [disabled]="report.resolvedBy"
+      (click)="ignore()"
+      [disabled]="materialPath() === undefined || report.resolvedBy"
     >
-      Take Action
-      <mat-icon>gavel</mat-icon>
+      Ignore
+      <mat-icon>check</mat-icon>
     </button>
   </mat-card-actions>
+
   @if (report.resolvedBy) {
     @if (report.actionTaken) {
       @let action = report.actionTaken;
-      @let icon = Icons[report.actionTaken];
+      @let icon = auditService.ActionIcons[report.actionTaken];
 
       <div class="resolvedBy">
         <mat-icon [matTooltip]="action">{{ icon }}</mat-icon>
@@ -51,13 +58,3 @@
     }
   }
 </mat-card-footer>
-
-<mat-menu #menu="matMenu">
-  @for (action of actions; track $index) {
-    @let icon = Icons[action];
-    <button mat-menu-item (click)="takeAction(action)">
-      <mat-icon>{{ icon }}</mat-icon>
-      <span>{{ snake2StartCase(action) }}</span>
-    </button>
-  }
-</mat-menu>

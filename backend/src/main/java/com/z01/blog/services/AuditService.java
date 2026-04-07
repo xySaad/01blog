@@ -1,94 +1,94 @@
 package com.z01.blog.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.z01.blog.exception.AppError;
-import com.z01.blog.model.Audit.AuditData;
-import com.z01.blog.model.Comment.CommentRepo;
-import com.z01.blog.model.Post.PostRepo;
+import com.z01.blog.model.BaseEntity;
+import com.z01.blog.model.Audit.AuditAction;
+import com.z01.blog.model.Audit.Deleteable;
+import com.z01.blog.model.Audit.Hideable;
+import com.z01.blog.model.DTO.AuditReportRequest;
+import com.z01.blog.model.Report.MaterialRef;
 import com.z01.blog.model.Report.ReportModel;
 import com.z01.blog.model.Report.ReportRepository;
 import com.z01.blog.model.Report.ResolvedBy;
+import com.z01.blog.model.User.UserEntity;
 import com.z01.blog.model.User.UserRepo;
+
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 @Service
 public class AuditService {
     @Autowired
+    EntityManager em;
+
+    @Autowired
     ReportRepository reportRepo;
 
     @Autowired
-    CommentRepo commentRepo;
-    @Autowired
-    PostRepo postRepo;
-    @Autowired
     UserRepo userRepo;
 
-    public void audit(AuditData request, long userId) {
+    public void auditReport(AuditReportRequest request, long userId) {
         var report = reportRepo.findById(request.id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> AppError.REPORT_NOT_FOUND.asException());
         if (report.resolvedBy != null)
             throw AppError.REPORT_ALREADY_RESOLVED.asException();
 
-        switch (request.action()) {
-            case BAN_USER -> banUser(report);
-            case DELETE_CONTENT -> deleteContent(report);
-            case IGNORE_REPORT -> {
-            }
-        }
+        var action = request.action();
+
+        if (action != null)
+            auditMaterial(report.getMaterial(), action);
+
+        resolveReport(report, userId, action);
+    }
+
+    public void resolveReport(ReportModel report, long userId, AuditAction action) {
+        if (action.name() != null) {
+            report.actionTaken = action.name();
+        } else
+            report.actionTaken = "IGNORE_REPORT";
 
         report.resolvedBy = new ResolvedBy();
         report.resolvedBy.id = userId;
-        report.actionTaken = request.action().name();
         reportRepo.save(report);
     }
 
-    private void deleteContent(ReportModel report) {
-        switch (report) {
-            case ReportModel.Comment rc -> {
-                var comment = commentRepo.findById(rc.commentId).get();
-                comment.deleted = true;
-                commentRepo.save(comment);
-            }
-            case ReportModel.Post rp -> {
-                var post = postRepo.findById(rp.postId);
-                post.deleted = true;
-                postRepo.save(post);
-            }
-            case ReportModel.User up -> {
-                var user = userRepo.findById(up.userId).get();
-                user.deleted = true;
-                userRepo.save(user);
-            }
-            default -> throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "material doesn't support delete action");
+    @Transactional
+    public void auditMaterial(MaterialRef materialRef, AuditAction action) {
+        var material = em.find(materialRef.type().entity, materialRef.id());
+        if (material == null)
+            throw AppError.MATERIAL_NOT_FOUND.asException();
+
+        switch (action) {
+            case DELETE -> deleteMaterial(material);
+            case BAN_USER -> banMaterialOwner(material);
+            case HIDE -> hideMaterial(material);
         }
+
     }
 
-    private void banUser(ReportModel report) {
-        switch (report) {
-            case ReportModel.Comment rc -> {
-                var comment = commentRepo.findById(rc.commentId).get();
-                var user = userRepo.findById(comment.account).get();
-                user.banned = true;
-                userRepo.save(user);
-            }
-            case ReportModel.Post rp -> {
-                var post = postRepo.findById(rp.postId);
-                var user = userRepo.findById(post.account).get();
-                user.banned = true;
-                userRepo.save(user);
-            }
-            case ReportModel.User up -> {
-                var user = userRepo.findById(up.userId).get();
-                user.banned = true;
-                userRepo.save(user);
-            }
-            default -> throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,
-                    "material doesn't support ban action");
-        }
+    private void hideMaterial(Object material) {
+        if (material instanceof Hideable h)
+            h.hide();
+        else
+            throw AppError.MATERIAL_NOT_HIDEABLE.asException();
     }
 
+    private void deleteMaterial(Object material) {
+        if (material instanceof Deleteable d)
+            d.delete();
+        else
+            throw AppError.MATERIAL_NOT_DELETEABLE.asException();
+    }
+
+    private void banMaterialOwner(Object material) {
+        if (material instanceof UserEntity u)
+            u.banned = true;
+        else if (material instanceof BaseEntity b)
+            userRepo.findById(b.account).get().banned = true;
+        else
+            throw AppError.REPORT_NOT_USER_RELATED.asException();
+    }
 }

@@ -16,8 +16,10 @@ import com.z01.blog.model.Comment.CommentExtra;
 import com.z01.blog.model.Comment.CommentRepo;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostRepo;
+import com.z01.blog.model.Report.CommentReport;
 import com.z01.blog.model.Report.ReportModel;
 import com.z01.blog.model.Report.ReportRepository;
+import com.z01.blog.model.Report.UserReport;
 import com.z01.blog.model.User.UserExtra;
 import com.z01.blog.services.ModerationService;
 
@@ -59,10 +61,10 @@ public class ReportsModerationController {
     CommentExtra getReportedComment(@PathVariable long reportId) {
         var report = moderationService.getReport(reportId);
 
-        if (report instanceof ReportModel.Comment c)
+        if (report instanceof CommentReport c)
             return commentRepo.findExtraById(c.commentId);
         else
-            throw AppError.REPORT_NOT_POST_RELATED.asException();
+            throw AppError.MATERIAL_NOT_DELETEABLE.asException();
     }
 
     @GetMapping("{reportId}/user")
@@ -73,7 +75,7 @@ public class ReportsModerationController {
     @GetMapping("{reportId}/user/posts")
     public List<PostExtra> getReportedUserPosts(@Auth.User long userId, @PathVariable long reportId) {
         var report = moderationService.getReport(reportId);
-        if (report instanceof ReportModel.User u) {
+        if (report instanceof UserReport u) {
             var posts = postRepo.findAllByAccount(u.userId);
 
             List<Long> postIds = posts.stream().map(p -> p.id).toList();

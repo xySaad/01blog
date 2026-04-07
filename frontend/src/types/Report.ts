@@ -1,57 +1,66 @@
-import { enumString } from '../app/lib/enum';
+import { enumString, enumValues } from '../app/lib/enum';
 import { snake2StartCase } from '../app/lib/fmt';
 import { Hydrator } from './api';
+import { UserMinimal } from './user';
 
-export type Report = {
+export type Auditable = keyof typeof Auditable;
+export const Auditable = enumString(
+  //
+  'POST',
+  'USER',
+  'COMMENT',
+);
+type ReportTypes = {
   POST: PostReport;
-  COMMENT: CommentReport;
   USER: UserReport;
-  OTHER: ReportModel;
+  COMMENT: CommentReport;
 };
-export const ByDefault = {
-  id: '',
-  login: '',
-};
-export type Action = keyof typeof Action;
-export const Action = enumString('BAN_USER', 'DELETE_CONTENT', 'IGNORE_REPORT');
 
-export class ReportModel implements Hydrator {
-  readonly type: keyof Report = 'OTHER';
-  id = '';
-  reason = '';
-  description = '';
-  createdAt = new Date();
-  reportedBy = ByDefault;
-  resolvedBy? = ByDefault;
+export type AuditAction = keyof typeof AuditAction;
+export const AuditAction = enumString(
+  //
+  'BAN_USER',
+  'DELETE',
+  'HIDE',
+);
+
+export type ReportAction = keyof typeof ReportAction;
+export const ReportAction = enumString(...enumValues(AuditAction), 'IGNORE_REPORT');
+export class Report implements Hydrator {
+  material!: {
+    type: Auditable;
+  };
+  id!: string;
+  reason!: string;
+  description?: string;
+  createdAt!: Date;
+  reportedBy!: UserMinimal;
+  resolvedBy?: UserMinimal;
+  actionTaken?: ReportAction;
+
   fmtReason = '';
-  actionTaken?: keyof typeof Action;
-
   hydrate() {
     this.createdAt = new Date(this.createdAt);
     this.fmtReason = snake2StartCase(this.reason);
   }
 
-  is<T extends keyof Report>(target: T): this is Report[T] {
-    return this.type === target;
+  is<T extends Auditable>(target: T): this is ReportTypes[T] {
+    return this.material.type === target;
   }
 }
 
-export class PostReport extends ReportModel {
-  override readonly type = 'POST';
-  postId = '';
-  postTitle = '';
+export class UserReport extends Report {
+  userId!: string;
+  userLogin!: string;
 }
 
-export class CommentReport extends ReportModel {
-  override readonly type = 'COMMENT';
-  commentId = '';
-  commentContent = '';
-  postId = '';
-  postTitle = '';
+export class PostReport extends Report {
+  postId!: string;
+  postTitle!: string;
 }
 
-export class UserReport extends ReportModel {
-  override readonly type = 'USER';
-  userId = '';
-  userLogin = '';
+export class CommentReport extends Report {
+  postId!: string;
+  commentId!: string;
+  commentContent!: string;
 }

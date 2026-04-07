@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ReportsList } from '../../../components/reports-list/reports-list.component';
 import { RolesList } from '../../../components/roles/roles-list/roles-list.component';
 import { UserService } from '../../../services/user.service';
 import { NgComponentOutlet } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 const TABS = [
   { permission: 'v1:roles:read', icon: 'person_shield', label: 'Roles', component: RolesList },
@@ -22,7 +23,17 @@ export function hasPanelAccess(permissions: string[]): boolean {
 })
 export class PanelPage {
   readonly user = inject(UserService).user;
+  readonly route = inject(ActivatedRoute);
+
   readonly tabs = TABS.filter((t) => this.user.permissions.includes(t.permission));
+  readonly tabParam = this.route.snapshot.queryParamMap.get('tab') ?? 0;
+
+  selectedIndex = signal(this.tabParam);
+  changeTab(index: number) {
+    const url = new URL(location.href);
+    url.searchParams.set('tab', index.toString());
+    history.replaceState({}, '', url);
+  }
 
   hasPermission(permission: string): boolean {
     return this.user.permissions.includes(permission);

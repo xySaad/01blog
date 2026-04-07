@@ -12,7 +12,7 @@ export class Post implements Hydrator {
   createdAt = new Date(0);
   updatedAt = new Date(0);
   liked = false;
-
+  hidden = false;
   isPublic = false;
   deleted = false;
 

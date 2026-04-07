@@ -8,7 +8,7 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class ResolvedBy {
     @Column(name = "resolved_by")
-    public Long id;
+    public long id;
     @Formula("(SELECT u.login FROM users u WHERE u.account_id = resolved_by)")
     public String login;
 }

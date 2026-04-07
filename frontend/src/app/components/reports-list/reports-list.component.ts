@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
-import { ReportModel } from '../../../types/Report';
+import { Report, UserReport } from '../../../types/Report';
 import { Collection } from '../../../types/collection';
 import { API } from '../../lib/api';
 import { global } from '../../lib/global';
@@ -25,11 +25,11 @@ import { SelectList, SelectOption } from '../select-list.component';
   ],
 })
 export class ReportsList {
-  reports = signal<ReportModel[]>([]);
+  reports = signal<Report[]>([]);
   reportReasons = global.reportReasons;
   selectedReason = requiredSelect('all');
 
   constructor() {
-    API.getH(Collection(ReportModel), '/moderation/reports').then(this.reports.set);
+    API.getH(Collection(Report), '/moderation/reports').then(this.reports.set);
   }
 }
