@@ -1,14 +1,5 @@
-.home {
+:host {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-.header {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-
-  button {
-    flex: 1;
-  }
 }
