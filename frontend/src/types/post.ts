@@ -34,6 +34,9 @@ export class Post implements Hydrator {
   }
 
   hydrate() {
+    this.commentsCount = +this.commentsCount;
+    this.likesCount = +this.likesCount;
+
     this.createdAt = new Date(this.createdAt);
     this.updatedAt = new Date(this.updatedAt);
   }
