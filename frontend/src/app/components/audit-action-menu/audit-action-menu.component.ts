@@ -9,6 +9,7 @@ import { API } from '../../lib/api';
 import { snake2StartCase } from '../../lib/fmt';
 import { AuditService } from '../../services/audit-service.service';
 import { UserService } from '../../services/user.service';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'audit-action-menu',
@@ -21,6 +22,7 @@ import { UserService } from '../../services/user.service';
     LoadingSpinner,
     MatExpansionModule,
     MatAnchor,
+    ConfirmationDialog,
   ],
 })
 export class AuditActionMenu {

@@ -38,10 +38,12 @@
           </ng-container>
         }
       </button>
-      <button mat-menu-item (click)="delete()">
-        <mat-icon color="red">delete</mat-icon>
-        <span>Delete</span>
-      </button>
+      <confirmation-dialog [confirm]="delete.bind(this)">
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </confirmation-dialog>
     </mat-menu>
   </button>
 </mat-toolbar>

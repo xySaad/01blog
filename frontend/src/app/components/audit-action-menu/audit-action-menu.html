@@ -13,13 +13,13 @@
 <mat-menu #actionMenu>
   @for (action of actions(); track $index) {
     @let icon = auditService.ActionIcons[action];
-    <button
-      #actionButton
-      mat-menu-item
-      (click)="spinner.withLoading(takeAction.bind(this, action))"
+    <confirmation-dialog
+      [confirm]="spinner.withLoading.bind(spinner, takeAction.bind(this, action))"
     >
-      <mat-icon>{{ icon }}</mat-icon>
-      <span>{{ snake2StartCase(action) }}</span>
-    </button>
+      <button mat-menu-item>
+        <mat-icon>{{ icon }}</mat-icon>
+        <span>{{ snake2StartCase(action) }}</span>
+      </button>
+    </confirmation-dialog>
   }
 </mat-menu>

@@ -3,7 +3,6 @@
 <mat-card>
   <user-header
     [material]="{ type: 'COMMENT', id: comment.id }"
-    [deleted]="comment.deleted"
     [actions]="['BAN_USER', 'DELETE']"
     [owner]="comment.owner"
     (edit)="editing.set(true)"

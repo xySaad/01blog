@@ -15,7 +15,6 @@ import { MatFormField, MatInput, MatLabel, MatPrefix } from '@angular/material/i
 import { MatRadioModule } from '@angular/material/radio';
 import { API } from '../../lib/api';
 import { global } from '../../lib/global';
-import { DeleteDialog } from '../../pages/post/edit/delete-dialog/delete-dialog.component';
 import { LoadingButton } from '../loading-button.component';
 
 @Component({
@@ -40,7 +39,7 @@ import { LoadingButton } from '../loading-button.component';
   ],
 })
 export class ReportDialog {
-  private dialogRef = inject(MatDialogRef<DeleteDialog>);
+  private dialogRef = inject(MatDialogRef<ReportDialog>);
   data: { id: string; item: string } = inject(MAT_DIALOG_DATA);
   reportReasons = global.reportReasons;
   selectedReason = '';

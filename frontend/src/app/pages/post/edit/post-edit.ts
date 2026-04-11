@@ -12,6 +12,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../../../types/post';
+import { ConfirmationDialog } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { PostCardContent } from '../../../components/post-view/content/content.component';
 import { API } from '../../../lib/api';
 import { WhileState } from '../../../lib/decorators/loading';
@@ -19,7 +20,6 @@ import { betterSignal } from '../../../lib/signal';
 import { DB_NAME, Storage } from '../../../services/storage.service';
 import { UserService } from '../../../services/user.service';
 import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
-import { DeleteDialog } from './delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'post-edit',
@@ -40,6 +40,7 @@ import { DeleteDialog } from './delete-dialog/delete-dialog.component';
     MatIconModule,
     MatTooltipModule,
     PostCardContent,
+    ConfirmationDialog,
   ],
 })
 export class PostEdit {
@@ -158,15 +159,19 @@ export class PostEdit {
     this.states.isPreviewActive.update((prev) => !prev);
   }
 
-  private readonly dialog = inject(MatDialog);
-  delete() {
-    this.dialog.open(DeleteDialog, {
-      enterAnimationDuration: '100ms',
-      exitAnimationDuration: '100ms',
-      data: { id: this.localPostData().id, isDraft: this.states.isNew },
-    });
+  async delete() {
+    const { id } = this.localPostData();
+    if (this.states.isNew) {
+      const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+      postDrafts.delete(id);
+    } else {
+      await API.delete(`/posts/${id}`);
+    }
+
+    this.router.navigateByUrl('/posts');
   }
 
+  private readonly dialog = inject(MatDialog);
   attachments() {
     this.dialog.open(AttachmentsDialog, {
       enterAnimationDuration: '100ms',
