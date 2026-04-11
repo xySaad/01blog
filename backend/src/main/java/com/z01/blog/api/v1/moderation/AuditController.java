@@ -29,7 +29,7 @@ public class AuditController {
     @PostMapping("/report/{reportId}/ignore")
     @RequiresPermission(scope = "v1:reports:audit", description = "audit reports by banning users, deleting posts and comments or ignoring the report")
     void auditReport(@PathVariable long reportId, @Auth.User long userId) {
-        auditService.auditReport(new AuditReportRequest(userId, null), userId);
+        auditService.ignoreReport(reportId, userId);
     }
 
     @PostMapping("/content")

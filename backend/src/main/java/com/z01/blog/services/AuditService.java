@@ -10,7 +10,6 @@ import com.z01.blog.model.Audit.Deleteable;
 import com.z01.blog.model.Audit.Hideable;
 import com.z01.blog.model.DTO.AuditReportRequest;
 import com.z01.blog.model.Report.MaterialRef;
-import com.z01.blog.model.Report.ReportModel;
 import com.z01.blog.model.Report.ReportRepository;
 import com.z01.blog.model.Report.ResolvedBy;
 import com.z01.blog.model.User.UserEntity;
@@ -30,6 +29,18 @@ public class AuditService {
     @Autowired
     UserRepo userRepo;
 
+    public void ignoreReport(long reportId, long userId) {
+        var report = reportRepo.findById(reportId)
+                .orElseThrow(() -> AppError.REPORT_NOT_FOUND.asException());
+        if (report.resolvedBy != null)
+            throw AppError.REPORT_ALREADY_RESOLVED.asException();
+
+        report.actionTaken = "IGNORE_REPORT";
+        report.resolvedBy = new ResolvedBy();
+        report.resolvedBy.id = userId;
+        reportRepo.save(report);
+    }
+
     public void auditReport(AuditReportRequest request, long userId) {
         var report = reportRepo.findById(request.id())
                 .orElseThrow(() -> AppError.REPORT_NOT_FOUND.asException());
@@ -37,19 +48,9 @@ public class AuditService {
             throw AppError.REPORT_ALREADY_RESOLVED.asException();
 
         var action = request.action();
+        auditMaterial(report.getMaterial(), action);
 
-        if (action != null)
-            auditMaterial(report.getMaterial(), action);
-
-        resolveReport(report, userId, action);
-    }
-
-    public void resolveReport(ReportModel report, long userId, AuditAction action) {
-        if (action.name() != null) {
-            report.actionTaken = action.name();
-        } else
-            report.actionTaken = "IGNORE_REPORT";
-
+        report.actionTaken = action.name();
         report.resolvedBy = new ResolvedBy();
         report.resolvedBy.id = userId;
         reportRepo.save(report);
