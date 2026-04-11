@@ -43,7 +43,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 export class UserHeader {
   owner = input.required<User>();
   material = input.required<{ type: Auditable; id: string }>();
-  deleted = input(false);
   createdAt = input<Date>();
   actions = input.required<AuditAction[]>();
   visibility = input<Visibility>();

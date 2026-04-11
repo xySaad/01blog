@@ -57,7 +57,7 @@
 
 <mat-menu #menu>
   @if (me.accountId == owner().accountId) {
-    <button mat-menu-item (click)="edit.emit()" [disabled]="deleted()">
+    <button mat-menu-item (click)="edit.emit()">
       <span>Edit</span>
       <mat-icon>edit</mat-icon>
     </button>

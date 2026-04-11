@@ -1,7 +1,6 @@
 <mat-card class="userInfo">
   <user-header
     [material]="{ type: 'USER', id: user().accountId }"
-    [deleted]="user().banned"
     [owner]="user()"
     [actions]="['BAN_USER', 'DELETE']"
     (report)="reportService.reportUser(user().accountId)"
