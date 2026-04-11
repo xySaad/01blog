@@ -30,13 +30,14 @@
     <audit-action-menu
       [actions]="actions(report.material.type)"
       #menu
-      [material]="{ reportId: report.id }"
+      [material]="report"
       [disabled]="report.resolvedBy"
     />
 
     <button
+      loadingButton
+      [onClick]="ignore.bind(this)"
       matButton
-      (click)="ignore()"
       [disabled]="materialPath() === undefined || report.resolvedBy"
     >
       Ignore

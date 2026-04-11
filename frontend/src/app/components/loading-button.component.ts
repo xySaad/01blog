@@ -10,5 +10,5 @@ import { LoadingSpinner } from '../directives/loading-spinner.directive';
 })
 export class LoadingButton<T extends unknown> extends LoadingSpinner<T> {
   'onClick' = input.required<() => T>();
-  disabled = input(false);
+  disabled = input();
 }

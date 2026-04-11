@@ -16,6 +16,8 @@ import { AuditAction, Report, Auditable } from '../../../types/Report';
 import { AuditService } from '../../services/audit-service.service';
 import { AuditActionMenu } from '../audit-action-menu/audit-action-menu.component';
 import { API } from '../../lib/api';
+import { LoadingButton } from '../loading-button.component';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'report-card',
@@ -32,6 +34,7 @@ import { API } from '../../lib/api';
     MatTooltip,
     MatCardFooter,
     AuditActionMenu,
+    LoadingButton,
   ],
 })
 export class ReportCard extends MatCard {
@@ -41,6 +44,7 @@ export class ReportCard extends MatCard {
   iconTitle = input<string>();
   materialPath = input<string>();
   router = inject(Router);
+  selfUser = inject(UserService).user;
 
   auditService = inject(AuditService);
 
@@ -52,6 +56,8 @@ export class ReportCard extends MatCard {
   async ignore() {
     const { id } = this.report();
     await API.post(`/moderation/audit/report/${id}/ignore`, null);
+    this.report().resolvedBy = this.selfUser;
+    this.report().actionTaken = 'IGNORE_REPORT';
   }
   review() {
     const { id } = this.report();
