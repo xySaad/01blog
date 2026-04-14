@@ -10,7 +10,7 @@ import com.z01.blog.annotation.Auth;
 import com.z01.blog.exception.AppError;
 import com.z01.blog.model.Account;
 import com.z01.blog.model.DTO.MeResponse;
-import com.z01.blog.model.RBAC.RoleModel;
+import com.z01.blog.model.RBAC.RoleRepo;
 import com.z01.blog.model.User.UserEntity;
 import com.z01.blog.model.User.UserRepo;
 
@@ -23,7 +23,7 @@ public class Me {
     Account.repo accountRepo;
 
     @Autowired
-    RoleModel.repo roleRepo;
+    RoleRepo roleRepo;
 
     @GetMapping("/api/v1/me")
     MeResponse getUserOwnInfo(@Auth.Account long accountId) {

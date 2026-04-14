@@ -8,5 +8,6 @@ export class Role {
   id = 0;
   name = '';
   description = '';
+  position = 0;
   permissions: Permission[] = [];
 }

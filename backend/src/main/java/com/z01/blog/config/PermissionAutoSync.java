@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.z01.blog.annotation.RequiresPermission;
 import com.z01.blog.model.RBAC.PermissionModel;
 import com.z01.blog.model.RBAC.RoleModel;
+import com.z01.blog.model.RBAC.RoleRepo;
 
 @Component
 public class PermissionAutoSync implements ApplicationListener<ContextRefreshedEvent> {
@@ -23,7 +24,7 @@ public class PermissionAutoSync implements ApplicationListener<ContextRefreshedE
     private PermissionModel.repo permissionRepo;
 
     @Autowired
-    private RoleModel.repo roleRepo;
+    private RoleRepo roleRepo;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -37,16 +38,16 @@ public class PermissionAutoSync implements ApplicationListener<ContextRefreshedE
         });
 
         // create default role with no permissions
-        if (!roleRepo.existsByName("default")) {
-            var defaultRole = new RoleModel();
-            defaultRole.name = "default";
-            defaultRole.description = "default role - should be assigned to all users";
-            roleRepo.save(defaultRole);
-        }
+        var defaultRole = roleRepo.findByName("default").orElse(new RoleModel());
+        defaultRole.name = "default";
+        defaultRole.position = Integer.MAX_VALUE;
+        defaultRole.description = "default role - should be assigned to all users";
+        roleRepo.save(defaultRole);
 
         // create root role with all permissions
         var rootRole = roleRepo.findByName("root").orElse(new RoleModel());
         rootRole.name = "root";
+        rootRole.position = 0;
         rootRole.permissions = new ArrayList<>(scannedPermissions.values());
         roleRepo.save(rootRole);
     }

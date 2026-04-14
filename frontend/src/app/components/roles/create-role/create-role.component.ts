@@ -105,6 +105,7 @@ export class CreateRole {
       name: this.nameInput,
       description: this.descriptionInput,
       permissions: this.selectedPermissions(),
+      position: this.initialRole()?.position || this.roles().length - 1,
     };
 
     API.post('/moderation/roles', createdRole);

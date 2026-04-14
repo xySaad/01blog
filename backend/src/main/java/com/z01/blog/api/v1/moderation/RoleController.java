@@ -3,7 +3,6 @@ package com.z01.blog.api.v1.moderation;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,39 +10,54 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.z01.blog.annotation.Auth;
+import com.z01.blog.annotation.EntityAccess;
+import com.z01.blog.annotation.EntityAccess.Mode;
+import com.z01.blog.exception.AppError;
 import com.z01.blog.annotation.RequiresPermission;
+import com.z01.blog.infrastructure.PermissionProvider;
 import com.z01.blog.model.RBAC.AccountRoleModel;
+import com.z01.blog.model.RBAC.PermissionModel;
 import com.z01.blog.model.RBAC.RoleModel;
+import com.z01.blog.model.RBAC.RoleRepo;
 import com.z01.blog.model.User.UserEntity;
 
 @RestController
 @RequestMapping("/api/v1/moderation/roles")
 public class RoleController {
     @Autowired
-    RoleModel.repo repo;
-    @Autowired
     AccountRoleModel.repo accountRoleRepo;
     @Autowired
-    RoleModel.repo roleRepo;
+    RoleRepo roleRepo;
+    @Autowired
+    PermissionProvider permissionProvider;
 
     @RequiresPermission(scope = "v1:roles:read", description = "List all available roles")
     @GetMapping
     List<RoleModel> getAllRoles() {
-        return repo.findAll();
+        return roleRepo.findAllByOrderByPositionAsc();
     }
 
+    // TODO: change @Auth.User principle to UserId + Permission instead of querying
+    // DB each time
     @RequiresPermission(scope = "v1:roles:write", description = "Create or update a role")
     @PostMapping
-    void createRole(@RequestBody RoleModel role) {
-        repo.save(role);
+    void createRole(@Auth.User long userId, @RequestBody RoleModel role) {
+        role.ensureAccess(userId, Mode.Write);
+
+        // TODO: check all permission of users highest role and below
+        for (PermissionModel perm : role.permissions)
+            if (!permissionProvider.hasPermission(perm.scope))
+                throw AppError.ACCESS_DENIED.asException();
+
+        roleRepo.save(role);
     }
 
     @RequiresPermission(scope = "v1:roles:write")
-    @DeleteMapping("{roleId}")
-    void deleteRole(@PathVariable long roleId) {
-        repo.deleteById(roleId);
+    @DeleteMapping("{role}")
+    void deleteRole(@EntityAccess(mode = Mode.Write) RoleModel role) {
+        roleRepo.deleteById(role.id);
     }
 
     @GetMapping("/{roleId}/users")
@@ -57,16 +71,12 @@ public class RoleController {
             List<Long> deleted) {
     }
 
-    @PostMapping("{roleId}/users")
+    @PostMapping("{role}/users")
     @RequiresPermission(scope = "v1:roles:write")
-    void updateUsersInRole(@PathVariable long roleId, @RequestBody UserRoleUpdateRequest req) {
-
-        RoleModel role = roleRepo.findById(roleId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
-
+    void updateUsersInRole(@EntityAccess(mode = Mode.Write) RoleModel role, @RequestBody UserRoleUpdateRequest req) {
         // 1. Handle Deletions
         if (req.deleted() != null && !req.deleted().isEmpty()) {
-            accountRoleRepo.deleteByRoleIdAndAccountIds(roleId, req.deleted());
+            accountRoleRepo.deleteByRoleIdAndAccountIds(role.id, req.deleted());
         }
 
         if (req.added() != null && !req.added().isEmpty()) {

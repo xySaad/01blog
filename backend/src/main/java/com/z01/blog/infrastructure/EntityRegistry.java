@@ -3,8 +3,10 @@ package com.z01.blog.infrastructure;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -13,6 +15,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.z01.blog.annotation.AccessMethod;
 import com.z01.blog.annotation.EntityAccess;
@@ -46,15 +49,17 @@ public class EntityRegistry implements ApplicationListener<ContextRefreshedEvent
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        Map<String, Object> controllers = context
+                .getBeansWithAnnotation(RestController.class);
 
-        for (String beanName : context.getBeanDefinitionNames()) {
-            Object bean = context.getBean(beanName);
-            for (Method method : bean.getClass().getDeclaredMethods()) {
+        controllers.forEach((name, bean) -> {
+            Class<?> targetClass = AopUtils.getTargetClass(bean);
+            for (Method method : targetClass.getDeclaredMethods()) {
                 for (Parameter param : method.getParameters()) {
                     this.registerEntityAccessParam(param);
                 }
             }
-        }
+        });
     }
 
     public RepoMethod getMethodForParam(Parameter param) {

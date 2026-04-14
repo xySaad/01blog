@@ -1,0 +1,3 @@
+ALTER TABLE roles ADD COLUMN position SERIAL NOT NULL;
+
+ALTER TABLE roles ALTER COLUMN position TYPE int;

@@ -17,7 +17,7 @@ import com.z01.blog.model.Account;
 import com.z01.blog.model.Session;
 import com.z01.blog.model.DTO.AuthRequest;
 import com.z01.blog.model.RBAC.AccountRoleModel;
-import com.z01.blog.model.RBAC.RoleModel;
+import com.z01.blog.model.RBAC.RoleRepo;
 import com.z01.blog.services.EmailService;
 
 import cn.hutool.core.util.IdUtil;
@@ -38,7 +38,7 @@ public class Register {
     @Autowired
     private AccountRoleModel.repo accountRoleRepo;
     @Autowired
-    private RoleModel.repo roleRepo;
+    private RoleRepo roleRepo;
 
     @PostMapping("/api/v1/register")
     public void register(@RequestBody @Valid AuthRequest body, HttpServletResponse response) {

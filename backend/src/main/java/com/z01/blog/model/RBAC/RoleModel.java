@@ -1,10 +1,11 @@
 package com.z01.blog.model.RBAC;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import com.z01.blog.annotation.EntityAccess.Mode;
+import com.z01.blog.exception.AppError;
+import com.z01.blog.infrastructure.RestrictedEntity;
+import com.z01.blog.model.RepoRegistry;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,27 +18,28 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "roles")
-public class RoleModel {
+public class RoleModel implements RestrictedEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
     public String name;
     public String description;
+    public Integer position;
 
     @ManyToMany
     @JoinTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
     public List<PermissionModel> permissions;
 
-    public interface repo extends JpaRepository<RoleModel, Long> {
-        Optional<RoleModel> findByName(String name);
+    // TODO: provide User with a list Roles in PrincipleProvider
+    // and remove usage of RepoRegistry.rolesRepo
+    @Override
+    public void ensureAccess(Long user, Mode mode) {
+        int highestPosition = RepoRegistry.rolesRepo.findUserHighestPosition(user);
+        if (this.position <= highestPosition)
+            throw AppError.ACCESS_DENIED.asException();
 
-        boolean existsByName(String name);
-
-        @Query("""
-                SELECT DISTINCT p.scope FROM RoleModel r
-                JOIN r.permissions p
-                JOIN AccountRoleModel ar ON ar.id.roleId = r.id
-                WHERE ar.id.accountId = :accountId""")
-        List<String> findScopeByAccountId(long accountId);
+        if (mode == Mode.Write)
+            if (this.position == 0 || this.position == Integer.MAX_VALUE)
+                throw AppError.ACCESS_DENIED.asException();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.z01.blog.model.Account;
 import com.z01.blog.model.RBAC.RoleModel;
+import com.z01.blog.model.RBAC.RoleRepo;
 import com.z01.blog.model.RBAC.AccountRoleModel;
 
 import cn.hutool.core.util.IdUtil;
@@ -22,19 +23,19 @@ public class RootBootstrap implements ApplicationListener<ContextRefreshedEvent>
     @Autowired
     private AccountRoleModel.repo userRoleRepo;
     @Autowired
-    private RoleModel.repo roleRepo;
+    private RoleRepo roleRepo;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         Account root = accountRepo.findByEmail("root").orElseGet(() -> {
             char[] password = resolvePassword();
-            Account r = new Account();
-            r.id = IdUtil.getSnowflakeNextId();
-            r.email = "root";
-            r.passwordHash = new BCryptPasswordEncoder().encode(new String(password));
-            r.codeCreatedAt = LocalDateTime.now();
-            r.verificationCode = null;
-            return accountRepo.save(r);
+            Account a = new Account();
+            a.id = IdUtil.getSnowflakeNextId();
+            a.email = "root";
+            a.passwordHash = new BCryptPasswordEncoder().encode(new String(password));
+            a.codeCreatedAt = LocalDateTime.now();
+            a.verificationCode = null;
+            return accountRepo.save(a);
         });
 
         RoleModel rootRole = roleRepo.findByName("root")

@@ -46,15 +46,26 @@ public class EntityAccessResolver<T> implements HandlerMethodArgumentResolver {
         // TODO: support multiple variables
         String raw = pathVariables.get(parameter.getParameterName());
         Class<?> idType = repoMethod.method.getParameterTypes()[0];
-        Object convertedId = conversionService.convert(raw, idType);
-        var entity = repoMethod.method.invoke(repoMethod.repo, convertedId);
-        if (entity == null || entity instanceof Optional<?>)
-            throw AppError.ENTITY_NOT_FOUND.asException();
+        var convertedId = conversionService.convert(raw, idType);
+        var entity = this.getEntity(repoMethod, convertedId);
 
         if (entity instanceof RestrictedEntity re) {
             var access = parameter.getParameterAnnotation(EntityAccess.class);
             re.ensureAccess(principalProvider.getCurrentPrincipal(), access.mode());
         }
+
+        return entity;
+    }
+
+    private Object getEntity(RepoMethod repoMethod, Object id)
+            throws IllegalAccessException, InvocationTargetException {
+        var entity = repoMethod.method.invoke(repoMethod.repo, id);
+
+        if (entity == null)
+            throw AppError.ENTITY_NOT_FOUND.asException();
+
+        if (entity instanceof Optional<?> oe)
+            return oe.orElseThrow(AppError.ENTITY_NOT_FOUND::asException);
 
         return entity;
     }
