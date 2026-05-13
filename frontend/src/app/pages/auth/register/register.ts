@@ -116,7 +116,7 @@ export class Register {
     await API.post('/users', this.data);
     this.selectedIndex.set(3); // necessary?
     localStorage.setItem('lastLogin', Date.now().toString());
-    this.router.navigate(['/']);
-    this.user.init();
+    await this.user.init();
+    this.router.navigateByUrl('/');
   }
 }
