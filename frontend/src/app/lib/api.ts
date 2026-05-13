@@ -1,7 +1,8 @@
+import { environment } from '../../environments/environment';
 import { ApiError, Hydratable, Hydrator } from '../../types/api';
 
 const defaultHeader = { 'Content-Type': 'application/json', 'X-JSON-Format': 'long-as-string' };
-const ENDPOINT = '/api/v1';
+const ENDPOINT = environment.apiOrigin + '/api/v1';
 
 async function fetchJson<T>(method: string, path: string, init?: RequestInit): Promise<T>;
 
