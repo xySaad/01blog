@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +25,9 @@ public class RootBootstrap implements ApplicationListener<ContextRefreshedEvent>
     private AccountRoleModel.repo userRoleRepo;
     @Autowired
     private RoleRepo roleRepo;
+
+    @Value("${ROOT_PASSWORD:}")
+    private String rootPasswordEnv;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -47,6 +51,10 @@ public class RootBootstrap implements ApplicationListener<ContextRefreshedEvent>
     }
 
     private char[] resolvePassword() {
+        if (!rootPasswordEnv.isBlank()) {
+            return rootPasswordEnv.toCharArray();
+        }
+
         if (System.console() != null) {
             System.out.print("Enter root password: ");
             char[] pw = System.console().readPassword();
@@ -59,6 +67,7 @@ public class RootBootstrap implements ApplicationListener<ContextRefreshedEvent>
             return pw;
         }
 
-        throw new IllegalStateException("Root user not bootstrapped. " + "run interactively.");
+        throw new IllegalStateException(
+                "Root password not set. Provide ROOT_PASSWORD env var or run interactively.");
     }
 }
