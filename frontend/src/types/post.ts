@@ -12,7 +12,7 @@ export class Post implements Hydrator {
   id = '';
   account = '';
   owner = new User();
-  title = 'Untitled';
+  title = '';
   content = '';
   likesCount = 0;
   commentsCount = 0;

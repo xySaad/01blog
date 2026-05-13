@@ -92,7 +92,7 @@ export class PostEdit {
   }
 
   async queryLocalDraft(postId: string) {
-    const store = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+    const store = await this.db.getOrCreate(this.selfUser.accountId, 'readwrite', 'id');
     const req = store.get(postId);
     const { resolve, promise, reject } = Promise.withResolvers();
     req.onsuccess = resolve;
@@ -131,7 +131,7 @@ export class PostEdit {
     console.debug('auto saving local draft');
     this.states.currentlySyncing.set(true);
     post.updatedAt = new Date();
-    const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+    const postDrafts = await this.db.getOrCreate(this.selfUser.accountId, 'readwrite', 'id');
     postDrafts.put(post, post.id);
     setTimeout(() => {
       this.states.currentlySyncing.set(false);
@@ -144,7 +144,7 @@ export class PostEdit {
     const pathId = this.states.isNew ? '' : post.id;
 
     const postUpdate = await API.postH(Post, `/posts/${pathId}`, post);
-    const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+    const postDrafts = await this.db.getOrCreate(this.selfUser.accountId, 'readwrite', 'id');
     postDrafts.delete(post.id);
     const newPost = Object.assign(post, postUpdate);
     this.syncedPostData.update((prev) => Object.assign(prev, newPost));
@@ -162,7 +162,7 @@ export class PostEdit {
   async delete() {
     const { id } = this.localPostData();
     if (this.states.isNew) {
-      const postDrafts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+      const postDrafts = await this.db.getOrCreate(this.selfUser.accountId, 'readwrite', 'id');
       postDrafts.delete(id);
     } else {
       await API.delete(`/posts/${id}`);

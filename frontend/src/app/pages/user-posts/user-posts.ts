@@ -37,7 +37,7 @@ export class PostsList {
     const syncedPostsMap = new Map<string, Post>();
     syncedPosts.forEach((sp) => syncedPostsMap.set(sp.id, sp));
 
-    const localPosts = await this.db.getOrCreate('post-drafts', 'readwrite', 'id');
+    const localPosts = await this.db.getOrCreate(this.selfUser.accountId, 'readwrite', 'id');
     const req: IDBRequest<Types.Post[]> = localPosts.getAll();
     const { promise, resolve, reject } = Promise.withResolvers();
     req.onsuccess = resolve;
