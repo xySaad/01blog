@@ -42,19 +42,20 @@ public class UserController {
 
     @GetMapping("{targetUserId}")
     public UserExtra get(@Auth.User long userId, @PathVariable long targetUserId) {
-        var userOpt = userRepo.findExtraById(targetUserId);
-        var user = userOpt.get();
+        var user = userRepo.findExtraById(targetUserId).orElseThrow(AppError.USER_PROFILE_NOT_FOUND::asException);
         user.followed = followRepo.existsByIdFollowerIdAndIdUserId(userId, targetUserId);
         return user;
     }
 
     @PostMapping
     public void saveOrUpdate(@Auth.Account long accountId, @RequestBody @Valid UserUpdateRequest req) {
-        if (userRepo.existsByLoginAndDeletedFalse(req.login)) {
+        if (userRepo.existsByLogin(req.login))
             throw AppError.USERNAME_ALREADY_EXISTS.asException();
-        }
 
-        var user = userRepo.findByAccountIdAndDeletedFalse(accountId).orElse(new UserEntity());
+        if (userRepo.existsById(accountId))
+            throw AppError.ACCOUNT_ALREADY_EXISTS.asException();
+
+        var user = new UserEntity();
         user.accountId = accountId;
         user.login = req.login;
         user.firstName = req.firstName;

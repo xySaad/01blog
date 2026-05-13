@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 public class UserUpdateRequest {
     @NotBlank(message = "Login is required")
-    @Size(min = 3, max = 32, message = "Login must be between 3 and 32 characters")
+    @Size(min = 3, max = 12, message = "Login must be between 3 and 12 characters")
     @Pattern(regexp = "^[a-zA-Z0-9_.-]+$", message = "Login may only contain letters, numbers, underscores, hyphens, and dots")
     public String login;
 

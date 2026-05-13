@@ -21,6 +21,7 @@ public enum AppError {
         EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT),
         USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT),
         USER_PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND),
+        ACCOUNT_ALREADY_EXISTS(HttpStatus.CONFLICT),
 
         // Authorization
         PERMISSION_DENIED(HttpStatus.FORBIDDEN),
