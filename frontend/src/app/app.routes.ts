@@ -39,6 +39,7 @@ const mainLayout: Route = {
   path: '',
   component: MainLayout,
   children: [
+    { path: 'not-found', component: NotFound },
     {
       path: '',
       pathMatch: 'full',
