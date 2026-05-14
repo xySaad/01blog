@@ -1,5 +1,7 @@
 package com.z01.blog.model.Comment;
 
+import java.time.LocalDateTime;
+
 import com.z01.blog.annotation.EntityAccess.Mode;
 import com.z01.blog.exception.AppError;
 import com.z01.blog.model.BaseEntity;
@@ -11,6 +13,7 @@ import jakarta.persistence.MappedSuperclass;
 public abstract class AbstractComment extends BaseEntity {
     public long post;
     public String content;
+    public LocalDateTime createdAt;
 
     @Override
     public void ensureAccess(Long userId, Mode accessMode) {

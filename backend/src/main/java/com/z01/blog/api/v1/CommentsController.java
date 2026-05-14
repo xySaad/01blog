@@ -1,5 +1,6 @@
 package com.z01.blog.api.v1;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class CommentsController {
         comment.account = userId;
         comment.post = post.id;
         comment.content = body.content;
+        comment.createdAt = LocalDateTime.now();
         return commentRepo.save(comment);
     }
 

@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import com.z01.blog.annotation.AccessMethod;
 
 public interface CommentRepo extends JpaRepository<CommentModel, Long> {
-    @Query("SELECT c FROM CommentExtra c WHERE c.post = :postId AND c.deleted = false")
+    @Query("SELECT c FROM CommentExtra c WHERE c.post = :postId AND c.deleted = false ORDER BY c.createdAt DESC")
     List<CommentExtra> findAllByPostAndDeletedFalse(long postId);
 
-    @Query("SELECT c FROM CommentExtra c WHERE c.post = :postId")
+    @Query("SELECT c FROM CommentExtra c WHERE c.post = :postId ORDER BY c.createdAt DESC")
     List<CommentExtra> findAllByPost(long postId);
 
     @Query("SELECT c FROM CommentExtra c WHERE c.id = :commentId")
