@@ -32,7 +32,7 @@ public class Me {
             throw AppError.ACCOUNT_NOT_VERIFIED.asException();
 
         // verified but may not have created a user yet
-        Optional<UserEntity> user = userRepo.findByAccountIdAndDeletedFalse(accountId);
+        Optional<UserEntity> user = userRepo.findById(accountId);
         if (user.isEmpty())
             throw AppError.USER_PROFILE_NOT_FOUND.asException();
 
