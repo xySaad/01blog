@@ -17,7 +17,7 @@ export class Storage {
     const req = indexedDB.open(this.name, currentDb?.version || 1);
 
     const { promise, resolve, reject } = Promise.withResolvers<IDBDatabase>();
-    req.onupgradeneeded = reject;
+    // req.onupgradeneeded = reject;
     req.onsuccess = () => resolve(req.result);
     req.onblocked = req.onerror = () => reject(req.error);
 
