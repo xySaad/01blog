@@ -1,16 +1,18 @@
-<mat-card-header>
-  <a mat-card-avatar class="avatar" [routerLink]="['/users', owner().accountId]">
-    <mat-icon>person</mat-icon>
-  </a>
-  <mat-card-title>{{ owner().firstName }} {{ owner().lastName }}</mat-card-title>
-  <mat-card-subtitle>
-    <div class="handler">@{{ owner().login }}</div>
+<header>
+  <mat-card-header>
+    <a mat-card-avatar class="avatar" [routerLink]="['/users', owner().accountId]">
+      <mat-icon>person</mat-icon>
+    </a>
+    <mat-card-title>{{ owner().firstName }} {{ owner().lastName }}</mat-card-title>
+    <mat-card-subtitle>
+      <div class="handler">@{{ owner().login }}</div>
 
-    @let crAt = createdAt();
-    @if (crAt) {
-      <div class="time">{{ crAt.toDateString() }}</div>
-    }
-  </mat-card-subtitle>
+      @let crAt = createdAt();
+      @if (crAt) {
+        <div class="time">{{ crAt.toDateString() }}</div>
+      }
+    </mat-card-subtitle>
+  </mat-card-header>
   @if (me.accountId !== owner().accountId) {
     <div class="follow">
       @if (owner().followed) {
@@ -20,7 +22,8 @@
       }
     </div>
   }
-</mat-card-header>
+</header>
+
 <section class="options">
   @let v = visibility();
   @if (v !== undefined) {

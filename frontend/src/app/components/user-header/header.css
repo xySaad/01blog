@@ -7,7 +7,6 @@
 mat-card-header {
   display: flex;
   gap: 10px;
-  width: 100%;
 }
 
 .avatar mat-icon {
@@ -15,9 +14,16 @@ mat-card-header {
   height: auto;
   font-size: 40px;
 }
-
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: wrap;
+}
 .follow {
-  margin-left: auto;
+  margin-left: 70px;
 }
 
 mat-card-subtitle {
