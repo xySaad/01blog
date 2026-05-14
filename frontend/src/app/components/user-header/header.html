@@ -64,6 +64,15 @@
       <span>Edit</span>
       <mat-icon>edit</mat-icon>
     </button>
+    @let del = delete();
+    @if (del) {
+      <confirmation-dialog [confirm]="del">
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </confirmation-dialog>
+    }
   } @else if (me.permissions.includes('v1:content:audit')) {
     <audit-action-menu [material]="material()" [actions]="actions()" />
   } @else {
@@ -71,14 +80,5 @@
       <span>Report</span>
       <mat-icon>flag</mat-icon>
     </button>
-  }
-  @let del = delete();
-  @if (del) {
-    <confirmation-dialog [confirm]="del">
-      <button mat-menu-item>
-        <mat-icon>delete</mat-icon>
-        <span>Delete</span>
-      </button>
-    </confirmation-dialog>
   }
 </mat-menu>
