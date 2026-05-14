@@ -66,8 +66,14 @@ public class UserController {
 
     @GetMapping("{id}/posts")
     List<PostExtra> getUserPosts(@Auth.User long userId, @PathVariable long id) {
-        if (id == userId)
-            return postRepo.findAllByAccountAndDeletedFalse(userId);
+        if (id == userId) {
+            var posts = postRepo.findAllByAccountAndDeletedFalse(userId);
+
+            List<Long> postIds = posts.stream().map(p -> p.id).toList();
+            Set<Long> likedIds = postRepo.findLikedPostIds(userId, postIds);
+            posts.forEach(post -> post.liked = likedIds.contains(post.id));
+            return posts;
+        }
 
         var posts = postRepo.findAllByAccountAndDeletedFalseAndIsPublicTrue(id);
 
