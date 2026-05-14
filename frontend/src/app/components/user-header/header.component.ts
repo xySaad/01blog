@@ -17,6 +17,7 @@ import { AuditActionMenu } from '../audit-action-menu/audit-action-menu.componen
 import { Auditable, AuditAction } from '../../../types/Report';
 import { Visibility } from '../../../types/post';
 import { MatTooltip } from '@angular/material/tooltip';
+import { ConfirmationDialog } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'user-header',
@@ -38,6 +39,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatAnchor,
     AuditActionMenu,
     MatTooltip,
+    ConfirmationDialog,
   ],
 })
 export class UserHeader {
@@ -51,6 +53,7 @@ export class UserHeader {
   report = output<void>();
   me = inject(UserService).user;
   router = inject(Router);
+  delete = input<() => unknown>();
 
   visitProfile() {
     this.router.navigateByUrl(`/users/${this.owner().accountId}`);

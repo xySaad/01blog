@@ -69,4 +69,13 @@
       <mat-icon>flag</mat-icon>
     </button>
   }
+  @let del = delete();
+  @if (del) {
+    <confirmation-dialog [confirm]="del">
+      <button mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </confirmation-dialog>
+  }
 </mat-menu>

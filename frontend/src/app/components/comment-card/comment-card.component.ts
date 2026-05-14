@@ -5,10 +5,11 @@ import { MatCard, MatCardContent, MatCardFooter } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { UserHeader } from '../user-header/header.component';
 import { CommentExtra } from '../../../types/comment';
-import { ReportService } from '../../services/report.service';
 import { API } from '../../lib/api';
+import { ReportService } from '../../services/report.service';
+import { UserHeader } from '../user-header/header.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'comment-card',
@@ -31,10 +32,18 @@ export class CommentCard {
   editComment = output<string>();
   reportService = inject(ReportService);
   editing = signal(false);
+  private readonly snackBar = inject(MatSnackBar);
 
   async updateComment(commentId: string, content: string) {
     this.comment().content = content;
     await API.put(`/comments/${commentId}`, { content });
     this.editing.set(false);
+  }
+
+  async deleteComment(commentId: string) {
+    await API.delete(`/comments/${commentId}`);
+    this.snackBar.open('Comment Deleted', 'OK', {
+      duration: 2500,
+    });
   }
 }
