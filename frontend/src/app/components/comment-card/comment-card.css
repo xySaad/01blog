@@ -1,7 +1,7 @@
 mat-card-content {
   align-items: center;
   display: flex;
-  word-break: break-word;
+  white-space: break-spaces;
 }
 
 mat-card-footer {
