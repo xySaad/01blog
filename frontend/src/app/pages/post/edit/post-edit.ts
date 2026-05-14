@@ -153,7 +153,7 @@ export class PostEdit {
     this.localPostData.patch((prev) => Object.assign(prev, newPost));
 
     this.snackBar.open(this.states.isNew ? 'Post saved' : 'Post updated', 'OK', {
-      duration: 250000,
+      duration: 2500,
     });
 
     if (this.states.isNew) {
