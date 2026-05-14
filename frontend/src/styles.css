@@ -87,7 +87,7 @@ body .mat-mdc-menu-panel {
   border-radius: 12px;
 }
 
-mat-snack-bar-container * {
+mat-snack-bar-container.error-snackbar * {
   color: var(--mat-sys-on-error-container) !important;
 }
 mat-snack-bar-container.error-snackbar > div {

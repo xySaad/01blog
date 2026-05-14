@@ -16,6 +16,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { API } from '../../lib/api';
 import { global } from '../../lib/global';
 import { LoadingButton } from '../loading-button.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'report-dialog',
@@ -44,6 +45,7 @@ export class ReportDialog {
   reportReasons = global.reportReasons;
   selectedReason = '';
   description = signal('');
+  private readonly snackBar = inject(MatSnackBar);
 
   async submit() {
     const body = {
@@ -54,5 +56,6 @@ export class ReportDialog {
     };
     await API.post('/report', body);
     this.dialogRef.close();
+    this.snackBar.open('Report submitted', 'OK', { duration: 2500 });
   }
 }

@@ -20,6 +20,7 @@ import { betterSignal } from '../../../lib/signal';
 import { DB_NAME, Storage } from '../../../services/storage.service';
 import { UserService } from '../../../services/user.service';
 import { AttachmentsDialog } from './attachments-dialog/attachments-dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'post-edit',
@@ -48,6 +49,7 @@ export class PostEdit {
   private readonly db = inject(Storage);
   private readonly router = inject(Router);
   selfUser = inject(UserService).user;
+  private readonly snackBar = inject(MatSnackBar);
   syncedPostData = signal(new Post());
   localPostData = betterSignal(new Post());
   states = {
@@ -149,6 +151,11 @@ export class PostEdit {
     const newPost = Object.assign(post, postUpdate);
     this.syncedPostData.update((prev) => Object.assign(prev, newPost));
     this.localPostData.patch((prev) => Object.assign(prev, newPost));
+
+    this.snackBar.open(this.states.isNew ? 'Post saved' : 'Post updated', 'OK', {
+      duration: 250000,
+    });
+
     if (this.states.isNew) {
       history.replaceState({}, '', `/posts/${newPost.id}`);
       this.states.isNew = false;
@@ -167,7 +174,7 @@ export class PostEdit {
     } else {
       await API.delete(`/posts/${id}`);
     }
-
+    this.snackBar.open('Post deleted', 'OK', { duration: 2500 });
     this.router.navigateByUrl('/posts');
   }
 
