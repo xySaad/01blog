@@ -66,18 +66,14 @@ public class PostController {
     // feed
     @GetMapping("/api/v1/posts")
     List<PostExtra> getAll(@Auth.User long userId) {
-        List<PostExtra> posts = postRepo.findAllByDeletedFalseAndIsPublicTrueAndAccountNot(userId);
+        List<PostExtra> posts = postRepo.findFeedForUser(userId);
         List<Long> postIds = posts.stream().map(p -> p.id).toList();
-        List<Long> ownerIds = posts.stream().map(p -> p.owner.accountId).toList();
 
         Set<Long> likedIds = postRepo.findLikedPostIds(userId, postIds);
 
-        Set<Long> followedIds = followRepo.findFollowedIds(userId, ownerIds);
-
         posts.forEach(post -> {
             post.liked = likedIds.contains(post.id);
-            var followed = followedIds.contains(post.owner.accountId);
-            post.owner.followed = followed;
+            post.owner.followed = true;
         });
 
         return posts;

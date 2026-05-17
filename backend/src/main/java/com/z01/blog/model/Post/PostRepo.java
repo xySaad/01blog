@@ -27,8 +27,16 @@ public interface PostRepo extends JpaRepository<PostModel, Long> {
         @Query("SELECT p FROM PostExtra p WHERE p.account = :id")
         List<PostExtra> findAllByAccount(long id);
 
-        @Query("SELECT p FROM PostExtra p WHERE p.deleted = false AND p.hidden = false AND p.owner.deleted = false AND p.isPublic = true AND p.account != :id")
-        List<PostExtra> findAllByDeletedFalseAndIsPublicTrueAndAccountNot(long id);
+        @Query("""
+                        SELECT p FROM PostExtra p
+                        JOIN Follow f ON f.id.userId = p.account
+                        WHERE f.id.followerId = :id
+                          AND p.deleted = false
+                          AND p.hidden = false
+                          AND p.isPublic = true
+                          AND p.owner.deleted = false
+                        """)
+        List<PostExtra> findFeedForUser(long id);
 
         @Query("SELECT pl.id.postId FROM PostLike pl WHERE pl.id.userId = :userId AND pl.id.postId IN :postIds")
         Set<Long> findLikedPostIds(long userId, List<Long> postIds);
