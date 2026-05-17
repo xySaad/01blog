@@ -28,5 +28,9 @@ public class Follow {
         Set<Long> findFollowedIds(long followerId, List<Long> userIdsList);
 
         boolean existsByIdFollowerIdAndIdUserId(long followerId, long userId);
+
+        @Query("SELECT f.id.followerId FROM Follow f WHERE f.id.userId = :userId")
+        List<Long> findFollowerIdsByUserId(long userId);
+
     }
 }

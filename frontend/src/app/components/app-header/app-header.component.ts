@@ -7,13 +7,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NotificationIndicator } from '../notification-indicator/notification-indicator.component';
 
 @Component({
   selector: 'app-header',
   templateUrl: 'app-header.html',
   styleUrls: ['app-header.css'],
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
+    NotificationIndicator,
+  ],
 })
 export class AppHeader {
   private userService = inject(UserService);

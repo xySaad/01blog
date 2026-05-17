@@ -10,11 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.z01.blog.annotation.APIEvent;
 import com.z01.blog.annotation.Auth;
 import com.z01.blog.annotation.EntityAccess;
 import com.z01.blog.annotation.EntityAccess.Mode;
+import com.z01.blog.events.NotificationEventHandler;
 import com.z01.blog.model.Follow;
 import com.z01.blog.model.PostLike;
+import com.z01.blog.model.DTO.CreatePostResponse;
 import com.z01.blog.model.DTO.PostRequest;
 import com.z01.blog.model.Post.PostExtra;
 import com.z01.blog.model.Post.PostModel;
@@ -32,11 +36,9 @@ public class PostController {
     @Autowired
     Follow.repo followRepo;
 
-    record Response(String id, boolean isPublic, LocalDateTime updatedAt) {
-    };
-
+    @APIEvent(NotificationEventHandler.class)
     @PostMapping("/api/v1/posts/")
-    Response create(@RequestBody @Valid PostRequest req, @Auth.User long userId) {
+    CreatePostResponse create(@RequestBody @Valid PostRequest req, @Auth.User long userId) {
         PostModel post = new PostExtra();
         post.id = IdUtil.getSnowflake().nextId();
         post.account = userId;
@@ -46,12 +48,13 @@ public class PostController {
         post.createdAt = LocalDateTime.now();
         post.updatedAt = post.createdAt; // never?
         postRepo.save(post);
-        return new Response(String.valueOf(post.id), false, post.updatedAt);
+        return new CreatePostResponse(String.valueOf(post.id), false, post.updatedAt);
     }
 
     // TODO: change method to PUT
+    @APIEvent(NotificationEventHandler.class)
     @PostMapping("/api/v1/posts/{oldPost}")
-    Response update(
+    CreatePostResponse update(
             @RequestBody @Valid PostRequest post,
             @EntityAccess(mode = Mode.Write) PostModel oldPost) {
 
@@ -60,7 +63,7 @@ public class PostController {
         oldPost.isPublic = post.isPublic;
         oldPost.updatedAt = LocalDateTime.now();
         PostModel newPost = postRepo.save(oldPost);
-        return new Response(String.valueOf(newPost.id), newPost.isPublic, newPost.updatedAt);
+        return new CreatePostResponse(String.valueOf(newPost.id), newPost.isPublic, newPost.updatedAt);
     }
 
     // feed

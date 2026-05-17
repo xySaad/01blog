@@ -1,0 +1,65 @@
+<div class="wrapper">
+  <!-- Bell trigger -->
+  <button
+    mat-icon-button
+    (click)="togglePanel()"
+    [attr.aria-label]="'Notifications' + (unreadCount() ? ' (' + unreadCount() + ' unread)' : '')"
+  >
+    <mat-icon [matBadge]="unreadCount() || null" matBadgeColor="warn" matBadgeSize="small">
+      notifications
+    </mat-icon>
+  </button>
+
+  <!-- Dropdown panel -->
+  @if (open()) {
+    <div class="panel" role="dialog" aria-label="Notifications">
+      <!-- Header -->
+      <div class="panel-header">
+        <span class="panel-title">Notifications</span>
+        @if (unreadCount() > 0) {
+          <button mat-button class="mark-all-btn" (click)="markAllRead()">Mark all read</button>
+        }
+      </div>
+
+      <mat-divider />
+
+      <!-- List -->
+      <div class="panel-body">
+        @if (loading()) {
+          <div class="state-row">
+            <mat-icon class="muted">hourglass_empty</mat-icon>
+            <span class="muted">Loading…</span>
+          </div>
+        } @else if (notifications().length === 0) {
+          <div class="state-row">
+            <mat-icon class="muted">done_all</mat-icon>
+            <span class="muted">You're all caught up</span>
+          </div>
+        } @else {
+          @for (n of notifications(); track n.id) {
+            <div class="notif-row" [class.unread]="!n.read">
+              <!-- Navigates to the referenced content -->
+              <a class="notif-content" [routerLink]="getLink(n)" (click)="onItemClick(n)">
+                <mat-icon class="type-icon">{{ getIcon(n) }}</mat-icon>
+                <div class="notif-text">
+                  <span class="notif-label">{{ getLabel(n) }}</span>
+                  <span class="notif-time">{{ timeAgo(n.createdAt) }}</span>
+                </div>
+              </a>
+
+              <!-- Toggle read/unread -->
+              <button
+                mat-icon-button
+                class="toggle-btn"
+                [matTooltip]="n.read ? 'Mark unread' : 'Mark read'"
+                (click)="toggleRead(n)"
+              >
+                <mat-icon>{{ n.read ? 'mark_email_unread' : 'mark_email_read' }}</mat-icon>
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>
